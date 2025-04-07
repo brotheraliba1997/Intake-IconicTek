@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/compoments/admin-layout/Header";
+import Sidebar from "@/compoments/admin-layout/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,8 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body className="nk-body bg-lighter npc-default has-sidebar no-touch nk-nio-theme">
+        <div className="main-wrapper">
+          <Header />
+          <Sidebar />
+
+          {children}
+        </div>
       </body>
     </html>
   );

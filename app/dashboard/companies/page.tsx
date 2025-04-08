@@ -9,9 +9,7 @@ import React from "react";
 function Companies() {
   return (
     <div className="card">
-      
         <div className="row mb-3 align-items-center">
-         
             <div className="row px-4 pt-4 pb-2" style={{borderBottom: "1px solid #F0F1F5"}}>
               <div className="col">
                 <h4 className="card-title">Companies List</h4>

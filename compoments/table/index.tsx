@@ -41,10 +41,9 @@ function Table({
   };
 
   return (
-    <div className="row">
-      <div className="col-md-12 col-sm-12">
-        <div className="card">
-          {title && (
+    <>
+        
+          {/* {title && (
             <div className="card-header ">
               <div className="row">
                 <div className="col">
@@ -59,12 +58,12 @@ function Table({
                   >
                     {title}
                   </h4>
-                  {/* <h5 className="card-title text-white">{title}</h5> */}
+                  <h5 className="card-title text-white">{title}</h5>
                 </div>
               </div>
             </div>
-          )}
-          <div className="card-body h-100 pt-0">
+          )} */}
+          <div className="">
             {" "}
             {/* <TableHead
               pageSize={pageSize}
@@ -129,7 +128,7 @@ function Table({
                         // style={{ width: 60 }}
                         aria-label="No"
                       >
-                        S.No                     
+                        #                     
                       </th>
                       {columns && Array.isArray(columns) && columns.length > 0
                         ? columns.map((x, i) => (
@@ -187,9 +186,8 @@ function Table({
               />
             </div>                      
           )}                              
-        </div>
-      </div>
-    </div>
+   </>
+    
   );
 }
 export default Table;

@@ -105,8 +105,8 @@ function CompaniesTable() {
   const isLoading = false;
 
   return (
-    <div className="row justify-content-start">
-      <div className="col-12">
+   
+     
         <Table
           title={"Programs"}
           columns={columns}
@@ -114,8 +114,7 @@ function CompaniesTable() {
           isLoading={isLoading}
           hidePagination={true}
         />
-      </div>
-    </div>
+    
   );
 }
 

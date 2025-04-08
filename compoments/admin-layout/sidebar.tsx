@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 function Sidebar() {
@@ -7,39 +8,39 @@ function Sidebar() {
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
             <li className="active">
-              <a href="index.html">
+              <Link href="/dasboard">
                 <i data-feather="home" /> <span>Dashboard</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="client.html">
+              <Link href="/dashboard/client">
                 <i data-feather="users" /> <span>Client</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="Companies.html">
+              <Link href="/dashboard/companies">
                 <i data-feather="briefcase" /> <span>Companies</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="plan.html">
+              <Link href="/dashboard/plan">
                 <i data-feather="clipboard" /> <span>Plan</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link href="#">
                 <i data-feather="calendar" /> <span>Subscription</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#">
+              <Link href="#">
                 <i data-feather="settings" /> <span> Setting</span>
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="login.html">
+              <Link href="/login">
                 <i data-feather="log-out" /> <span>Sign Out</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

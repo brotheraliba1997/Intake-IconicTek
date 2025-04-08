@@ -1,21 +1,31 @@
 import Image from "next/image";
 import React from "react";
-import logo from "@/public/img/logo.png"
-import logosmall from "@/public/img/logo-small.png"
-import avatar from "@/public/img/avatar-12.jpg"
+import logo from "@/public/img/logo.png";
+import logosmall from "@/public/img/logo-small.png";
+import avatar from "@/public/img/avatar-12.jpg";
 
 function Header() {
   return (
     <div className="header header-one">
       <div className="header-left header-left-one">
         <a href="index.html" className="logo">
-          <Image src={logo} alt="Logo" width={100} height={100} objectFit="contain" />
+          <Image
+            src={logo}
+            alt="Logo"
+            width={100}
+            height={100}
+            objectFit="contain"
+          />
         </a>
-        <a href="index.html" className="white-logo">
-          <img src="assets/img/logo-white.png" alt="Logo" />
-        </a>
+        <a href="index.html" className="white-logo"></a>
         <a href="index.html" className="logo logo-small">
-        <Image src={logosmall} alt="Logo" width={30} height={30} objectFit="contain" />
+          <Image
+            src={logosmall}
+            alt="Logo"
+            width={30}
+            height={30}
+            objectFit="contain"
+          />
         </a>
       </div>
       <a href="javascript:void(0);" id="toggle_btn">
@@ -60,10 +70,12 @@ function Header() {
                   <a href="#">
                     <div className="media d-flex">
                       <span className="avatar avatar-sm">
-                        <img
-                          className="avatar-img rounded-circle"
-                          alt=""
-                          src="assets/img/profiles/avatar-02.jpg"
+                        <Image
+                          src={avatar}
+                          alt="Logo"
+                          width={30}
+                          height={30}
+                          objectFit="contain"
                         />
                       </span>
                       <div className="media-body">
@@ -83,11 +95,11 @@ function Header() {
                   <a href="#">
                     <div className="media d-flex">
                       <span className="avatar avatar-sm">
-                        <img
+                        {/* <img
                           className="avatar-img rounded-circle"
                           alt=""
                           src="assets/img/profiles/avatar-03.jpg"
-                        />
+                        /> */}
                       </span>
                       <div className="media-body">
                         <p className="noti-details">
@@ -127,11 +139,11 @@ function Header() {
                   <a href="#">
                     <div className="media d-flex">
                       <span className="avatar avatar-sm">
-                        <img
+                        {/* <img
                           className="avatar-img rounded-circle"
                           alt=""
                           src="assets/img/profiles/avatar-04.jpg"
-                        />
+                        /> */}
                       </span>
                       <div className="media-body">
                         <p className="noti-details">
@@ -181,8 +193,13 @@ function Header() {
             data-bs-toggle="dropdown"
           >
             <span className="user-img">
-              <img src="assets/img/avatar-12.jpg" alt="" />
-        <Image src={logosmall} alt="Logo" width={30} height={30} objectFit="contain" />
+              <Image
+                src={logosmall}
+                alt="Logo"
+                width={30}
+                height={30}
+                objectFit="contain"
+              />
 
               <span className="status online" />
             </span>

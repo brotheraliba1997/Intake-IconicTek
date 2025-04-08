@@ -1,7 +1,9 @@
-@import url("../app/style/css/bootstrap-datetimepicker.min.css");
-@import url("../app/style/css/bootstrap.min.css");
-/* @import url("../app/style/css/ckeditor.css"); */
-/* @import url("../app/style/css/feather.css"); */
-@import url("../app/style/css/login.css");
-@import url("../app/style/css/select2.min.css");
-@import url("../app/style/css/style.css");
+@import url("../style/css/bootstrap-datetimepicker.min.css");
+@import url("../style/css/bootstrap.min.css");
+
+@import url("../style/css/login.css");
+@import url("../style/css/select2.min.css");
+@import url("../style/css/style.css");
+@import url("../style/fontawesome/css/all.min.css");
+@import url("../style/fontawesome/css/fontawesome.min.css");
+@import url("../style/css/datatables/datatables.min.css");

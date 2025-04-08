@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/compoments/admin-layout/Header";
 import Sidebar from "@/compoments/admin-layout/sidebar";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,13 +27,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <head>
+
+      <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+     
+      <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+      </head> */}
       <body className="nk-body bg-lighter npc-default has-sidebar no-touch nk-nio-theme">
-        <div className="main-wrapper">
-          <Header />
-          <Sidebar />
+      <Toaster />
+      
 
           {children}
-        </div>
+        
       </body>
     </html>
   );

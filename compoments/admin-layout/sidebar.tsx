@@ -8,7 +8,7 @@ function Sidebar() {
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
             <li className="active">
-              <Link href="/dasboard">
+              <Link href="/dashboard">
                 <i data-feather="home" /> <span>Dashboard</span>
               </Link>
             </li>

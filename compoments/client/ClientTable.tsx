@@ -4,7 +4,7 @@ import DynamicTable from "@/compoments/table-new";
 import TableRowAction from "@/compoments/table/tableRowAction";
 import React from "react";
 
-function CompaniesTable() {
+function ClientTable() {
   const programsList = {
     data: [
       {
@@ -93,8 +93,8 @@ function CompaniesTable() {
       displayField: (e: any) => (
         <TableRowAction
           id={e.id}
-          editUrl={`/dashboard/companies/${e.id}/edit`}
-          // viewUrl={`/dashboard/services/${e.id}`}
+          editUrl={`/dashboard/client/${e.id}/edit`}
+         
           deleteModalView="DELETE_PROGRAM"
         />
       ),
@@ -118,4 +118,4 @@ function CompaniesTable() {
   );
 }
 
-export default CompaniesTable;
+export default ClientTable;

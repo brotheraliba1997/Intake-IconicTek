@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import CompanyForm from "@/compoments/compaines/CompanyForm";
 
-function AddCompanies() {
+function EditCompanies() {
   return (
     <div className="content container-fluid">
       <div className="row justify-content-center">
@@ -11,7 +11,7 @@ function AddCompanies() {
             <div className="card-header py-3 bg-gradient">
               <div className="row">
                 <div className="col">
-                  <h4 className="card-title">Add Companies</h4>
+                  <h4 className="card-title">Update Companies</h4>
                 </div>
                 <div className="col-auto">
                   <Link href="/dashboard/companies" className=" btn btn-dark btn-sm">
@@ -29,4 +29,4 @@ function AddCompanies() {
   );
 }
 
-export default AddCompanies;
+export default EditCompanies;

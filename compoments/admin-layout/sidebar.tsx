@@ -17,6 +17,7 @@ function Sidebar() {
 
     { label: "Companies", path: "/dashboard/companies" },
     { label: "Plan", path: "/dashboard/plan" },
+    { label: "User", path: "/dashboard/users" },
     { label: "Subcription", path: "/dashboard/subcription" },
     { label: "Setting", path: "/dashboard/setting" },
     

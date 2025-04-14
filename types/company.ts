@@ -8,5 +8,5 @@ export interface CompanyData {
   state: string;
   zipCode: string;
   description: string;
-  timezone: string;
+ 
 }

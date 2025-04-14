@@ -2,90 +2,71 @@
 import Table from "@/compoments/table";
 import DynamicTable from "@/compoments/table-new";
 import TableRowAction from "@/compoments/table/tableRowAction";
+import { useGetCompaniesQuery } from "@/redux/services/companies";
 import React from "react";
 
 function CompaniesTable() {
-  const programsList = {
-    data: [
-      {
-        id: 1,
-        name: "Ali Khan",
-        email: "ali.khan@example.com",
-        age: 28,
-        country: "Pakistan",
-      },
-      {
-        id: 2,
-        name: "Sara Ahmed",
-        email: "sara.ahmed@example.com",
-        age: 25,
-        country: "UAE",
-      },
-      {
-        id: 3,
-        name: "John Smith",
-        email: "john.smith@example.com",
-        age: 32,
-        country: "USA",
-      },
-      {
-        id: 4,
-        name: "Mehreen Fatima",
-        email: "mehreen.fatima@example.com",
-        age: 30,
-        country: "UK",
-      },
-    ],
-  };
+  const {
+    data: companiesList,
+    isLoading,
+    isFetching,
+  } = useGetCompaniesQuery({
+    page: 1,
+    limit: 100,
+  });
 
   const columns = [
     {
-      displayName: "Program Name",
+      displayName: "Company Name",
       displayField: (e: any) => (
-        <>
-          <div className="text-capitalize"> {e?.name} </div>
-        </>
-      ),
-      searchable: true,
-    },
-    {
-      displayName: "Description",
-      displayField: (e: any) => (
-        <>
-          <div className="text-capitalize"> {e?.email} </div>
-        </>
+        <div className="text-capitalize"> {e?.name} </div>
       ),
       searchable: true,
     },
 
     {
-      displayName: "Description",
+      displayName: "Contact",
       displayField: (e: any) => (
-        <>
-          <div className="text-capitalize"> {e?.age} </div>
-        </>
+        <div className="">
+          {e?.email && (
+            <div>
+              <b>Email:</b> {e?.email}
+            </div>
+          )}
+          {e?.phone && (
+            <div>
+              <b>Phone:</b> {e?.phone}
+            </div>
+          )}
+        </div>
       ),
       searchable: true,
     },
 
     {
-      displayName: "Description",
+      displayName: "Location",
       displayField: (e: any) => (
-        <>
-          <div className="text-capitalize"> {e?.country} </div>
-        </>
+        <div className="text-capitalize">
+          {e?.city && (
+            <div>
+              <b>City:</b> {e?.city}
+            </div>
+          )}
+          {e?.state && (
+            <div>
+              <b>State:</b> {e?.state}
+            </div>
+          )}
+          {e?.zipCode && (
+            <div>
+              <b>ZipCode:</b> {e?.zipCode}
+            </div>
+          )}
+        </div>
       ),
       searchable: true,
     },
-    {
-      displayName: "Providers",
-      displayField: (e: any) => (
-        <>
-          <div className="text-capitalize"> - </div>
-        </>
-      ),
-      searchable: true,
-    },
+
     {
       displayName: "Action",
       key: "",
@@ -95,14 +76,14 @@ function CompaniesTable() {
           id={e.id}
           editUrl={`/dashboard/companies/${e.id}/edit`}
           // viewUrl={`/dashboard/services/${e.id}`}
-          deleteModalView="DELETE_PROGRAM"
+          deleteModalView="DELETE_COMPANY"
         />
       ),
       searchAble: true,
     },
   ];
 
-  const isLoading = false;
+ 
 
   return (
    
@@ -110,8 +91,8 @@ function CompaniesTable() {
         <Table
           title={"Programs"}
           columns={columns}
-          dataSource={programsList?.data}
-          isLoading={isLoading}
+          dataSource={companiesList?.data}
+          isLoading={isLoading || isFetching}
           hidePagination={true}
         />
     

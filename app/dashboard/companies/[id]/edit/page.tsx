@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import CompanyForm from "@/compoments/compaines/CompanyForm";
+
+import EditCompanyForm from "@/compoments/compaines/EditCompanyForm";
 
 function EditCompanies() {
   return (
@@ -21,7 +22,7 @@ function EditCompanies() {
                 </div>
               </div>
             </div>
-            <CompanyForm />
+            <EditCompanyForm />
           </div>
         </div>
       </div>

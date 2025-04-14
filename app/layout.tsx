@@ -4,10 +4,10 @@ import "./globals.css";
 import Header from "@/compoments/admin-layout/Header";
 import Sidebar from "@/compoments/admin-layout/sidebar";
 import { Toaster } from "react-hot-toast";
-import { ReduxProvider } from "./redux/provider";
 import { authOptions } from "./api/auth/[...nextauth]/auth-options";
 import AuthProvider from "./api/auth/[...nextauth]/auth-provider";
 import { getServerSession } from "next-auth";
+import { ReduxProvider } from "@/redux/provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

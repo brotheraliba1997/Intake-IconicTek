@@ -1,10 +1,69 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { IoPersonCircle } from "react-icons/io5";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { toast } from "react-hot-toast";
 import logo from "@/public/img/logo.png";
 import { MdOutlineSecurity } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { signIn, SignInResponse, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+interface FormData {
+  email: string;
+  password: string;
+}
 
 function Login() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email Address is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm<FormData>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  console.log(watch(), "watch")
+
+  const onSubmit = async (data: FormData) => {
+    console.log("Submitted Data:", data);
+    setIsLoading(true);
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    })
+      .then((res: SignInResponse | undefined) => {
+        setIsLoading(false);
+
+        if (res?.ok) {
+          toast.success("Login successfully");
+          router.push("/dashboard");
+        } else {
+          toast.error(res?.error || "An unknown error occurred");
+        }
+      })
+      .catch((err: { error?: string }) => {
+        setIsLoading(false);
+
+        console.error("Login error:", err);
+        toast.error(err.error || "An unknown error occurred");
+      });
+  };
+
   return (
     <div className="newloginbg">
       <div className="login-section">
@@ -16,17 +75,15 @@ function Login() {
             <div className="col-lg-4 col-md-6 col-sm-12">
               <div className="login-card">
                 <div className="loginlogo mb-3">
-                  
-                    <Image
-                      src={logo}
-                      alt="Logo"
-                      width={100}
-                      height={100}
-                      objectFit="contain"
-                    />
-                  
+                  <Image
+                    src={logo}
+                    alt="Logo"
+                    width={100}
+                    height={100}
+                    objectFit="contain"
+                  />
                 </div>
-                <form action="" autoComplete="off" className="row p-4 pt-0">
+                <form action="" autoComplete="off" className="row p-4 pt-0" onSubmit={handleSubmit(onSubmit)}>
                   <div className="col-md-12">
                     <label htmlFor="#" className="form-label">
                       Username/Email
@@ -46,7 +103,12 @@ function Login() {
                         placeholder=""
                         aria-label="Username"
                         aria-describedby="basic-addon1"
+                        {...register("email")}
                       />
+                    </div>
+
+                    <div className="text-danger text-center p-0 m-0 mb-2">
+                      {errors.email?.message}
                     </div>
                   </div>
                   <div className="col-md-12">
@@ -66,11 +128,15 @@ function Login() {
                         <input
                           className="form-control border-end-0"
                           type="password"
+                          {...register("password")}
                         />
                         <div className="input-group-text border-end border-start-0 ">
                           <a href="">
                             <i className="fa fa-eye-slash" aria-hidden="true" />
                           </a>
+                        </div>
+                        <div className="text-danger text-center p-0 m-0 mb-2">
+                          {errors.password?.message}
                         </div>
                       </div>
                     </div>
@@ -104,14 +170,9 @@ function Login() {
                   </div>
                   <div className="col-md-12">
                     <div className="d-grid mb-3">
-                      <a
-                        href="index.html"
-                        type="button"
-                        id="sendlogin"
-                        className="btn btn-dark rounded-1"
-                      >
+                      <button id="sendlogin" className="btn btn-dark rounded-1">
                         Login
-                      </a>
+                      </button>
                     </div>
                   </div>
                   <div className="col-md-12">

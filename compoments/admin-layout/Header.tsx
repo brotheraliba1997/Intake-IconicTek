@@ -1,14 +1,31 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import logo from "@/public/img/logo.png";
 import logosmall from "@/public/img/logo-small.png";
 import avatar from "@/public/img/avatar-12.jpg";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 function Header() {
+  const {
+    data: { user },
+  }: any = useSession();
+
+  const [notificationOpen, setNotificationOpen] = useState<boolean | undefined>(
+    false
+  );
+  const [dropDownOpen, setDropDownOpen] = useState<boolean | undefined>(false);
+
+  const signoutHandler = () => {
+    signOut();
+  };
+
   return (
     <div className="header header-one">
       <div className="header-left header-left-one">
-        <a href="index.html" className="logo">
+        <Link href="/dashboard" className="logo">
           <Image
             src={logo}
             alt="Logo"
@@ -16,17 +33,15 @@ function Header() {
             height={100}
             objectFit="contain"
           />
-        </a>
-        <a href="index.html" className="white-logo"></a>
-        <a href="index.html" className="logo logo-small">
-          <Image
-            src={logosmall}
-            alt="Logo"
-            width={30}
-            height={30}
-            objectFit="contain"
-          />
-        </a>
+        </Link>
+
+        <Image
+          src={logosmall}
+          alt="Logo"
+          width={30}
+          height={30}
+          objectFit="contain"
+        />
       </div>
       <a href="javascript:void(0);" id="toggle_btn">
         <i className="fas fa-bars" />
@@ -53,10 +68,17 @@ function Header() {
             className="dropdown-toggle nav-link"
             data-bs-toggle="dropdown"
           >
-            <i data-feather="bell" />{" "}
+            <IoMdNotificationsOutline
+              onClick={() => setNotificationOpen(!notificationOpen)}
+            />
             <span className="badge rounded-pill">5</span>
           </a>
-          <div className="dropdown-menu notifications">
+          <div
+            className={`dropdown-menu notifications ${
+              notificationOpen ? "show" : ""
+            } `}
+            style={{ right: 0 }}
+          >
             <div className="topnav-dropdown-header">
               <span className="notification-title">Notifications</span>
               <a href="javascript:void(0)" className="clear-noti">
@@ -186,10 +208,13 @@ function Header() {
             </div>
           </div>
         </li>
-        <li className="nav-item dropdown has-arrow main-drop">
+        <li
+          className="nav-item dropdown has-arrow main-drop"
+          onClick={() => setDropDownOpen(!dropDownOpen)}
+        >
           <a
             href="#"
-            className="dropdown-toggle nav-link"
+            className={`dropdown-toggle nav-link ${dropDownOpen ? "show" : ""}`}
             data-bs-toggle="dropdown"
           >
             <span className="user-img">
@@ -203,17 +228,17 @@ function Header() {
 
               <span className="status online" />
             </span>
-            <span>Super Admin</span>
+            <span> {user.role} </span>
           </a>
-          <div className="dropdown-menu">
+          <div className={`dropdown-menu ${dropDownOpen ? "show" : ""}`}>
             <a className="dropdown-item" href="#">
               <i data-feather="settings" className="me-1" />
               Settings
             </a>
-            <a className="dropdown-item" href="login.html">
+            <div className="dropdown-item" onClick={signoutHandler}>
               <i data-feather="log-out" className="me-1" />
               Logout
-            </a>
+            </div>
           </div>
         </li>
       </ul>

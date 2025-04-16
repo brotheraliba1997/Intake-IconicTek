@@ -4,6 +4,13 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { FiHome } from "react-icons/fi";
+import { BsPerson } from "react-icons/bs";
+import { FaSuitcase } from "react-icons/fa";
+import { FaCalendar } from "react-icons/fa";
+import { FaRegClipboard } from "react-icons/fa6";
+import { IoSettingsOutline } from "react-icons/io5";
+import { FiLogOut } from "react-icons/fi";
 
 function Sidebar() {
   const {
@@ -13,14 +20,14 @@ function Sidebar() {
   const pathname = usePathname();
 
   const superAdminMenuItems = [
-    { label: "Dashboard", path: "/dashboard" },
+    { label: "Dashboard", path: "/dashboard", icons: <FiHome /> },
 
-    { label: "Companies", path: "/dashboard/companies" },
-    { label: "Plan", path: "/dashboard/plan" },
-    { label: "User", path: "/dashboard/users" },
-    { label: "Subcription", path: "/dashboard/subcription" },
-    { label: "Setting", path: "/dashboard/setting" },
-    
+    { label: "Companies", path: "/dashboard/companies", icons: <FaSuitcase /> },
+    { label: "Plan", path: "/dashboard/plan", icons: <FaRegClipboard /> },
+    { label: "User", path: "/dashboard/users", icons: <BsPerson /> },
+    // { label: "Subcription",  },
+    { label: "Subcription", path: "#", icons: <FaCalendar /> },
+    { label: "Setting", path: "#", icons: <IoSettingsOutline /> },
   ];
 
   const companyAdminMenuItems = [
@@ -37,7 +44,7 @@ function Sidebar() {
     { label: "Meetings", path: "/dashboard/meetings" },
 
     { label: "Payments", path: "/dashboard/payments" },
-    {label: "Settings", path: "/dashboard/payment"},
+    { label: "Settings", path: "/dashboard/payment" },
   ];
 
   const doctorMenuItems = [
@@ -75,46 +82,22 @@ function Sidebar() {
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
-            {menuItems.map((item: MenuItemType, index) => (
+            {menuItems.map((item: MenuItemType) => (
               <li
+                key={item.path}
                 className={`cursor-pointer ${
                   pathname === item.path ? "active" : ""
                 }`}
               >
-                <Link href={item?.path}>
-                  <i data-feather="home" /> <span> {item?.label} </span>
+                <Link href={item.path}>
+                  {item.icons && item.icons} <span>{item.label}</span>
                 </Link>
               </li>
             ))}
 
-            {/* <li>
-              <Link href="/dashboard/client">
-                <i data-feather="users" /> <span>Client</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/companies">
-                <i data-feather="briefcase" /> <span>Companies</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard/plan">
-                <i data-feather="clipboard" /> <span>Plan</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
-                <i data-feather="calendar" /> <span>Subscription</span>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
-                <i data-feather="settings" /> <span> Setting</span>
-              </Link>
-            </li> */}
             <li className="cursor-pointer" onClick={signoutHandler}>
               <Link href="/login">
-                <i data-feather="log-out" /> <span>Sign Out</span>
+                <FiLogOut /> <span>Sign Out</span>
               </Link>
             </li>
           </ul>

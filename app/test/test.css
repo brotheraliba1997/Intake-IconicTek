@@ -1,0 +1,35 @@
+.intake-forms .empty {
+    padding: 40px;
+}
+
+
+.intake-forms .empty .file {
+    float: left;
+}
+
+
+.intake-forms .empty .form-info {
+    float: left;
+    margin-left: 20px;
+}
+
+
+.intake-forms .empty h3 {
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.intake-forms ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.intake-forms .empty ul li {
+    padding-bottom: 15px;
+}
+
+.intake-forms .empty ul li a {
+    cursor: pointer;
+    color: #036DA3;
+}

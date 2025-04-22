@@ -13,9 +13,7 @@ function Header() {
     data: { user },
   }: any = useSession();
 
-  const [notificationOpen, setNotificationOpen] = useState<boolean | undefined>(
-    false
-  );
+  const [notificationOpen, setNotificationOpen] = useState<boolean | undefined>(false);
   const [dropDownOpen, setDropDownOpen] = useState<boolean | undefined>(false);
 
   const signoutHandler = () => {

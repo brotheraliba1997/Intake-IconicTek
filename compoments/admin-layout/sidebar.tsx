@@ -28,40 +28,101 @@ function Sidebar() {
     // { label: "Subcription",  },
     { label: "Subcription", path: "#", icons: <FaCalendar /> },
     { label: "Setting", path: "#", icons: <IoSettingsOutline /> },
+    {
+      label: "Intake",
+      path: "/dashboard/intake",
+      icons: <IoSettingsOutline />,
+    },
   ];
 
   const companyAdminMenuItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Chats", path: "/dashboard/chats" },
-    { label: "Clients", path: "/dashboard/clients" },
-    { label: "Devices", path: "/dashboard/devices" },
+    { label: "Dashboard", path: "/dashboard", icons: <IoSettingsOutline /> },
+    { label: "Chats", path: "/dashboard/chats", icons: <IoSettingsOutline /> },
+    {
+      label: "Clients",
+      path: "/dashboard/clients",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Devices",
+      path: "/dashboard/devices",
+      icons: <IoSettingsOutline />,
+    },
 
-    { label: "Doctors", path: "/dashboard/doctors" },
-    { label: "Services", path: "/dashboard/services" },
+    {
+      label: "Doctors",
+      path: "/dashboard/doctors",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Services",
+      path: "/dashboard/services",
+      icons: <IoSettingsOutline />,
+    },
 
-    { label: "GPS Tracking", path: "/dashboard/tracking" },
-    { label: "Subscriptions", path: "/dashboard/subscriptions" },
-    { label: "Meetings", path: "/dashboard/meetings" },
+    {
+      label: "GPS Tracking",
+      path: "/dashboard/tracking",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Subscriptions",
+      path: "/dashboard/subscriptions",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Meetings",
+      path: "/dashboard/meetings",
+      icons: <IoSettingsOutline />,
+    },
 
-    { label: "Payments", path: "/dashboard/payments" },
-    { label: "Settings", path: "/dashboard/payment" },
+    {
+      label: "Payments",
+      path: "/dashboard/payments",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Settings",
+      path: "/dashboard/payment",
+      icons: <IoSettingsOutline />,
+    },
   ];
 
   const doctorMenuItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Chats", path: "/dashboard/chats" },
+    { label: "Dashboard", path: "/dashboard", icons: <IoSettingsOutline /> },
+    { label: "Chats", path: "/dashboard/chats", icons: <IoSettingsOutline /> },
 
-    { label: "Clients", path: "/dashboard/clients" },
-    { label: "Meetings", path: "/dashboard/meetings" },
-    { label: "Medication schedule", path: "/dashboard/medication-schedule" },
-    { label: "Appointment", path: "/dashboard/appointment" },
+    {
+      label: "Clients",
+      path: "/dashboard/clients",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Meetings",
+      path: "/dashboard/meetings",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Medication schedule",
+      path: "/dashboard/medication-schedule",
+      icons: <IoSettingsOutline />,
+    },
+    {
+      label: "Appointment",
+      path: "/dashboard/appointment",
+      icons: <IoSettingsOutline />,
+    },
   ];
 
   const clientMenuItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Chats", path: "/dashboard/chats" },
+    { label: "Dashboard", path: "/dashboard", icons: <IoSettingsOutline /> },
+    { label: "Chats", path: "/dashboard/chats", icons: <IoSettingsOutline /> },
 
-    { label: "Meetings", path: "/dashboard/meetings" },
+    {
+      label: "Meetings",
+      path: "/dashboard/meetings",
+      icons: <IoSettingsOutline />,
+    },
   ];
 
   const signoutHandler = () => {
@@ -82,17 +143,19 @@ function Sidebar() {
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
-            {menuItems.map((item: MenuItemType) => (
-              <li
-                key={item.path}
-                className={`cursor-pointer ${
-                  pathname === item.path ? "active" : ""
-                }`}
-              >
-                <Link href={item.path}>
-                  {item.icons && item.icons} <span>{item.label}</span>
-                </Link>
-              </li>
+            {menuItems.map((item: any) => (
+              <>
+                <li
+                  key={item.path}
+                  className={`cursor-pointer ${
+                    pathname === item.path ? "active" : ""
+                  }`}
+                >
+                  <Link href={item.path}>
+                    {item.icons && item.icons} <span>{item.label}</span>
+                  </Link>
+                </li>
+              </>
             ))}
 
             <li className="cursor-pointer" onClick={signoutHandler}>

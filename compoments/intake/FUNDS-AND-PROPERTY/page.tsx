@@ -1,14 +1,14 @@
 import React from "react";
 import Formlist from "@/form";
 
-function AuthorizationForMedication() {
+function FUNDSANDPROPERTY() {
   return (
     <>
       <div className="card p-5">
         <h3 className="card-title text-center">
-          {Formlist?.ADMISSIONFORM?.title}
+          {Formlist?.FUNDSANDPROPERTY?.title}
         </h3>
-        {Formlist?.ADMISSIONFORM?.questions?.map((items, index) => (
+        {Formlist?.FUNDSANDPROPERTY?.questions?.map((items, index) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
@@ -28,27 +28,32 @@ function AuthorizationForMedication() {
                     placeholder="Enter..."
                   />
                 )}
-
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}
-
+                
                 {items?.options && items.options.length > 0 && (
                   <div className="row">
-                    {items.options.map((option, i) => (
-                      <div className="col-lg-6" key={i}>
+                    {items.options.map((option: any, i) => (
+                      <div className="col-lg-12" key={i}>
                         <div className="form-check mb-2">
-                          <input
-                            type={option.type}
-                            className="form-check-input"
-                            id={`option-${index}-${i}`}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`option-${index}-${i}`}
-                          >
-                            {option.title}
-                          </label>
+                          {option.showCheckbox ? (
+                            <>
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id={`option-${index}-${i}`}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`option-${index}-${i}`}
+                              >
+                                {option.title}
+                              </label>
+                            </>
+                          ) : (
+                            <p className="fw-bold">{option.title}</p>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -69,4 +74,4 @@ function AuthorizationForMedication() {
   );
 }
 
-export default AuthorizationForMedication;
+export default FUNDSANDPROPERTY;

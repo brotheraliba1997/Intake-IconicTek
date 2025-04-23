@@ -1,19 +1,22 @@
 "use client";
+import ADMISSIONFORM from "@/compoments/intake/ADMISSION-FORM/page";
 import AuthorizationForMedication from "@/compoments/intake/AUTHORIZATION-FOR-MEDICATION/page";
+import FUNDSANDPROPERTY from "@/compoments/intake/FUNDS-AND-PROPERTY/page";
+import SELFMANAGEMENT from "@/compoments/intake/SELF-MANAGEMENT/page";
 import StandardRelease from "@/compoments/intake/Standard-Release/page";
 import React, { useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 
 function page() {
-    const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
-    const handleNext = () => {
-      if (currentStep < 2) setCurrentStep(currentStep + 1);
-    };
-  
-    const handleBack = () => {
-      if (currentStep > 0) setCurrentStep(currentStep - 1);
-    };
+  const handleNext = () => {
+    if (currentStep < 10) setCurrentStep(currentStep + 1);
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
+  };
 
   const tabsList = ["15 days", "1 Months", "6 Months", "1 year"];
 
@@ -48,69 +51,29 @@ function page() {
       </div>
 
       <div className="container mt-5 ">
-      <Stepper className="d-flex  justify-content-around" activeStep={currentStep}>
+        <Stepper
+          className="d-flex  justify-content-around"
+          activeStep={currentStep}
+        >
           <Step label="Personal Info" />
           <Step label="Contact Info" />
           <Step label="Review" />
+          <Step label="FUNDSANDPROPERTY" />
+          <Step label="ADMISSIONFORMANDDATASHEET" />
         </Stepper>
 
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              {/* <h4>Step hamza: Personal Info</h4>
-              <div className="mb-3">
-                <label className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter full name"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Age</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Enter age"
-                />
-              </div> */}
-
               <StandardRelease />
             </div>
           )}
 
-          {currentStep === 1 && (
-            // <div>
-            //   <h4>Step 2: Contact Info</h4>
-            //   <div className="mb-3">
-            //     <label className="form-label">Email</label>
-            //     <input
-            //       type="email"
-            //       className="form-control"
-            //       placeholder="Enter email"
-            //     />
-            //   </div>
-            //   <div className="mb-3">
-            //     <label className="form-label">Phone Number</label>
-            //     <input
-            //       type="tel"
-            //       className="form-control"
-            //       placeholder="Enter phone number"
-            //     />
-            //   </div>
-            // </div>
+          {currentStep === 1 && <AuthorizationForMedication />}
 
-            <AuthorizationForMedication />
-          )}
-
-          {currentStep === 2 && (
-            <div>
-              <h4>Step 3: Review Info</h4>
-              <p className="text-muted">
-                Please review your information before submitting.
-              </p>
-            </div>
-          )}
+          {currentStep === 2 && <SELFMANAGEMENT />}
+          {currentStep === 3 && <FUNDSANDPROPERTY />}
+          {currentStep === 4 && <ADMISSIONFORM />}
         </div>
 
         <div className="d-flex justify-content-between mt-4">
@@ -121,7 +84,7 @@ function page() {
           >
             Back
           </button>
-          {currentStep < 2 ? (
+          {currentStep < 10 ? (
             <button className="btn btn-primary" onClick={handleNext}>
               Next
             </button>

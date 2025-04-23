@@ -15,7 +15,14 @@ function StandardRelease() {
               className="d-flex justify-content-between w-100 align-items-center"
             >
               <div className="d-flex flex-column gap-2 my-2 w-100">
-                <h4 className="card-title">{items.title}</h4>
+                {/* <h4 className="card-title">{items.title}</h4> */}
+
+                {items.type !== "html" && (
+                    <>
+                    <div dangerouslySetInnerHTML={{ __html: items.title }}  />
+                    </>
+                    
+                  )}
 
                 <div>
                   {(items.type === "text" || items.type === "date") && (
@@ -55,30 +62,18 @@ function StandardRelease() {
                       ))}
                     </div>
                   )}
+
+                  {items.type === "html" && (
+                    <>
+                    <div dangerouslySetInnerHTML={{ __html: items.title }}  />
+                    </>
+                    
+                  )}
                 </div>
               </div>
             </div>
           )
         )}
-
-        <div className="d-flex flex-column gap-4 my-4">
-          <p>
-            {Formlist?.STANDARDRELEASEOFINFORMATION?.summary &&
-              Formlist?.STANDARDRELEASEOFINFORMATION?.summary}
-          </p>
-          <ul>
-            {Formlist?.STANDARDRELEASEOFINFORMATION?.description &&
-              Formlist?.STANDARDRELEASEOFINFORMATION?.description.length > 0 &&
-              Formlist?.STANDARDRELEASEOFINFORMATION.description.map(
-                (option, i) => <li key={i}>{option.point}</li>
-              )}
-          </ul>
-
-          <p>
-            {Formlist?.STANDARDRELEASEOFINFORMATION?.Instructions &&
-              Formlist?.STANDARDRELEASEOFINFORMATION?.Instructions}
-          </p>
-        </div>
       </div>
     </>
   );

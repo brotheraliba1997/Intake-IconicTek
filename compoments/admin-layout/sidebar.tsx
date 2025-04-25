@@ -143,10 +143,10 @@ function Sidebar() {
       <div className="sidebar-inner slimscroll">
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
-            {menuItems.map((item: any) => (
-              <>
+            {menuItems.map((item: any, index) => (
+             
                 <li
-                  key={item.path}
+                  key={index}
                   className={`cursor-pointer ${
                     pathname === item.path ? "active" : ""
                   }`}
@@ -155,7 +155,7 @@ function Sidebar() {
                     {item.icons && item.icons} <span>{item.label}</span>
                   </Link>
                 </li>
-              </>
+            
             ))}
 
             <li className="cursor-pointer" onClick={signoutHandler}>

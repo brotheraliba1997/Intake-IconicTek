@@ -1,17 +1,36 @@
 "use client";
-import ADMISSIONFORM from "@/compoments/intake/ADMISSION-FORM/page";
-import AuthorizationForMedication from "@/compoments/intake/AUTHORIZATION-FOR-MEDICATION/page";
-import FUNDSANDPROPERTY from "@/compoments/intake/FUNDS-AND-PROPERTY/page";
-import SELFMANAGEMENT from "@/compoments/intake/SELF-MANAGEMENT/page";
+import ADMISSIONFORM from "@/compoments/intake/Admission-Form/page";
+import AuthorizationForMedication from "@/compoments/intake/Authorization-For-Medication/page";
+import FUNDSANDPROPERTY from "@/compoments/intake/Funds-And-Property/page";
+import IndividualAbuse from "@/compoments/intake/Individual-Abuse/page";
+import POLICYORIENTATIONRECEIPT from "@/compoments/intake/Policy-Orientation-Receipt/page";
+import ResidencyAgreement from "@/compoments/intake/Residency-Agreement/page";
+import SELFMANAGEMENT from "@/compoments/intake/Self-Management/page";
 import StandardRelease from "@/compoments/intake/Standard-Release/page";
 import React, { useState } from "react";
-import { Stepper, Step } from "react-form-stepper";
+import dynamic from "next/dynamic";
+
+const StepperComponent = dynamic(
+  () => import("react-form-stepper").then((mod) => mod.Stepper),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
+
+const StepComponent = dynamic(
+  () => import("react-form-stepper").then((mod) => mod.Step),
+  {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  }
+);
 
 function page() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
-    if (currentStep < 10) setCurrentStep(currentStep + 1);
+    if (currentStep <= 7) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
@@ -51,16 +70,19 @@ function page() {
       </div>
 
       <div className="container mt-5 ">
-        <Stepper
+        <StepperComponent
           className="d-flex  justify-content-around"
           activeStep={currentStep}
         >
-          <Step label="Personal Info" />
-          <Step label="Contact Info" />
-          <Step label="Review" />
-          <Step label="FUNDSANDPROPERTY" />
-          <Step label="ADMISSIONFORMANDDATASHEET" />
-        </Stepper>
+          <StepComponent label="Personal Info" />
+          <StepComponent label="Contact Info" />
+          <StepComponent label="Review" />
+          <StepComponent label="Fund Sand Property" />
+          <StepComponent label="Admission " />
+          <StepComponent label="Individual Abuse " />
+          <StepComponent label="Policy Orientation " />
+          <StepComponent label="Residency Agreement " />
+        </StepperComponent>
 
         <div className="mt-4">
           {currentStep === 0 && (
@@ -74,6 +96,9 @@ function page() {
           {currentStep === 2 && <SELFMANAGEMENT />}
           {currentStep === 3 && <FUNDSANDPROPERTY />}
           {currentStep === 4 && <ADMISSIONFORM />}
+          {currentStep === 5 && <IndividualAbuse />}
+          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />}
+          {currentStep === 7 && <ResidencyAgreement />}
         </div>
 
         <div className="d-flex justify-content-between mt-4">
@@ -84,7 +109,7 @@ function page() {
           >
             Back
           </button>
-          {currentStep < 10 ? (
+          {currentStep <= 7 ? (
             <button className="btn btn-primary" onClick={handleNext}>
               Next
             </button>

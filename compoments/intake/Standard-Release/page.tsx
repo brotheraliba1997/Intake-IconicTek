@@ -8,34 +8,53 @@ function StandardRelease() {
         <h3 className="card-title text-center">
           {Formlist?.STANDARDRELEASEOFINFORMATION?.title}
         </h3>
-        {Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map(
-          (items, index) => (
-            <div
-              key={index}
-              className="d-flex justify-content-between w-100 align-items-center"
-            >
-              <div className="d-flex flex-column gap-2 my-2 w-100">
-                {/* <h4 className="card-title">{items.title}</h4> */}
 
-                {items.type !== "html" && (
-                    <>
-                    <div dangerouslySetInnerHTML={{ __html: items.title }}  />
-                    </>
-                    
-                  )}
-
-                <div>
-                  {(items.type === "text" || items.type === "date") && (
+        <div className="row pt-3">
+          {Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map(
+            (items, index) => {
+              if (items.type === "text" || items.type === "date") {
+                return (
+                  <div key={index} className="col-lg-6">
+                    {items.type !== "html" && (
+                      <div className="pb-2" dangerouslySetInnerHTML={{ __html: items.title }} />
+                    )}
                     <input
                       type={items.type}
                       className="form-control"
                       placeholder="Enter..."
                     />
-                  )}
+                  </div>
+                );
+              }
+
+              return null;
+            }
+          )}
+        </div>
+
+        {Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map(
+          (items, index) => (
+            <>
+              <div
+                key={index}
+                className="d-flex justify-content-between w-100 align-items-center"
+              >
+                <div className="d-flex flex-column gap-2 my-2 w-100">
+                  
+
+                  {items.type !== "html" &&
+                    items.type !== "text" &&
+                    items.type !== "date" && (
+                      <>
+                        <div
+                          dangerouslySetInnerHTML={{ __html: items.title }}
+                        />
+                      </>
+                    )}
 
                   {items.type === "textarea" && (
                     <textarea
-                      className="form-control"
+                      className="form-control mb-2"
                       id=""
                       rows={3}
                     ></textarea>
@@ -65,13 +84,12 @@ function StandardRelease() {
 
                   {items.type === "html" && (
                     <>
-                    <div dangerouslySetInnerHTML={{ __html: items.title }}  />
+                      <div dangerouslySetInnerHTML={{ __html: items.title }} />
                     </>
-                    
                   )}
                 </div>
               </div>
-            </div>
+            </>
           )
         )}
       </div>

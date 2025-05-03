@@ -8,29 +8,42 @@ function SELFMANAGEMENT() {
         <h3 className="card-title text-center">
           {Formlist?.SELFMANAGEMENT?.title}
         </h3>
+
+        <div className="row pt-3">
+          {Formlist?.SELFMANAGEMENT?.questions?.map((items, index) => {
+            if (items.type === "text" || items.type === "date") {
+              return (
+                <div key={index} className="col-lg-6">
+                  {items.type !== "html" && (
+                    <div
+                      className=""
+                      dangerouslySetInnerHTML={{ __html: items.title }}
+                    />
+                  )}
+                  <input
+                    type={items.type}
+                    className="form-control mb-4"
+                    placeholder="Enter..."
+                  />
+                </div>
+              );
+            }
+
+            return null;
+          })}
+        </div>
+
         {Formlist?.SELFMANAGEMENT?.questions?.map((items, index) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
           >
-            <div className="d-flex flex-column gap-2 my-2  w-100">
-              {items.type !== "html" && (
-                <>
-                  <h6
-                    className="pb-2"
-                    dangerouslySetInnerHTML={{ __html: items.title }}
-                  />
-                </>
-              )}
+            
+            
 
               <div>
-                {(items.type === "text" || items.type === "date") && (
-                  <input
-                    type={items.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                  />
-                )}
+                
+               
 
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
@@ -79,9 +92,9 @@ function SELFMANAGEMENT() {
                 </>
               )}
             </div>
-          </div>
         ))}
-      </div>
+        </div>
+      
     </>
   );
 }

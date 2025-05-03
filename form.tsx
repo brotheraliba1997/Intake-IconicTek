@@ -152,18 +152,18 @@ const FormList = {
           {
             title:
               "Does the person need assistance from this company with cash resources?",
-            showCheckbox: false,
+            show: false,
           },
-          { title: "Yes ", showCheckbox: true },
+          { title: "Yes ", show: true },
           {
             title: "NO",
-            showCheckbox: true,
+            show: true,
           },
-          { title: "Does not have cash", showCheckbox: true },
+          { title: "Does not have cash", show: true },
           {
             title:
               "If yes, please describe what procedures will be done to support the person including any limitation to amounts used:",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -175,24 +175,24 @@ const FormList = {
           {
             title:
               "Does the person need assistance from this company with management of their checking account, including an ATM or debit card? ",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "NO",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Does not have a checking account",
-            showCheckbox: true,
+            show: true,
           },
           {
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to transactions, checkbook storage, assistance with writing checks, assistance with using debit card, access to online banking, with passwords/security questions, etc.: ",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -204,24 +204,24 @@ const FormList = {
           {
             title:
               "Does the person need assistance from this company with management of their checking account, including an ATM or debit card?  ",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "NO",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Does not have a checking account",
-            showCheckbox: true,
+            show: true,
           },
           {
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to transactions, checkbook storage, assistance with writing checks, assistance with using debit card, access to online banking, with passwords/security questions, etc.: ",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -233,24 +233,24 @@ const FormList = {
           {
             title:
               "Does the person need assistance from this company with management of their credit card(s)?  ",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "NO",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Does not have a credit card(s)",
-            showCheckbox: true,
+            show: true,
           },
           {
             title:
               "If yes, please describe what procedures will be done to support the person including specifics as it relates to credit card use, assistance with receipt of and paying of credit card bills, access to online banking, with passwords/security questions, etc.",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -262,24 +262,24 @@ const FormList = {
           {
             title:
               "Does the person need assistance from this company with management of their credit card(s)?  ",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "NO",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Does not have gift cards",
-            showCheckbox: true,
+            show: true,
           },
           {
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to maintenance, tracking, and knowing the balance, etc. of gift cards:",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -312,19 +312,19 @@ const FormList = {
         options: [
           {
             title: "N/A ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Semi-annual",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Annual",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Other (specify):",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -335,19 +335,19 @@ const FormList = {
         options: [
           {
             title: "N/A ",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Semi-annual",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Annual",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Other (specify):",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -358,34 +358,16 @@ const FormList = {
         options: [
           {
             title: "Person/Legal representative",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Case Manager",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
 
-      {
-        title: "Representative Payee",
-        type: "checkbox",
-        options: [
-          {
-            title: "Does the person have a representative payee?",
-            showCheckbox: false,
-          },
-          {
-            title: "Yes",
-            showCheckbox: true,
-          },
-
-          {
-            title: "No",
-            showCheckbox: true,
-          },
-        ],
-      },
+  
 
       {
         title: "Representative Payee",
@@ -396,12 +378,12 @@ const FormList = {
           },
           {
             title: "Yes",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -412,21 +394,21 @@ const FormList = {
         options: [
           {
             title: "Does the person have a representative payee?",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Name",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Address",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Phone number:",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -1533,43 +1515,43 @@ const FormList = {
         options: [
           {
             title: "Is the person susceptible to abuse in this area? ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes (if any area below is checked) ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Lack of understanding of sexuality",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Likely to seek or cooperate in an abusive situation",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Inability to be assertive",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Other:",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title:
               "Specific measures to minimize risk of abuse for each area checked:  ",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1585,43 +1567,43 @@ const FormList = {
         options: [
           {
             title: "Is the person susceptible to abuse in this area? ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes (if any area below is checked) ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Inability to identify potentially dangerous situations",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Likely to seek or cooperate in an abusive situation",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Lack of community orientation skills",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Inappropriate interactions with others",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title:
               "Inability to deal with verbally/physically aggressive persons",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1640,23 +1622,23 @@ const FormList = {
         options: [
           {
             title: "Verbally/physically abusive to others ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "“Victim” history exists",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Other:",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title:
               "Specific measures to minimize risk of abuse for each area checked:  ",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1672,58 +1654,58 @@ const FormList = {
         options: [
           {
             title: "Is the person susceptible to abuse in this area? ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "“Yes (if any area below is checked)",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Dresses inappropriately",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Refuses to eat",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Inability to care for self-help needs",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Lack of self-preservation skills (ignores personal safety)",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Engages in self-injurious behaviors",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Neglects or refuses to take medications",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Other:",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title:
               "Specific measures to minimize risk of abuse for each area checked:",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1739,28 +1721,28 @@ const FormList = {
         options: [
           {
             title: "Is the person susceptible in this area? ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "“Yes (if any area below is checked)",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Inability to handle financial matters",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title:
               "Specific measures to minimize risk of abuse for each area checked:",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1785,17 +1767,17 @@ const FormList = {
           {
             title:
               "E- Is the program aware of this person committing a violent crime or act of physical aggression toward others?  ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -1835,22 +1817,22 @@ const FormList = {
         options: [
           {
             title: "Name",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Signature",
-            showCheckbox: true,
+            show: true,
           },
 
           {
-            title: "title",
-            showCheckbox: true,
+            title: "Title",
+            show: true,
           },
 
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1861,22 +1843,22 @@ const FormList = {
         options: [
           {
             title: "Name",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Signature",
-            showCheckbox: true,
+            show: true,
           },
 
           {
-            title: "title",
-            showCheckbox: true,
+            title: "Title",
+            show: true,
           },
 
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1887,22 +1869,22 @@ const FormList = {
         options: [
           {
             title: "Name",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Signature",
-            showCheckbox: true,
+            show: true,
           },
 
           {
-            title: "title",
-            showCheckbox: true,
+            title: "Title",
+            show: true,
           },
 
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1913,22 +1895,22 @@ const FormList = {
         options: [
           {
             title: "Name",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "Signature",
-            showCheckbox: true,
+            show: true,
           },
 
           {
-            title: "title",
-            showCheckbox: true,
+            title: "Title",
+            show: true,
           },
 
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },
@@ -1939,48 +1921,22 @@ const FormList = {
       //   options: [
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "Program Representative",
-      //       showCheckbox: false,
+      //       show: false,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
-      //     },
-      //   ],
-      // },
-
-      // {
-      //   title: "",
-      //   type: "text",
-      //   options: [
-      //     {
-      //       title: "",
-      //       showCheckbox: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       showCheckbox: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       showCheckbox: false,
-      //     },
-
-      //     {
-      //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
       //   ],
       // },
@@ -1991,22 +1947,22 @@ const FormList = {
       //   options: [
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: false,
+      //       show: false,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
       //   ],
       // },
@@ -2017,22 +1973,48 @@ const FormList = {
       //   options: [
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: false,
+      //       show: false,
       //     },
 
       //     {
       //       title: "",
-      //       showCheckbox: true,
+      //       show: true,
+      //     },
+      //   ],
+      // },
+
+      // {
+      //   title: "",
+      //   type: "text",
+      //   options: [
+      //     {
+      //       title: "",
+      //       show: true,
+      //     },
+
+      //     {
+      //       title: "",
+      //       show: true,
+      //     },
+
+      //     {
+      //       title: "",
+      //       show: false,
+      //     },
+
+      //     {
+      //       title: "",
+      //       show: true,
       //     },
       //   ],
       // },
@@ -2040,7 +2022,7 @@ const FormList = {
   },
 
   POLICYORIENTATIONRECEIPT: {
-    title: "ADMISSION FORM AND DATA SHEET",
+    title: " POLICY ORIENTATION RECEIPT",
     questions: [
       {
         title: "Name: ",
@@ -2104,17 +2086,17 @@ const FormList = {
           {
             title:
               "I have received a copy of the policies and procedures that affect service-related and protection-related rights including a copy of the Rights of Persons Served.",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -2126,17 +2108,17 @@ const FormList = {
           {
             title:
               "These policies and procedures and rights have been explained to me in a manner in which I understand.",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -2148,17 +2130,17 @@ const FormList = {
           {
             title:
               "I have received orientation to the Program Abuse Prevention Plan, if applicable, and I understand a copy is available upon my request.    ",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Yes ",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -2212,21 +2194,21 @@ const FormList = {
         options: [
           {
             title: "This residency agreement is between you",
-            showCheckbox: true,
+            show: true,
           },
           {
-            title: "enter guardians name",
-            showCheckbox: true,
-          },
-
-          {
-            title: "landlord/provider",
-            showCheckbox: true,
+            title: "Enter guardians name",
+            show: true,
           },
 
           {
-            title: "located at",
-            showCheckbox: true,
+            title: "Landlord/provider",
+            show: true,
+          },
+
+          {
+            title: "Located at",
+            show: true,
           },
         ],
       },
@@ -2237,16 +2219,16 @@ const FormList = {
         options: [
           {
             title: "Are your own guardian?",
-            showCheckbox: false,
+            show: false,
           },
           {
             title: "Yes",
-            showCheckbox: true,
+            show: true,
           },
 
           {
             title: "No",
-            showCheckbox: true,
+            show: true,
           },
         ],
       },
@@ -2319,29 +2301,29 @@ const FormList = {
         options: [
           {
             title: "Persons signature",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Legal representative’s signature",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
 
           {
             title: "Program representative’s signature",
-            showCheckbox: true,
+            show: true,
           },
           {
             title: "Date",
-            showCheckbox: false,
+            show: false,
           },
         ],
       },

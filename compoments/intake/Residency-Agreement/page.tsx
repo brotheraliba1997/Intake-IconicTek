@@ -29,20 +29,20 @@ function ResidencyAgreement() {
                   {items?.options && items.options.length > 0 ? (
                     <div className="row">
                       {items.options.map((option: any, i: number) => (
-                        <div className="col-lg-12 mb-2" key={i}>
+                        <div className="col-lg-6 " key={i}>
                           {option?.title && (
                             <label className="form-label">{option.title}</label>
                           )}
-                          {option?.showCheckbox ? (
+                          {option?.show ? (
                             <input
                               type="text"
-                              className="form-control"
+                              className="form-control mb-4"
                               placeholder="Enter..."
                             />
                           ) : (
                             <input
                               type="date"
-                              className="form-control"
+                              className="form-control mb-4"
                               placeholder="Enter..."
                             />
                           )}
@@ -52,7 +52,7 @@ function ResidencyAgreement() {
                   ) : (
                     <input
                       type={items.type}
-                      className="form-control"
+                      className="form-control mb-4"
                       placeholder="Enter..."
                     />
                   )}
@@ -66,7 +66,7 @@ function ResidencyAgreement() {
                     {items.options.map((option: any, i) => (
                       <div className="col-lg-12" key={i}>
                         <div className="form-check mb-2">
-                          {option.showCheckbox ? (
+                          {option.show ? (
                             <>
                               <input
                                 type="checkbox"

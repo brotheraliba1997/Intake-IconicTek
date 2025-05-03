@@ -1,7 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import Formlist from "@/form";
 
 function IndividualAbuse() {
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+  const handleCheckboxChange = (e: any, option: any, index: any) => {
+    const isChecked = e.target.checked;
+
+    if (option.title === "Other:") {
+      if (isChecked) {
+        setSelectedValues((prev: any) => {
+          const alreadyExists = prev.some(
+            (item: any) => item.index === index && item.title === option.title
+          );
+          if (!alreadyExists) {
+            return [...prev, { index, title: option.title }];
+          }
+          return prev;
+        });
+      } else {
+        setSelectedValues((prev) =>
+          prev.filter(
+            (item: any) =>
+              !(item.index === index && item.title === option.title)
+          )
+        );
+      }
+    }
+
+    // Yahan aap aur bhi update kar sakte ho, jaise form state etc.
+  };
+
+  console.log(selectedValues, "selectedValues");
+
   return (
     <>
       <div className="card p-5">
@@ -23,67 +54,41 @@ function IndividualAbuse() {
               )}
 
               <div>
-                {/* {(items.type === "text" || items.type === "date") && (
-                  <input
-                    type={items.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                  />
-                )} */}
-
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}
-
-                {/* {(items.type === "text" || items?.options?.length > 0) && (
-                  <div className="row">
-                    {items.options.map((option: any, i: number) => (
-                      <div className="col-lg-12 mb-2" key={i}>
-                        {option.title && (
-                          <label className="form-label">{option.title}</label>
-                        )}
-
-                        {option.showCheckbox && (
-                          <input
-                            type={items.type}
-                            className="form-control"
-                            placeholder="Enter..."
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )} */}
 
                 {(items.type === "text" || items.type === "date") && (
                   <>
                     {items?.options && items.options.length > 0 ? (
                       <div className="row">
                         {items.options.map((option: any, i: number) => (
-                          <div className="col-lg-12 mb-2" key={i}>
+                          <div className="col-lg-6 " key={i}>
                             {option?.title && (
                               <label className="form-label">
                                 {option.title}
                               </label>
                             )}
-                            {option?.showCheckbox ?  (
+                            {option?.show ? (
                               <input
-                                type="text"
-                                className="form-control"
+                                type={items?.type}
+                                className="form-control mb-3"
                                 placeholder="Enter..."
                               />
-                            ) : <input
-                            type="date"
-                            className="form-control"
-                            placeholder="Enter..."
-                          /> }
+                            ) : (
+                              <input
+                                type="date"
+                                className="form-control mb-3"
+                                placeholder="Enter..."
+                              />
+                            )}
                           </div>
                         ))}
                       </div>
                     ) : (
                       <input
                         type={items.type}
-                        className="form-control"
+                        className="form-control mb-3"
                         placeholder="Enter..."
                       />
                     )}
@@ -94,29 +99,51 @@ function IndividualAbuse() {
                   items?.options &&
                   items.options.length > 0 && (
                     <div className="row">
-                      {items.options.map((option: any, i) => (
-                        <div className="col-lg-12" key={i}>
-                          <div className="form-check mb-2">
-                            {option.showCheckbox ? (
-                              <>
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`option-${index}-${i}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`option-${index}-${i}`}
-                                >
-                                  {option.title}
-                                </label>
-                              </>
-                            ) : (
-                              <p className="fw-bold">{option.title}</p>
-                            )}
+                      {items.options.map((option: any, i: number) => {
+                        const matched = selectedValues?.find(
+                          (item: any) =>
+                            item.index === index && item.title === option.title
+                        );
+
+                        return (
+                          <div className="col-lg-12" key={i}>
+                            <div className="form-check mb-2">
+                              {option.show ? (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    value={option.title}
+                                    className="form-check-input"
+                                    id={`option-${index}-${i}`}
+                                    onChange={(e) =>
+                                      handleCheckboxChange(e, option, index)
+                                    }
+                                  />
+
+                                  {matched && (
+                                    <textarea
+                                      className="form-control mb-2"
+                                      placeholder={`Details for question ${
+                                        matched.index + 1
+                                      }`}
+                                      rows="3"
+                                    ></textarea>
+                                  )}
+
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor={`option-${index}-${i}`}
+                                  >
+                                    {option.title}
+                                  </label>
+                                </>
+                              ) : (
+                                <p className="fw-bold">{option.title}</p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
 

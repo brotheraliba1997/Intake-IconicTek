@@ -37,7 +37,7 @@ function FUNDSANDPROPERTY() {
                     {items.options.map((option: any, i) => (
                       <div className="col-lg-12" key={i}>
                         <div className="form-check mb-2">
-                          {option.showCheckbox ? (
+                          {option.show ? (
                             <>
                               <input
                                 type="checkbox"

@@ -8,27 +8,48 @@ function AuthorizationForMedication() {
         <h3 className="card-title text-center">
           {Formlist?.ADMISSIONFORM?.title}
         </h3>
+
+        <div className="row pt-3">
+          {Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map(
+            (items, index) => {
+              if (items.type === "text" || items.type === "date") {
+                return (
+                  <div key={index} className="col-lg-6">
+                    {items.type !== "html" && (
+                      <div className="pb-2" dangerouslySetInnerHTML={{ __html: items.title }} />
+                    )}
+                    <input
+                      type={items.type}
+                      className="form-control"
+                      placeholder="Enter..."
+                    />
+                  </div>
+                );
+              }
+
+              return null;
+            }
+          )}
+        </div>
+
         {Formlist?.ADMISSIONFORM?.questions?.map((items, index) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
           >
             <div className="d-flex flex-column gap-2 my-2 w-100">
-              {items.type !== "html" && (
-                <>
-                  <div dangerouslySetInnerHTML={{ __html: items.title }} />
-                </>
-              )}
+            {items.type !== "html" &&
+                    items.type !== "text" &&
+                    items.type !== "date" && (
+                      <>
+                        <div
+                          dangerouslySetInnerHTML={{ __html: items.title }}
+                        />
+                      </>
+                    )}
 
               <div>
-                {(items.type === "text" || items.type === "date") && (
-                  <input
-                    type={items.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                  />
-                )}
-
+              
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}

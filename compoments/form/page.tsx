@@ -9,6 +9,7 @@ import ADMISSIONFORM from "../intake/Admission-Form/page";
 import IndividualAbuse from "../intake/Individual-Abuse/page";
 import POLICYORIENTATIONRECEIPT from "../intake/Policy-Orientation-Receipt/page";
 import ResidencyAgreement from "../intake/Residency-Agreement/page";
+import ServicesPlan from "../intake/services-Plan";
 
 const StepperComponent = dynamic(
   () => import("react-form-stepper").then((mod) => mod.Stepper),
@@ -30,18 +31,23 @@ function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
-    if (currentStep <= 7) setCurrentStep(currentStep + 1);
+    if (currentStep <= 8) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
     if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
+
   return (
     <>
       <div className="container mt-5 ">
         <StepperComponent
           className="d-flex  justify-content-around"
           activeStep={currentStep}
+          styleConfig={{
+            activeBgColor: "#17635C",
+            completedBgColor: "#3494FB",
+          }}
         >
           <StepComponent label="Personal Info" />
           <StepComponent label="Contact Info" />
@@ -51,6 +57,7 @@ function FormPage() {
           <StepComponent label="Individual Abuse " />
           <StepComponent label="Policy Orientation " />
           <StepComponent label="Residency Agreement " />
+          <StepComponent label="Services Plan " />
         </StepperComponent>
 
         <div className="mt-4">
@@ -68,6 +75,7 @@ function FormPage() {
           {currentStep === 5 && <IndividualAbuse />}
           {currentStep === 6 && <POLICYORIENTATIONRECEIPT />}
           {currentStep === 7 && <ResidencyAgreement />}
+          {currentStep === 8 && <ServicesPlan />}
         </div>
 
         <div className="d-flex justify-content-between mt-4 pb-5">
@@ -78,7 +86,7 @@ function FormPage() {
           >
             Back
           </button>
-          {currentStep <= 7 ? (
+          {currentStep <= 8 ? (
             <button className="btn btn-primary" onClick={handleNext}>
               Next
             </button>

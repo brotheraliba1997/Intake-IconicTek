@@ -20,9 +20,7 @@ function IndividualAbuse() {
         });
       } else {
         setSelectedValues((prev) =>
-          prev.filter(
-            (item: any) =>
-              !(item.index === index && item.title === option.title)
+          prev.filter((item: any) => !(item.index === index && item.title === option.title)
           )
         );
       }

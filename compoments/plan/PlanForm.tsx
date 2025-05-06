@@ -11,10 +11,11 @@ function PlanForm() {
             </label>
 
             <select className="form-select" id="exampleSelect">
-            <option value="0" selected disabled>Please Select Plan Type</option>
-              <option value={1}>Basic</option>
-              <option value={2}>Standard</option>
-              <option value={3}>Premium</option>
+              <option value="0" selected disabled>
+                Please Select Plan Type
+              </option>
+              <option value={1}>Monthly</option>
+              <option value={2}>Annually</option>
             </select>
           </div>
         </div>
@@ -23,7 +24,11 @@ function PlanForm() {
             <label htmlFor="#" className="form-label">
               Cost Per Month
             </label>
-            <input type="number" className="form-control" name="" id="" />
+            <select className="form-select" aria-label="Default select example">
+              <option selected>Open this select menu</option>
+              <option value="1">$ 10</option>
+              <option value="2">$ 120</option>
+            </select>
           </div>
         </div>
         <div className="col-md-12 mb-2">

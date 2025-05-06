@@ -4,16 +4,17 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Select from "../common/Select";
 
 const CompanyForm = ({
   initialValues = null,
   submitHandler,
   isSubmitLoading,
+  UserList,
 }: {
   initialValues?: CompanyData | null;
   submitHandler: (data: CompanyData) => Promise<void>;
   isSubmitLoading: boolean;
+  UserList: any;
 }) => {
   const [stateOptions, setStateOptions] = useState<
     { value: string; label: string }[]
@@ -28,9 +29,9 @@ const CompanyForm = ({
   >([]);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
+    companyemail: Yup.string().required("Company Email is required"),
     description: Yup.string().required("Description is required"),
-    email: Yup.string().required("Email is required"),
+    clientname: Yup.string().required("Client Name is required"),
     phone: Yup.string().required("Phone is required"),
     address: Yup.string().required("Address is required"),
     city: Yup.string().required("City is required"),
@@ -48,13 +49,12 @@ const CompanyForm = ({
   } = useForm<CompanyData>({
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues ?? {
-      name: "",
+      companyemail: "",
       description: "",
     },
   });
 
-
-
+  console.log(watch(), "watch");
   return (
     <div className="card-body">
       <form action="" className="row" onSubmit={handleSubmit(submitHandler)}>
@@ -66,11 +66,13 @@ const CompanyForm = ({
             <input
               type="text"
               className="form-control"
-              {...register("email")}
+              {...register("companyemail")}
             />
 
-            {errors.email && (
-              <div className="invalid-feedback">{errors.email.message}</div>
+            {errors.companyemail && (
+              <div className="invalid-feedback">
+                {errors.companyemail.message}
+              </div>
             )}
           </div>
         </div>
@@ -79,10 +81,26 @@ const CompanyForm = ({
             <label htmlFor="#" className="form-label">
               Client Name{" "}
             </label>
-            <input type="text" className="form-control" {...register("name")} />
+            <select
+              className="form-select"
+              aria-label="Default select example"
+              {...register("clientname")}
+            >
+              <option selected>Select the user </option>
+              {UserList?.map((items: any, index: number) => (
+                <>
+                  <option value={items?.id}>
+                    {items?.firstName} {items?.lastName}{" "}
+                  </option>
+                </>
+              ))}
+            </select>
+            {/* <input type="text" className="form-control" {...register("name")} /> */}
 
-            {errors.name && (
-              <div className="invalid-feedback">{errors.name.message}</div>
+            {errors.clientname && (
+              <div className="invalid-feedback">
+                {errors.clientname.message}
+              </div>
             )}
           </div>
         </div>
@@ -103,7 +121,6 @@ const CompanyForm = ({
             )}
           </div>
         </div>
-
 
         <div className="col-md-4">
           <div className="mb-3">
@@ -217,7 +234,7 @@ const CompanyForm = ({
         <div className="col-md-12 mb-2">
           <div className="form-group">
             <label htmlFor="#" className="form-label">
-            Description
+              Description
             </label>
             <textarea
               className="form-control"
@@ -226,9 +243,11 @@ const CompanyForm = ({
               defaultValue={""}
               {...register("description")}
             />
-             {errors.description && (
-            <div className="invalid-feedback">{errors.description.message}</div>
-          )}
+            {errors.description && (
+              <div className="invalid-feedback">
+                {errors.description.message}
+              </div>
+            )}
           </div>
         </div>
         <div className="col-md-12">

@@ -4,14 +4,16 @@ export const userService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getMyProfile: builder.query({
       providesTags: ["refetchMyProfile"],
-      query: () => `/users/me`,
+      query: () =>({
+        url: `/users`,
+        method: "GET",
+      }) 
     }),
 
     updateMyProfile: builder.mutation({
       invalidatesTags: ["refetchMyProfile"],
       query: ({ payload }) => ({
-        url: `/users/me`,
-        method: "PUT",
+     
         body: payload,
       }),
     }),

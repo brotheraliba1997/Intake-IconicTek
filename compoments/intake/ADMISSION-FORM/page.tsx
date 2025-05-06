@@ -1,7 +1,12 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import Formlist from "@/form";
 
 function ADMISSIONFORM() {
+
+  const [getValue, setValue] = useState()
+
+  console.log(getValue, "getValue")
   return (
     <>
       <div className="card p-5">
@@ -32,7 +37,7 @@ function ADMISSIONFORM() {
                 )} */}
 
                 {items.type === "textarea" && (
-                  <textarea className="form-control" id="" rows={3}></textarea>
+                  <textarea className="form-control" id="" rows={3} onChange={(e:any) => setValue(e.target.value) }></textarea>
                 )}
 
                 {items.type === "text" &&

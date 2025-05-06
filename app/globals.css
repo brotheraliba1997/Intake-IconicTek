@@ -21,3 +21,13 @@
     display: flex;
     justify-content: space-around;
   }
+
+
+
+  .sidebar-menu li a.subdrop .menu-arrow {
+    -transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+  

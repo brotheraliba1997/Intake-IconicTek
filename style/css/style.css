@@ -3427,7 +3427,7 @@ html.menu-opened body {
 
 .sidebar-menu ul ul {
     display: none;
-    background-color: #ffffff2e;
+    /* background-color: #ffffff2e; */
     padding: 5px 0;
 }
 

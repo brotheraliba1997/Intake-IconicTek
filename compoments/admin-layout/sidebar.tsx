@@ -3,7 +3,7 @@ import { MenuItemType } from "@/types/common";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { FiHome } from "react-icons/fi";
 import { BsPerson } from "react-icons/bs";
 import { FaSuitcase } from "react-icons/fa";
@@ -11,11 +11,15 @@ import { FaCalendar } from "react-icons/fa";
 import { FaRegClipboard } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
+import { FaWpforms } from "react-icons/fa6";
+import MenuItem from "./menu";
 
 function Sidebar() {
   const {
     data: { user },
   }: any = useSession();
+
+  const [openSubMenu, setOpenSubMenu] = useState(null);
 
   const pathname = usePathname();
 
@@ -28,64 +32,81 @@ function Sidebar() {
     // { label: "Subcription",  },
     { label: "Subcription", path: "#", icons: <FaCalendar /> },
     { label: "Setting", path: "#", icons: <IoSettingsOutline /> },
-    {
-      label: "Intake",
-      path: "/dashboard/intake",
-      icons: <IoSettingsOutline />,
-    },
   ];
 
   const companyAdminMenuItems = [
     { label: "Dashboard", path: "/dashboard", icons: <IoSettingsOutline /> },
-    { label: "Chats", path: "/dashboard/chats", icons: <IoSettingsOutline /> },
+    // { label: "Chats", path: "/dashboard/chats", icons: <IoSettingsOutline /> },
+    // {
+    //   label: "Clients",
+    //   path: "/dashboard/clients",
+    //   icons: <IoSettingsOutline />,
+    // },
+
+    { label: "Intake", path: "/dashboard/intake", icons: <FaWpforms /> },
+
     {
-      label: "Clients",
-      path: "/dashboard/clients",
-      icons: <IoSettingsOutline />,
-    },
-    {
-      label: "Devices",
-      path: "/dashboard/devices",
-      icons: <IoSettingsOutline />,
+      label: "User",
+      path: "/dashboard/users",
+      icons: <BsPerson />,
     },
 
     {
-      label: "Doctors",
-      path: "/dashboard/doctors",
-      icons: <IoSettingsOutline />,
-    },
-    {
-      label: "Services",
-      path: "/dashboard/services",
-      icons: <IoSettingsOutline />,
-    },
-
-    {
-      label: "GPS Tracking",
-      path: "/dashboard/tracking",
-      icons: <IoSettingsOutline />,
-    },
-    {
-      label: "Subscriptions",
-      path: "/dashboard/subscriptions",
-      icons: <IoSettingsOutline />,
-    },
-    {
-      label: "Meetings",
-      path: "/dashboard/meetings",
-      icons: <IoSettingsOutline />,
+      label: "Setting",
+      path: "#",
+      icons: <BsPerson />,
+      subItems: [
+        {
+          label: "My Company",
+          path: "/dashboard/companies",
+          icons: <FaSuitcase />,
+        },
+      ],
     },
 
-    {
-      label: "Payments",
-      path: "/dashboard/payments",
-      icons: <IoSettingsOutline />,
-    },
-    {
-      label: "Settings",
-      path: "/dashboard/payment",
-      icons: <IoSettingsOutline />,
-    },
+    // {
+    //   label: "Devices",
+    //   path: "/dashboard/devices",
+    //   icons: <IoSettingsOutline />,
+    // },
+
+    // {
+    //   label: "Doctors",
+    //   path: "/dashboard/doctors",
+    //   icons: <IoSettingsOutline />,
+    // },
+    // {
+    //   label: "Services",
+    //   path: "/dashboard/services",
+    //   icons: <IoSettingsOutline />,
+    // },
+
+    // {
+    //   label: "GPS Tracking",
+    //   path: "/dashboard/tracking",
+    //   icons: <IoSettingsOutline />,
+    // },
+    // {
+    //   label: "Subscriptions",
+    //   path: "/dashboard/subscriptions",
+    //   icons: <IoSettingsOutline />,
+    // },
+    // {
+    //   label: "Meetings",
+    //   path: "/dashboard/meetings",
+    //   icons: <IoSettingsOutline />,
+    // },
+
+    // {
+    //   label: "Payments",
+    //   path: "/dashboard/payments",
+    //   icons: <IoSettingsOutline />,
+    // },
+    // {
+    //   label: "Settings",
+    //   path: "/dashboard/payment",
+    //   icons: <IoSettingsOutline />,
+    // },
   ];
 
   const doctorMenuItems = [
@@ -144,22 +165,11 @@ function Sidebar() {
         <div id="sidebar-menu" className="sidebar-menu">
           <ul>
             {menuItems.map((item: any, index) => (
-             
-                <li
-                  key={index}
-                  className={`cursor-pointer ${
-                    pathname === item.path ? "active" : ""
-                  }`}
-                >
-                  <Link href={item.path}>
-                    {item.icons && item.icons} <span>{item.label}</span>
-                  </Link>
-                </li>
-            
+              <MenuItem item={item} key={index} />
             ))}
 
-            <li className="cursor-pointer" onClick={signoutHandler}>
-              <Link href="/login">
+            <li className="cursor-pointer " style={{marginLeft: "10px"}} onClick={signoutHandler}>
+              <Link href="/login" className="pt-2">
                 <FiLogOut /> <span>Sign Out</span>
               </Link>
             </li>

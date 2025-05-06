@@ -9,7 +9,7 @@ function page() {
   const [tabs, setTabs] = useState<any>("15 days");
   return (
     <>
-      <ul className="nav nav-pills mb-3 " id="pills-tab" role="tablist">
+      {/* <ul className="nav nav-pills mb-3 " id="pills-tab" role="tablist">
         {tabsList.map((items, index) => (
           <>
             <li key={index} className="nav-item border " role="presentation">
@@ -34,7 +34,9 @@ function page() {
         ) : tabs === "1 year" ? (
           <FormPage />
         ) : null}
-      </div>
+      </div> */}
+
+<FormPage />
     </>
   );
 }

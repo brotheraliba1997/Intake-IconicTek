@@ -1,7 +1,7 @@
 export interface CompanyData {
   id?: string;
-  name: string;
-  email: string;
+  companyemail: string;
+  clientname: string;
   phone: string;
   address: string;
   city: string;

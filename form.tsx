@@ -3,57 +3,81 @@ const FormList = {
     title: "STANDARD RELEASE OF INFORMATION",
     questions: [
       {
+        id: 1,
         title: "Name",
         type: "text",
       },
       {
+        id: 2,
         title: "Date of birth",
         type: "date",
       },
       {
+        id: 3,
         title: "What are some reasons we use your information?",
         type: "textarea",
       },
       {
+        id: 4,
         title:
           "Do you have to provide us with information? What will happen if you do not provide us all the information? What happens if you do not release your information to others",
         type: "textarea",
       },
       {
+        id: 5,
         title: "Who else may access your information when required?",
         options: [
-          { title: "Minnesota Department of Human Services", type: "checkbox" },
-          { title: "County of financial responsibility", type: "checkbox" },
+          {
+            id: 1,
+            title: "Minnesota Department of Human Services",
+            type: "checkbox",
+          },
+          {
+            id: 2,
+            title: "County of financial responsibility",
+            type: "checkbox",
+          },
           { title: "County of company's social services", type: "checkbox" },
           {
+            id: 3,
             title: "U.S. Department of Health and Human Services",
             type: "checkbox",
           },
           {
+            id: 4,
             title: "Law enforcement personnel and attorneys",
             type: "checkbox",
           },
-          { title: "Social Security Administration", type: "checkbox" },
+          {
+            id: 5,
+            title: "Social Security Administration",
+            type: "checkbox",
+          },
           { title: "Various state departments", type: "checkbox" },
           { title: "Federal, state, or county auditors", type: "checkbox" },
           {
+            id: 6,
             title: "Representative payee and financial workers",
             type: "checkbox",
           },
           {
+            id: 7,
             title: "Adult or Child Protection units and investigators",
             type: "checkbox",
           },
           {
+            id: 8,
             title: "Other licensed service providers as needed",
             type: "checkbox",
           },
           {
+            id: 9,
             title:
               "The MN Ombudsman for Mental Health or Developmental Disabilities",
             type: "checkbox",
           },
           {
+            id: 10,
             title: "Agents of the welfare system or investigators",
             type: "checkbox",
           },
@@ -61,31 +85,38 @@ const FormList = {
       },
 
       {
+        id: 6,
         title:
           "You have the right to access your information and to request copies.",
         type: "textarea",
       },
+
       {
+        id: 7,
         title: "What can you do if you believe your information is inaccurate?",
         type: "textarea",
       },
       {
+        id: 8,
         title: "What privacy rights do minors have?",
         type: "textarea",
       },
 
       {
+        id: 9,
         title:
           "<p> Summary/consequences  I know that state and federal privacy laws protect my records. I know: </p>",
         type: "html",
       },
 
       {
+        id: 10,
         title: `<ul> <li>Why I am being asked to release this information  </li> <li>I do not have to consent to the release of this information. But not doing so may affect this company's ability to provide needed services to me  </li> <li>This authorization will remain in effect unless withdrawn in writing and it may be withdrawn at any time.  </li><li>If I do not consent, the information will not be released unless the law otherwise allows it.  </li><li>I may stop this consent with a written notice at any time, but this written notice will not affect information this company has already released  </li>  <li>The person(s) or agency(ies) who receive my information may need to pass it on to others.  </li><li>If my information is passed on to others by this company, it may no longer be protected by this authorization.  </li> </ul>`,
         type: "html",
       },
 
       {
+        id: 11,
         title: `<p> I understand that I and my legal representative have full access to my records and recorded information that is maintained, collected, stored, or disseminated by the company. Private data are records or recorded information that includes personal, financial, service, health, and medical information.  I, hereby, authorize this company to routinely release my private information to those staff of this company who have a need to know including: executive and administrative staff, financial and nursing staff including assigned or consulting nurses, management staff including the Designated Coordinator and/or Designated Manager, and direct support staff. In addition, my support team or expanded support team may receive my private information as needed, including my county case manager, employer, behavior professionals, and other licensed service providers. </p>`,
         type: "html",
       },
@@ -366,8 +397,6 @@ const FormList = {
           },
         ],
       },
-
-  
 
       {
         title: "Representative Payee",

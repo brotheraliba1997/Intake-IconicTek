@@ -43,6 +43,8 @@ export const apiSlice = createApi({
   },
   tagTypes: [
     "getCompanies",
+    "getForms",
+    "refetchMyForms",
     "refetchMyCompany",
     "refetchMyProfile",
     "getUsers",

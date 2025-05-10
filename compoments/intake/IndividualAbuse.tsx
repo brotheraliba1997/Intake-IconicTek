@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import Formlist from "@/form";
+import { useGetMyFormQuery } from "@/redux/services/form";
 
 function IndividualAbuse() {
+  const [formData, setFormData] = useState(
+    Formlist?.IndividualAbuse?.questions?.map((itms) => ({
+      questionId: itms?.id,
+      value: "",
+      multipleValue: [],
+      type: itms?.type,
+    }))
+  );
+
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const handleCheckboxChange = (e: any, option: any, index: any) => {
@@ -20,14 +30,59 @@ function IndividualAbuse() {
         });
       } else {
         setSelectedValues((prev) =>
-          prev.filter((item: any) => !(item.index === index && item.title === option.title)
+          prev.filter(
+            (item: any) =>
+              !(item.index === index && item.title === option.title)
           )
         );
       }
     }
-
-    // Yahan aap aur bhi update kar sakte ho, jaise form state etc.
   };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    questionId: string,
+    optionId: string | null,
+    isMultiple: boolean,
+    type: string
+  ) => {
+    const { value, checked } = e.target;
+
+    const arrayfound = formData?.map((quest: any) => {
+      if (quest.questionId === questionId) {
+        let multipleValue = quest.multipleValue;
+        const optionFound = multipleValue?.find(
+          (option: any) => option === optionId
+        );
+        if (optionFound) {
+          multipleValue = multipleValue.filter((val: any) => val !== optionId);
+        } else {
+          multipleValue.push(optionId);
+        }
+
+        if (isMultiple) {
+          return { ...quest, multipleValue };
+        } else {
+          return { ...quest, value };
+        }
+      } else {
+        return quest;
+      }
+    });
+
+    setFormData(arrayfound);
+  };
+
+  const formName = "Individual Abuse";
+  const { data, isLoading, error } = useGetMyFormQuery({});
+
+  const dataGet = data?.data?.find((items: any) => items?.title === formName);
+  console.log(data, "dataGet");
+
+  const question = dataGet?.questions
+    ?.slice()
+    ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+    ?.map((items: any) => items?.question);
 
   console.log(selectedValues, "selectedValues");
 
@@ -37,7 +92,7 @@ function IndividualAbuse() {
         <h3 className="card-title text-center">
           {Formlist?.IndividualAbuse?.title}
         </h3>
-        {Formlist?.IndividualAbuse?.questions?.map((items, index) => (
+        {question?.map((items: any, index: any) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
@@ -124,7 +179,6 @@ function IndividualAbuse() {
                                       placeholder={`Details for question ${
                                         matched.index + 1
                                       }`}
-                                      rows="3"
                                     ></textarea>
                                   )}
 

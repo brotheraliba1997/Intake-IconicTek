@@ -1,14 +1,40 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import Formlist from "@/form";
+import { useGetMyFormQuery } from "@/redux/services/form";
 
 function FUNDSANDPROPERTY() {
+
+   const [formData, setFormData] = useState(
+      Formlist?.SELFMANAGEMENT?.questions?.map((itms) => ({
+        questionId: itms?.id,
+        value: "",
+        multipleValue: [],
+        type: itms?.type,
+      }))
+    );
+
+
+    const { data, isLoading, error } = useGetMyFormQuery({});
+      const formName = "FUNDS AND PROPERTY AUTHORIZATION";
+      const dataGet = data?.data?.find((items: any) => items?.title === formName);
+      console.log(dataGet, "dataGet");
+      const question = dataGet?.questions
+        ?.slice()
+        ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+        ?.map((items: any) => items?.question);
+
+        console.log(question, "question");
+  
+
+
   return (
     <>
       <div className="card p-5">
         <h3 className="card-title text-center">
           {Formlist?.FUNDSANDPROPERTY?.title}
         </h3>
-        {Formlist?.FUNDSANDPROPERTY?.questions?.map((items, index) => (
+        {question?.map((items:any, index:any) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"

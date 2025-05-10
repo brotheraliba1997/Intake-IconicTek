@@ -167,31 +167,37 @@ const FormList = {
     title: "FUNDS AND PROPERTY AUTHORIZATION",
     questions: [
       {
+        id: 1,
         title: "Name",
         type: "text",
       },
       {
+        id: 2,
         title:
           "<p> The company is authorized to assist the person served at this program as directed below with the safekeeping of their funds or other property. </p>",
         type: "html",
       },
 
       {
+        id: 3,
         title: "Cash Resources ",
         type: "checkbox",
         options: [
           {
+            id: 1,
             title:
               "Does the person need assistance from this company with cash resources?",
             show: false,
           },
-          { title: "Yes ", show: true },
+          { id: 2, title: "Yes ", show: true },
           {
+            id: 3,
             title: "NO",
             show: true,
           },
-          { title: "Does not have cash", show: true },
+          { id: 4, title: "Does not have cash", show: true },
           {
+            id: 5,
             title:
               "If yes, please describe what procedures will be done to support the person including any limitation to amounts used:",
             show: false,
@@ -200,27 +206,33 @@ const FormList = {
       },
 
       {
+        id: 4,
         title: "Checking Account ",
         type: "chexkbox",
         options: [
           {
+            id: 1,
             title:
               "Does the person need assistance from this company with management of their checking account, including an ATM or debit card? ",
             show: false,
           },
           {
+            id: 2,
             title: "Yes ",
             show: true,
           },
           {
+            id: 3,
             title: "NO",
             show: true,
           },
           {
+            id: 4,
             title: "Does not have a checking account",
             show: true,
           },
           {
+            id: 5,
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to transactions, checkbook storage, assistance with writing checks, assistance with using debit card, access to online banking, with passwords/security questions, etc.: ",
             show: false,
@@ -229,27 +241,33 @@ const FormList = {
       },
 
       {
+        id: 5,
         title: "Savings Account",
-        type: "chexkbox",
+        type: "chexkbox ",
         options: [
           {
+            id: 1,
             title:
               "Does the person need assistance from this company with management of their checking account, including an ATM or debit card?  ",
             show: false,
           },
           {
+            id: 2,
             title: "Yes ",
             show: true,
           },
           {
+            id: 3,
             title: "NO",
             show: true,
           },
           {
+            id: 4,
             title: "Does not have a checking account",
             show: true,
           },
           {
+            id: 5,
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to transactions, checkbook storage, assistance with writing checks, assistance with using debit card, access to online banking, with passwords/security questions, etc.: ",
             show: false,
@@ -258,27 +276,33 @@ const FormList = {
       },
 
       {
+        id: 6,
         title: "Credit Cards",
         type: "chexkbox",
         options: [
           {
+            id: 1,
             title:
               "Does the person need assistance from this company with management of their credit card(s)?  ",
             show: false,
           },
           {
+            id: 2,
             title: "Yes ",
             show: true,
           },
           {
+            id: 3,
             title: "NO",
             show: true,
           },
           {
+            id: 4,
             title: "Does not have a credit card(s)",
             show: true,
           },
           {
+            id: 5,
             title:
               "If yes, please describe what procedures will be done to support the person including specifics as it relates to credit card use, assistance with receipt of and paying of credit card bills, access to online banking, with passwords/security questions, etc.",
             show: false,
@@ -287,27 +311,33 @@ const FormList = {
       },
 
       {
+        id: 7,
         title: "Gift Cards",
         type: "chexkbox",
         options: [
           {
+            id: 1,
             title:
               "Does the person need assistance from this company with management of their credit card(s)?  ",
             show: false,
           },
           {
+            id: 2,
             title: "Yes ",
             show: true,
           },
           {
+            id: 3,
             title: "NO",
             show: true,
           },
           {
+            id: 4,
             title: "Does not have gift cards",
             show: true,
           },
           {
+            id: 5,
             title:
               "If yes, please describe what procedures will be done to support the person including specifics related to maintenance, tracking, and knowing the balance, etc. of gift cards:",
             show: false,
@@ -316,44 +346,53 @@ const FormList = {
       },
 
       {
+        id: 8,
         title: "<h3> Personal Property</h3>",
         type: "html",
       },
 
       {
+        id: 9,
         title:
           "<ul> <li>This company is not responsible for normal wear and tear, theft, or damage to personal property unless it is established that the loss or damage was caused by a willful act, negligence, or misappropriation on the part of the company or its staff.  </li> <li>The person has the ability to seek outside agencies to supply personal liability/renters insurance to fully protect their personal property.  </li><li>It is the responsibility of the person to seek other forms of personal liability/renters insurance if necessary.   </li>    </ul>",
         type: "html",
       },
 
       {
+        id: 10,
         title: "Frequency of Itemized Financial Statements",
         type: "html",
       },
 
       {
+        id: 11,
         title:
           "The company must survey, document, and implement the preferences of the person and/or legal representative and the case manager for frequency of receiving a statement that itemizes receipts and disbursements of funds or other property. The license holder must document changes to these preferences when they are requested.",
         type: "html",
       },
 
       {
+        id: 12,
         title: "Person/Legal representative",
         type: "chexkbox",
         options: [
           {
+            id: 1,
             title: "N/A ",
             show: true,
           },
           {
+            id: 2,
             title: "Semi-annual",
             show: true,
           },
           {
+            id: 3,
             title: "Annual",
             show: true,
           },
           {
+            id: 4,
             title: "Other (specify):",
             show: true,
           },
@@ -361,22 +400,27 @@ const FormList = {
       },
 
       {
+        id: 13,
         title: "Case Manager",
         type: "chexkbox",
         options: [
           {
+            id: 1,
             title: "N/A ",
             show: true,
           },
           {
+            id: 2,
             title: "Semi-annual",
             show: true,
           },
           {
+            id: 3,
             title: "Annual",
             show: true,
           },
           {
+            id: 4,
             title: "Other (specify):",
             show: true,
           },
@@ -384,14 +428,17 @@ const FormList = {
       },
 
       {
+        id: 14,
         title: "Describe information to be sent:",
-        type: "",
+        type: "checkbox",
         options: [
           {
+            id: 1,
             title: "Person/Legal representative",
             show: true,
           },
           {
+            id: 2,
             title: "Case Manager",
             show: true,
           },
@@ -399,10 +446,12 @@ const FormList = {
       },
 
       {
+        id: 15,
         title: "Representative Payee",
         type: "checkbox",
         options: [
           {
+            id: 1,
             title: "Does the person have a representative payee?",
           },
           {
@@ -418,24 +467,29 @@ const FormList = {
       },
 
       {
+        id: 16,
         title: "If yes, include that persons contact information:",
-        type: "",
+        type: "checkbox",
         options: [
           {
+            id: 1,
             title: "Does the person have a representative payee?",
             show: false,
           },
           {
+            id: 2,
             title: "Name",
             show: true,
           },
 
           {
+            id: 3,
             title: "Address",
             show: true,
           },
 
           {
+            id: 4,
             title: "Phone number:",
             show: true,
           },
@@ -443,35 +497,41 @@ const FormList = {
       },
 
       {
+        id: 17,
         title: "<h3>Program Information</h3>",
         type: "html",
       },
 
       {
+        id: 18,
         title:
           "<p>Per MN Statutes, 245D.06, subdivision 4, whenever the company assist a person with the safekeeping of funds or other property according to section 245A.04, subdivision 13, the company must obtain written authorization to do so from the person or the person’s legal representative and the case manager. Authorization must be obtained with five (5) working days of service initiation and renewed annually thereafter.</p>",
         type: "html",
       },
 
       {
+        id: 19,
         title:
           "<h3>Per MN Statutes, section 245A.04, subdivision 13, this company must: </h3> <ol> <li>Ensure that the person retains the use and availability of personal funds or property unless restrictions are justified and documented in their plans. </li> <li>Ensure separation of funds of the person served from funds of the license holder, the program, or staff. </li><li>When requested, assist a person with the safekeeping of funds or other property, and will:   </li>  <ol><li>Immediately document receipt and disbursement of the person’s funds or other property at the time of receipt or disbursement, including the person's signature, or the signature of the conservator or payee   </li><li>Return to the person upon request, funds and property in the license holder's possession subject to restrictions in the person's plan, as soon as possible, but no later than three working days after the date of request.   </li> </ol>   </ol>",
         type: "html",
       },
 
       {
+        id: 20,
         title:
           "<h3>Per MN Statutes, section 245A.04, subdivision 13, this company must: </h3>   </ol>",
         type: "html",
       },
 
       {
+        id: 21,
         title:
           "<ol> <li>Ensure that the person retains the use and availability of personal funds or property unless restrictions are justified and documented in their plans. </li> <li>Ensure separation of funds of the person served from funds of the license holder, the program, or staff. </li><li>When requested, assist a person with the safekeeping of funds or other property, and will:   </li>  <ol><li>Immediately document receipt and disbursement of the person’s funds or other property at the time of receipt or disbursement, including the person's signature, or the signature of the conservator or payee   </li><li>Return to the person upon request, funds and property in the license holder's possession subject to restrictions in the person's plan, as soon as possible, but no later than three working days after the date of request.   </li> </ol>   </ol>",
         type: "html",
       },
 
       {
+        id: 22,
         title:
           "<h3>This company and program staff must not: </h3> <ol> <li>Borrow money from a person served by the program </li><li>Purchase personal items from a person served by the program   </li>  <li>Sell merchandise or personal services to a person served by the program  </li> <li>Require the person served to purchase items for which the company is eligible for reimbursement  </li> </ol>",
         type: "html",
@@ -483,38 +543,45 @@ const FormList = {
     title: "SELF-MANAGEMENT ASSESSMENT",
     questions: [
       {
+        id: 1,
         title: "Name",
         type: "text",
       },
       {
+        id: 2,
         title: "Date of birth",
         type: "date",
       },
 
       {
+        id: 3,
         title: "Date of Self-Management Assessment development:",
         type: "text",
       },
 
       {
+        id: 4,
         title: "For the annual period from:",
         type: "text",
       },
 
       {
+        id: 5,
         title: "Name and title of person completing the review:",
         type: "text",
       },
 
       {
+        id: 6,
         title:
           "Health and medical needs to maintain or improve physical, mental, and emotional well-being",
         type: "table",
 
         coloum: [
-          { title: "Assessment area " },
-          { title: "Is the person able to self-manage in this area?" },
+          { id: 1, title: "Assessment area " },
+          { id: 2, title: "Is the person able to self-manage in this area?" },
           {
+            id: 3,
             title:
               "Assessment - include information about the person that is descriptive of their overall strengths, functional skills and abilities, and behaviors or symptoms ",
           },
@@ -522,210 +589,256 @@ const FormList = {
 
         subQuestion: [
           {
+            id: 1,
             title: "Allergies (state specific allergies): ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 2,
             title: "Seizures (state specific seizure types):  ",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 4,
             title: "Choking",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 5,
             title: "Special dietary needs (state specific need):",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
               {
+                id: 3,
                 title: "NA – there are no special dietary needs ",
               },
             ],
           },
 
           {
+            id: 6,
             title: "Chronic medical conditions (state condition): ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
               {
+                id: 3,
                 title: "NA - there are no chronic medical conditions ",
               },
             ],
           },
 
           {
+            id: 7,
             title: "Self-administration of medication or treatment orders ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 8,
             title: "Preventative screening ",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 9,
             title: "Medical and dental appointments",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "",
               },
             ],
           },
 
           {
+            id: 10,
             title: "Other health and medical needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 11,
             title: "Other health and medical needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 12,
             title: "Other health and medical needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 13,
             title: "Other health and medical needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
@@ -734,14 +847,16 @@ const FormList = {
       },
 
       {
+        id: 14,
         title:
           "Personal safety to avoid injury or accident in the service setting",
         type: "table",
 
         coloum: [
-          { title: "Assessment area " },
-          { title: "Is the person able to self-manage in this area?" },
+          { id: 1, title: "Assessment area " },
+          { id: 2, title: "Is the person able to self-manage in this area?" },
           {
+            id: 3,
             title:
               "Assessment - include information about the person that is descriptive of their overall strengths, functional skills and abilities, and behaviors or symptoms ",
           },
@@ -749,164 +864,199 @@ const FormList = {
 
         subQuestion: [
           {
+            id: 15,
             title: "Risk of falling (include the specific risk): ",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 16,
             title: "Mobility issues (include the specific issue): ",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 17,
             title: "",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 18,
             title: "Regulating water temperature",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 19,
             title: "Community survival skills",
             type: "checkbox",
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 20,
             title: "Water safety skills ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 21,
             title: "Sensory disabilities ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 22,
             title: "Other personal safety needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 23,
             title: "Other personal safety needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 24,
             title: "Other personal safety needs (state specific need):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
@@ -915,14 +1065,16 @@ const FormList = {
       },
 
       {
+        id: 25,
         title:
           "Symptoms or behavior that may otherwise result in an incident as defined in section 245D.02, subd. 11 clauses (4) to (7) or suspension or termination of services by the license holder, or other symptoms or behaviors that may jeopardize the health and safety of the person or others.",
         type: "table",
 
         coloum: [
-          { title: "Assessment area " },
+          { id: 1, title: "Assessment area " },
           { title: "Is the person able to self-manage in this area?" },
           {
+            id: 2,
             title:
               "Assessment - include information about the person that is descriptive of their overall strengths, functional skills and abilities, and behaviors or symptoms ",
           },
@@ -930,189 +1082,228 @@ const FormList = {
 
         subQuestion: [
           {
+            id: 26,
             title: "Self-injurious behaviors (state behavior): ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 27,
             title: "Physical aggression/conduct (state behavior):  ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No ",
               },
               {
+                id: 3,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 28,
             title: "Verbal/emotional aggression (state behavior):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "NA - there are no allergies",
               },
             ],
           },
 
           {
+            id: 29,
             title: "Property destruction (state behavior):",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 30,
             title: "Suicidal ideations, thoughts, or attempts",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 31,
             title: "Criminal or unlawful behavior",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
             ],
           },
 
           {
+            id: 32,
             title: "Sensory disabilities ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 33,
             title:
               "Mental or emotional health symptoms and crises (state diagnosis): ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 34,
             title: "Unauthorized or unexplained absence from a program",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 35,
             title:
               "An act or situation involving a person that requires the program to call 911, law enforcement or fire department",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
           },
 
           {
+            id: 36,
             title: "Other symptom or behavior (be specific): ",
             type: "checkbox",
 
             options: [
               {
+                id: 1,
                 title: "Yes",
               },
 
               {
+                id: 2,
                 title: "No",
               },
 
               {
+                id: 3,
                 title: "NA",
               },
             ],
@@ -1194,12 +1385,14 @@ const FormList = {
       // },
 
       {
+        id: 37,
         title:
           "<b> Please note: </b> <p> Within 20 working days of the 45-day planning meeting (and within 10 working days of the service plan review meeting), the assessment and this addendum must be submitted to and dated signatures obtained dated by the person served and/or legal representative and case manager to document completion and approval. If within 10 working days of this submission, the person served and/or legal representative or case manager has not signed and returned to the license holder the assessment and Support Plan Addendum or has not proposed written modification to its submission, the submission is deemed approved and in effect. It will remain in effect until the next annual month or until the person served and/or legal representative or case manager submits a written request to revise them. </p><ul> <li>I may refuse to authorize the company to administer medication or treatment and that the company will not administer the medication</li></ul>",
         type: "html",
       },
 
       {
+        id: 38,
         title:
           "Within the scope of services to this person, the license holder must assess, at a minimum, the areas included on this document. Additional information on self-management may be included per request of the person served and/or legal representative and case manager. The Self-Management Assessment will be completed by the company’s designated staff person and will be done in consultation with the person and members of the support team.  <br> </br> The license holder will complete this assessment before the 45-day planning meeting and review it at the meeting. Within 20 working days of the 45-day meeting, dated signatures will be obtained from the person and/or legal representative and case manager to document the completion and approval of the Self-Management Assessment. At a minimum of annually, or within 30 days of a written request from the person and/or legal representative or case manager. This Self-Management Assessment will be reviewed by the support team or expanded support team as part of a service plan review and dated signatures obtained.  <br> </br>  Assessments must be based on the person’s status within the last 12 months at the time of service initiation. Assessments based on older information must be documented and justified. <br> </br>  The general and health-specific supports and outcomes necessary or desired to support the person based upon this assessment and the requirements of person centered planning and service delivery will be documented in the Support Plan Addendum.",
         type: "html",
@@ -1448,11 +1641,11 @@ const FormList = {
           },
 
           {
-            title: "Hospital of preference:   ",
+            title: "Hospital of preference:",
           },
 
           {
-            title: "Other health professional:  ",
+            title: "Other health professional:",
           },
         ],
       },
@@ -1468,13 +1661,16 @@ const FormList = {
   <p style="margin: 0; padding: 0; font-weight: bold;">Licensing Division</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">245D HCBS SAMPLE FORM</p>`,
         type: "html",
+        arrangement: "51"
       },
 
       {
+        arrangement: "52",
         title: `<h4 style="text-align: center; font-weight: bold;">Individual Abuse Prevention Plan (IAPP)</h4>`,
         type: "html",
       },
       {
+        arrangement: "53",
         title: `
           <h4>Instructions and Requirements:</h4>
           <p>
@@ -1507,6 +1703,7 @@ const FormList = {
       },
 
       {
+        arrangement: "54",
         title: ` <p style="margin: 0; padding: 0; font-weight: bold;">MN Department of Human Services</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Office of Inspector General</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Licensing Division</p>
@@ -1514,31 +1711,37 @@ const FormList = {
         type: "html",
       },
       {
+        arrangement: "55",
         title: `
         <h4>Instructions and Requirements:</h4>`,
       },
 
       {
+        arrangement: "56",
         title: `<p>REQUIREMENTS FOR USE OF THIS SAMPLE DOCUMENT:  245D license holders are responsible for modifying this sample for use in their program. At a minimum, you must fill in the blanks on this form. You may modify the format and content to meet standards used by your program. This sample meets compliance with current licensing requirements as of January 1, 2014. Providers remain responsible for reading, understanding and ensuring that this document conforms to current licensing requirements. DELETE THIS HIGHLIGHTED SECTION TO BEGIN MODIFYING THIS FORM.</p>`,
         type: "html",
       },
 
       {
+        arrangement: "57",
         title: `Persons Name:`,
         type: "text",
       },
 
       {
+        arrangement: "58",
         title: `Program: `,
         type: "text",
       },
 
       {
+        arrangement: "59",
         title: `<b> Instructions: </b> <p> For each area, assess whether the person is susceptible to abuse by others and the person’s risk of abusing other vulnerable people.  If susceptible, indicate why by checking the appropriate reason or by adding a reason.  Identify specific measures to be taken to minimize the risk within the scope of licensed services and identify referrals needed when the person is susceptible outside the scope or control of the licensed services.  If the person does not need specific risk reduction measures in addition to those identified in the program abuse prevention plan, document this determination and identify the area of the program prevention plan that addresses the area of susceptibility.</p>`,
         type: "html",
       },
 
       {
+        arrangement: "60",
         title: "A- Sexual abuse",
         type: "checkbox",
         options: [
@@ -1586,11 +1789,13 @@ const FormList = {
       },
 
       {
+        arrangement: "60",
         title: `<p> Referrals made when the person is susceptible to abuse outside the scope or control of this program (Identify the referral and the date it occurred).</p>`,
         type: "html",
       },
 
       {
+        arrangement: "61",
         title: "B- Physical Abuse",
         type: "checkbox",
         options: [
@@ -1638,6 +1843,7 @@ const FormList = {
       },
 
       {
+        arrangement: "62",
         title: ` <p style="margin: 0; padding: 0; font-weight: bold;">MN Department of Human Services</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Office of Inspector General</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Licensing Division</p>
@@ -1646,6 +1852,7 @@ const FormList = {
       },
 
       {
+        arrangement: "63",
         title: "Physical Abuse",
         type: "checkbox",
         options: [
@@ -1673,11 +1880,13 @@ const FormList = {
       },
 
       {
+        arrangement: "64",
         title: `<p> Referrals made when the person is susceptible to abuse outside the scope or control of this program (Identify the referral and the date it occurred).</p>`,
         type: "html",
       },
 
       {
+        arrangement: "65",
         title: "C- Self Abuse",
         type: "checkbox",
         options: [
@@ -1740,11 +1949,13 @@ const FormList = {
       },
 
       {
+        arrangement: "66",
         title: `<p> Referrals made when the person is susceptible to abuse outside the scope or control of this program (Identify the referral and the date it occurred).</p>`,
         type: "html",
       },
 
       {
+        arrangement: "67",
         title: "D- Financial Exploitation",
         type: "checkbox",
         options: [
@@ -1777,11 +1988,13 @@ const FormList = {
       },
 
       {
+        arrangement: "68",
         title: `<p> Referrals made when the person is susceptible to abuse outside the scope or control of this program (Identify the referral and the date it occurred).</p>`,
         type: "html",
       },
 
       {
+        arrangement: "69",
         title: ` <p style="margin: 0; padding: 0; font-weight: bold;">MN Department of Human Services</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Office of Inspector General</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">Licensing Division</p>
@@ -1790,6 +2003,7 @@ const FormList = {
       },
 
       {
+        arrangement: "70",
         title: "",
         type: "checkbox",
         options: [
@@ -1812,17 +2026,20 @@ const FormList = {
       },
 
       {
+        arrangement: "71",
         title:
           "<p>Specific measures to be taken to minimize the risk this person might reasonably be expected to pose to visitors to the program and persons outside the program, if unsupervised: </p>",
         type: "html",
       },
 
       {
+        arrangement: "72",
         title: `<p> Referrals made when the person is susceptible to abuse outside the scope or control of this program (Identify the referral and the date it occurred).</p>`,
         type: "html",
       },
 
       {
+        arrangement: "73",
         title: `
           <p>
             An individual abuse prevention plan is developed for each new person as part of the initial service plan. The person will participate in the development of the plan to the full extent of their ability. When applicable, the person’s legal representative will be given the opportunity to participate with or for the person in the development of the plan.
@@ -1835,12 +2052,14 @@ const FormList = {
       },
 
       {
+        arrangement: "74",
         title:
           "Signatures of those reviewing and/or participating in the development of this plan",
         type: "html",
       },
 
       {
+        arrangement: "75",
         title: "",
         type: "text",
         options: [
@@ -1867,6 +2086,7 @@ const FormList = {
       },
 
       {
+        arrangement: "76",
         title: "",
         type: "text",
         options: [
@@ -1893,6 +2113,7 @@ const FormList = {
       },
 
       {
+        arrangement: "77",
         title: "",
         type: "text",
         options: [
@@ -1919,6 +2140,7 @@ const FormList = {
       },
 
       {
+        arrangement: "78",
         title: "",
         type: "text",
         options: [
@@ -1944,109 +2166,7 @@ const FormList = {
         ],
       },
 
-      // {
-      //   title: "",
-      //   type: "text",
-      //   options: [
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "Program Representative",
-      //       show: false,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-      //   ],
-      // },
-
-      // {
-      //   title: "",
-      //   type: "text",
-      //   options: [
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: false,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-      //   ],
-      // },
-
-      // {
-      //   title: "",
-      //   type: "text",
-      //   options: [
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: false,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-      //   ],
-      // },
-
-      // {
-      //   title: "",
-      //   type: "text",
-      //   options: [
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: false,
-      //     },
-
-      //     {
-      //       title: "",
-      //       show: true,
-      //     },
-      //   ],
-      // },
+      
     ],
   },
 
@@ -2325,7 +2445,8 @@ const FormList = {
       },
 
       {
-        title: "Signatures",
+        // changehoga,
+        title: "Signatures", 
         type: "text",
         options: [
           {

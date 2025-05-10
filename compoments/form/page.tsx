@@ -1,15 +1,15 @@
 "use client";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
-import SELFMANAGEMENT from "../intake/Self-Management/page";
-import AuthorizationForMedication from "../intake/Authorization-For-Medication/page";
-import StandardRelease from "../intake/Standard-Release/page";
-import FUNDSANDPROPERTY from "../intake/Funds-And-Property/page";
-import ADMISSIONFORM from "../intake/Admission-Form/page";
-import IndividualAbuse from "../intake/Individual-Abuse/page";
-import POLICYORIENTATIONRECEIPT from "../intake/Policy-Orientation-Receipt/page";
-import ResidencyAgreement from "../intake/Residency-Agreement/page";
-import ServicesPlan from "../intake/services-Plan";
+import SELFMANAGEMENT from "../intake/SelfManagement";
+import AuthorizationForMedication from "../intake/AuthorizationForMedication";
+import StandardRelease from "../intake/StandardRelease";
+import FUNDSANDPROPERTY from "../intake/FundsAndProperty";
+import ADMISSIONFORM from "../intake/AdmissionForm";
+import IndividualAbuse from "../intake/IndividualAbuse";
+import POLICYORIENTATIONRECEIPT from "../intake/PolicyOrientationReceipt";
+import ResidencyAgreement from "../intake/ResidencyAgreement";
+import ServicesPlan from "../intake/ServicesPlan";
 
 const StepperComponent = dynamic(
   () => import("react-form-stepper").then((mod) => mod.Stepper),
@@ -63,17 +63,18 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              <StandardRelease />
+              {/* <StandardRelease /> */}
+              <ResidencyAgreement />
             </div>
           )}
 
-          {currentStep === 1 && <AuthorizationForMedication />}
+          {currentStep === 1 && <AuthorizationForMedication />} no
 
           {currentStep === 2 && <SELFMANAGEMENT />}
           {currentStep === 3 && <FUNDSANDPROPERTY />}
           {currentStep === 4 && <ADMISSIONFORM />}
           {currentStep === 5 && <IndividualAbuse />}
-          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />}
+          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />} no
           {currentStep === 7 && <ResidencyAgreement />}
           {currentStep === 8 && <ServicesPlan />}
         </div>

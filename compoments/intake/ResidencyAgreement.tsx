@@ -1,13 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import Formlist from "@/form";
+import { useGetMyFormQuery } from "@/redux/services/form";
 
 function ResidencyAgreement() {
+
+  const [formData, setFormData] = useState(
+      Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map((itms) => ({
+        questionId: itms?.id,
+        value: "",
+        multipleValue: [],
+        type: itms?.type,
+      }))
+    );
+
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        questionId: string,
+        optionId: string | null,
+        isMultiple: boolean,
+        type: string
+      ) => {
+        const { value, checked } = e.target;
+    
+        const arrayfound = formData?.map((quest: any) => {
+          if (quest.questionId === questionId) {
+            let multipleValue = quest.multipleValue;
+            const optionFound = multipleValue?.find(
+              (option: any) => option === optionId
+            );
+            if (optionFound) {
+              multipleValue = multipleValue.filter((val: any) => val !== optionId);
+            } else {
+              multipleValue.push(optionId);
+            }
+    
+            if (isMultiple) {
+              return { ...quest, multipleValue };
+            } else {
+              return { ...quest, value };
+            }
+          } else {
+            return quest;
+          }
+        });
+    
+        setFormData(arrayfound);
+      };
+
+
+        const { data, isLoading, error } = useGetMyFormQuery({});
+        console.log(data?.data, "datadata");
+      
+        const formName = "Residency Agreement Template for Foster Care and Supported Living Services (SLS) under the BI, CAC, CADI and DD waivers";
+      
+        const dataGet = data?.data?.find((items: any) => items?.title === formName);
+      
+        const question = dataGet?.questions
+          ?.slice()
+          ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+          ?.map((items: any) => items?.question);
+
+
+          console.log(question, "question");
+
+
   return (
     <div className="card p-5">
       <h3 className="card-title text-center">
         {Formlist?.ResidencyAgreement?.title}
       </h3>
-      {Formlist?.ResidencyAgreement?.questions?.map((items, index) => (
+      {question?.map((items, index) => (
         <div
           key={index}
           className="d-flex justify-content-between w-100 align-items-center"

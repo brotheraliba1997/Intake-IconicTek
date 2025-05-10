@@ -1,17 +1,18 @@
 import React from "react";
 import Formlist from "@/form";
 
-function AuthorizationForMedication() {
+function POLICYORIENTATIONRECEIPT() {
   return (
     <>
       <div className="card p-5">
         <h3 className="card-title text-center">
-          {Formlist?.ADMISSIONFORM?.title}
+          {Formlist?.POLICYORIENTATIONRECEIPT?.title}
         </h3>
+        
 
         <div className="row pt-3">
           {Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map(
-            (items, index) => {
+            (items:any, index) => {
               if (items.type === "text" || items.type === "date") {
                 return (
                   <div key={index} className="col-lg-6">
@@ -31,8 +32,7 @@ function AuthorizationForMedication() {
             }
           )}
         </div>
-
-        {Formlist?.ADMISSIONFORM?.questions?.map((items, index) => (
+        {Formlist?.POLICYORIENTATIONRECEIPT?.questions?.map((items, index) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
@@ -48,40 +48,49 @@ function AuthorizationForMedication() {
                       </>
                     )}
 
-              <div>
+              <div className="row">
               
+
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}
 
-                {items?.options && items.options.length > 0 && (
-                  <div className="row">
-                    {items.options.map((option, i) => (
-                      <div className="col-lg-6" key={i}>
-                        <div className="form-check mb-2">
-                          <input
-                            type={option.type}
-                            className="form-check-input"
-                            id={`option-${index}-${i}`}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`option-${index}-${i}`}
-                          >
-                            {option.title}
-                          </label>
+                {items.type === "checkbox" &&
+                  items?.options &&
+                  items.options.length > 0 && (
+                    <div className="row">
+                      {items.options.map((option: any, i) => (
+                        <div className="col-lg-12" key={i}>
+                          <div className="form-check mb-2">
+                            {option.show ? (
+                              <>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`option-${index}-${i}`}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`option-${index}-${i}`}
+                                >
+                                  {option.title}
+                                </label>
+                              </>
+                            ) : (
+                              <p className="fw-bold">{option.title}</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
+
+                {items.type === "html" && (
+                  <>
+                    <div dangerouslySetInnerHTML={{ __html: items.title }} />
+                  </>
                 )}
               </div>
-
-              {items.type === "html" && (
-                <>
-                  <div dangerouslySetInnerHTML={{ __html: items.title }} />
-                </>
-              )}
             </div>
           </div>
         ))}
@@ -90,4 +99,4 @@ function AuthorizationForMedication() {
   );
 }
 
-export default AuthorizationForMedication;
+export default POLICYORIENTATIONRECEIPT;

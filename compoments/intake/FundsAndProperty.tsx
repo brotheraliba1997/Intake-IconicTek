@@ -6,7 +6,7 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 function FUNDSANDPROPERTY() {
 
    const [formData, setFormData] = useState(
-      Formlist?.SELFMANAGEMENT?.questions?.map((itms) => ({
+      Formlist?.SELFMANAGEMENT?.formQuestions?.map((itms) => ({
         questionId: itms?.id,
         value: "",
         multipleValue: [],
@@ -19,7 +19,7 @@ function FUNDSANDPROPERTY() {
       const formName = "FUNDS AND PROPERTY AUTHORIZATION";
       const dataGet = data?.data?.find((items: any) => items?.title === formName);
       console.log(dataGet, "dataGet");
-      const question = dataGet?.questions
+      const question = dataGet?.formQuestions
         ?.slice()
         ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
         ?.map((items: any) => items?.question);

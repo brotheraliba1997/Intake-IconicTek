@@ -5,7 +5,7 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 function ResidencyAgreement() {
 
   const [formData, setFormData] = useState(
-      Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map((itms) => ({
+      Formlist?.STANDARDRELEASEOFINFORMATION?.formQuestions?.map((itms) => ({
         questionId: itms?.id,
         value: "",
         multipleValue: [],
@@ -56,7 +56,7 @@ function ResidencyAgreement() {
       
         const dataGet = data?.data?.find((items: any) => items?.title === formName);
       
-        const question = dataGet?.questions
+        const question = dataGet?.formQuestions
           ?.slice()
           ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
           ?.map((items: any) => items?.question);

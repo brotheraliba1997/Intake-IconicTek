@@ -28,6 +28,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-redux": "^9.2.0",
     "react-select": "^5.10.1",
+    "react-signature-canvas": "^1.1.0-alpha.2",
     "sweetalert2": "^11.17.2",
     "yup": "^1.6.1"
   },

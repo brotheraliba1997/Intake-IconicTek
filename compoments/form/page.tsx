@@ -10,6 +10,8 @@ import IndividualAbuse from "../intake/IndividualAbuse";
 import POLICYORIENTATIONRECEIPT from "../intake/PolicyOrientationReceipt";
 import ResidencyAgreement from "../intake/ResidencyAgreement";
 import ServicesPlan from "../intake/ServicesPlan";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
+import Formlist from "@/form";
 
 const StepperComponent = dynamic(
   () => import("react-form-stepper").then((mod) => mod.Stepper),
@@ -28,6 +30,11 @@ const StepComponent = dynamic(
 );
 
 function FormPage() {
+
+
+  
+
+
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
@@ -63,43 +70,22 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              {/* <StandardRelease /> */}
-              <ResidencyAgreement />
+              <StandardRelease handleNext={handleNext} handleBack={handleBack} currentStep={currentStep}  />
+              {/* <ServicesPlan /> */}
             </div>
           )}
 
-          {currentStep === 1 && <AuthorizationForMedication />} no
-
-          {currentStep === 2 && <SELFMANAGEMENT />}
+          {currentStep === 1 && <AuthorizationForMedication handleNext={handleNext} handleBack={handleBack} currentStep={currentStep} />} 
+          {currentStep === 2 && <SELFMANAGEMENT handleNext={handleNext} handleBack={handleBack} currentStep={currentStep}  />}
           {currentStep === 3 && <FUNDSANDPROPERTY />}
           {currentStep === 4 && <ADMISSIONFORM />}
           {currentStep === 5 && <IndividualAbuse />}
-          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />} no
+          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />} 
           {currentStep === 7 && <ResidencyAgreement />}
           {currentStep === 8 && <ServicesPlan />}
         </div>
 
-        <div className="d-flex justify-content-between mt-4 pb-5">
-          <button
-            className="btn btn-secondary"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
-            Back
-          </button>
-          {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleNext}>
-              Next
-            </button>
-          ) : (
-            <button
-              className="btn btn-success"
-              onClick={() => alert("Form Submitted!")}
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        
       </div>
     </>
   );

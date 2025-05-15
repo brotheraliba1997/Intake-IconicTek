@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-function CheckBox({ handleChange, option, optionIndex, index }: any) {
+function CheckBox({ handleChange, option, optionIndex, index, items }: any) {
   return (
     <>
       <div className="col-lg-6" key={optionIndex}>
@@ -11,9 +11,9 @@ function CheckBox({ handleChange, option, optionIndex, index }: any) {
             className="form-check-input"
             id={`option-${index}-${optionIndex}`}
             value={option?.id}
-            // onChange={(e) =>
-            //   handleChange(e, items?.id, option?.id, null, true)
-            // }
+            onChange={(e) =>
+              handleChange(e, items?.id, option?.id, true, true)
+            }
           />
           <label
             className="form-check-label"

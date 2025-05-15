@@ -45,6 +45,8 @@ export const apiSlice = createApi({
     "getCompanies",
     "getForms",
     "refetchMyForms",
+    "getAnswers",
+    "refetchMyAnswers",
     "refetchMyCompany",
     "refetchMyProfile",
     "getUsers",

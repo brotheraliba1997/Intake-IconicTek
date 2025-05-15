@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
+import TextInput from "./common/TextInput";
+import HtmlRenderer from "./common/HtmlRenderer";
 
 function ADMISSIONFORM() {
   const [formData, setFormData] = useState(
@@ -48,7 +50,6 @@ function ADMISSIONFORM() {
   };
 
   const { data, isLoading, error } = useGetMyFormQuery({});
-  console.log(data?.data, "datadata");
 
   const formName = "ADMISSION FORM AND DATA SHEET";
 
@@ -58,83 +59,52 @@ function ADMISSIONFORM() {
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
     ?.map((items: any) => items?.question);
+
+  console.log(question, "datadata");
+
   return (
     <>
       <div className="card p-5">
         <h3 className="card-title text-center">
           {Formlist?.ADMISSIONFORMANDDATASHEET?.title}
         </h3>
-        {question?.map((items: any, index: any) => (
-          <div
-            key={index}
-            className="d-flex justify-content-between w-100 align-items-center"
-          >
-            <div className="d-flex flex-column gap-2 my-2 w-100">
-              {/* <h4 className="card-title">{items.title}</h4> */}
 
-              {items.type !== "html" && (
-                <>
-                  <div
-                    className="pb-2"
-                    dangerouslySetInnerHTML={{ __html: items.title }}
-                  />
-                </>
-              )}
+        <div className="mb-5">
+          {question?.map((items: any, index: number) => (
+            <div
+              key={index}
+              className="d-flex justify-content-between w-100 align-items-center"
+            >
+              <div className="d-flex flex-column gap-2  w-100">
+                <h5 className="card-title  mt-5 mb-3">{items.title}:</h5>
 
-              <div>
-                {/* {(items.type === "text" || items.type === "date") && (
-                  <input
-                    type={items.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                  />
-                )} */}
+                {/* Example: If you want to display subQuestions */}
+                {items?.SubQuestion && items.SubQuestion.length > 0 && (
+                  <div className="row">
+                    {items.SubQuestion.map((option: any, i) => (
+                      <div className="col-lg-6" key={i}>
+                        <div className="form-check mb-4">
+                          <label
+                            className="form-check-label"
+                            htmlFor={`option-${index}-${i}`}
+                          >
+                            {option.title}
+                          </label>
 
-                {/* {items.type === "textarea" && (
-                  <textarea
-                    className="form-control"
-                    id=""
-                    rows={3}
-                    onChange={(e: any) => setValue(e.target.value)}
-                  ></textarea>
-                )} */}
-
-                {items.type === "text" &&
-                  items?.options &&
-                  items.options.length > 0 && (
-                    <div className="row pb-2">
-                      {items.options.map((option, i) => (
-                        <div className="col-lg-6" key={i}>
-                          <div className="form-check mb-2">
-                            <label
-                              className="form-check-label pt-3"
-                              htmlFor={`option-${index}-${i}`}
-                            >
-                              {option.title}
-                            </label>
-                            <input
-                              type="text" // input ka type yahan hardcoded 'text' rakhna sahi hoga agar sab text fields hain
-                              className="form-control pt-3"
-                              id={`option-${index}-${i}`}
-                            />
-                          </div>
+                          <input
+                            type={option.type}
+                            className="form-control"
+                            id={`option-${index}-${i}`}
+                          />
                         </div>
-                      ))}
-                    </div>
-                  )}
-
-                {items.type === "html" && (
-                  <>
-                    <div
-                      className="pb-2"
-                      dangerouslySetInnerHTML={{ __html: items.title }}
-                    />
-                  </>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );

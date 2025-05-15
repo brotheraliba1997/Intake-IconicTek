@@ -4,7 +4,7 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 
 function IndividualAbuse() {
   const [formData, setFormData] = useState(
-    Formlist?.IndividualAbuse?.questions?.map((itms) => ({
+    Formlist?.IndividualAbuse?.formQuestions?.map((itms) => ({
       questionId: itms?.id,
       value: "",
       multipleValue: [],
@@ -79,12 +79,12 @@ function IndividualAbuse() {
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   console.log(data, "dataGet");
 
-  const question = dataGet?.questions
+  const question = dataGet?.formQuestions
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
     ?.map((items: any) => items?.question);
 
-  console.log(selectedValues, "selectedValues");
+  console.log(question, "selectedValues");
 
   return (
     <>
@@ -100,52 +100,30 @@ function IndividualAbuse() {
             <div className="d-flex flex-column gap-2 my-2 w-100">
               {/* <h4 className="card-title">{items.title}</h4> */}
 
-              {items.type !== "html" && (
-                <>
-                  <div dangerouslySetInnerHTML={{ __html: items.title }} />
-                </>
-              )}
+          
 
               <div>
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}
 
-                {(items.type === "text" || items.type === "date") && (
-                  <>
-                    {items?.options && items.options.length > 0 ? (
-                      <div className="row">
-                        {items.options.map((option: any, i: number) => (
-                          <div className="col-lg-6 " key={i}>
-                            {option?.title && (
-                              <label className="form-label">
-                                {option.title}
-                              </label>
-                            )}
-                            {option?.show ? (
-                              <input
-                                type={items?.type}
-                                className="form-control mb-3"
-                                placeholder="Enter..."
-                              />
-                            ) : (
-                              <input
-                                type="date"
-                                className="form-control mb-3"
-                                placeholder="Enter..."
-                              />
-                            )}
-                          </div>
-                        ))}
+                {items?.SubQuestion && items.SubQuestion.length > 0 && (
+                  <div className="row">
+                    {items.SubQuestion.map((sub: any, i: number) => (
+                      <div className="col-lg-6" key={i}>
+                        {sub?.title && (
+                          <label className="form-label">{sub.title}</label>
+                        )}
+                        {sub?.type !== "Signature"  && (
+                          <input
+                            type={sub?.type} // ✅ Use option.type instead of items.type
+                            className="form-control mb-3"
+                            placeholder="Enter..."
+                          />
+                        )}
                       </div>
-                    ) : (
-                      <input
-                        type={items.type}
-                        className="form-control mb-3"
-                        placeholder="Enter..."
-                      />
-                    )}
-                  </>
+                    ))}
+                  </div>
                 )}
 
                 {items.type === "checkbox" &&

@@ -1,4 +1,6 @@
+"use client"
 import React from "react";
+import ESignature from "../E-Signature/E-signature";
 
 function ServicesPlan() {
   const tabsList = [
@@ -27,7 +29,12 @@ function ServicesPlan() {
               </label>
             </div>
           ))}
+
+          <ESignature />
         </div>
+
+
+        
       </div>
     </>
   );

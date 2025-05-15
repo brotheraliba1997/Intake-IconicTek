@@ -1402,7 +1402,7 @@ const FormList = {
 
   ADMISSIONFORMANDDATASHEET: {
     title: "ADMISSION FORM AND DATA SHEET",
-    questions: [
+     questions: [
       {
         title:
           "*This form is completed at service initiation and updated as needed. Dated signatures are obtained at initiation and with changes.",
@@ -1411,245 +1411,300 @@ const FormList = {
 
       {
         title: "PERSONAL INFORMATION ",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Name",
+             type: "text",
           },
-          { title: "Date of birth" },
+          { title: "Date of birth", 
+               type: "date",
+           },
           {
             title: "Address:",
+               type: "text",
           },
-          { title: "Home telephone number: " },
+          { title: "Home telephone number: " ,
+               type: "text",
+           },
           {
             title: "Cell phone number:  ",
+               type: "text",
           },
 
           {
             title: "Email address:",
+               type: "text",
           },
 
           {
             title: "Date of admission or re-admission:",
+               type: "text",
           },
 
           {
             title: "Language(s) spoken:",
+               type: "text",
           },
 
           {
             title: "Guardianship type (self, private, public): ",
+               type: "text",
           },
 
           {
             title: "Religious preference: ",
+               type: "text",
           },
 
           {
             title: "Marital status: ",
+               type: "text",
           },
 
           {
             title: "Other:  ",
+               type: "text",
           },
         ],
       },
 
       {
         title: "IDENTIFYING CHARACTERISTICS",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Gender:",
+               type: "text",
           },
 
           {
             title: "Race: ",
+               type: "text",
           },
 
           {
             title: "Height:",
+               type: "text",
           },
 
           {
             title: "Weight:",
+               type: "text",
           },
 
           {
             title: "Hair color: ",
+               type: "text",
           },
 
           {
             title: "Eye color: ",
+               type: "text",
           },
 
           {
             title: "Distinguishing characteristics/identifying marks: ",
+               type: "text",
           },
         ],
       },
 
       {
         title: "FINANCIAL INFORMATION",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Social Security Number (SSN):",
+               type: "text",
           },
 
           {
             title: "Medical Assistance Number: ",
+               type: "text",
           },
 
           {
             title: "County of responsibility:",
+               type: "text",
           },
 
           {
             title: "County of financial responsibility: ",
+               type: "text",
           },
 
           {
             title: "Burial account number:  ",
+               type: "text",
           },
         ],
       },
 
       {
         title: "MEDICAL INFORMATION",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Diagnoses:",
+               type: "text",
           },
 
           {
             title: "Allergies: ",
+               type: "text",
           },
 
           {
             title: "Protocols (seizure, diabetic, etc.):",
+               type: "text",
           },
 
           {
             title:
               "Medical equipment, devices, or adaptive aides or technology used:  ",
-          },
+             type: "text",
+            },
 
           {
             title: "Specialized dietary needs:   ",
+               type: "text",
           },
         ],
       },
 
       {
         title: "GENERAL CONTACT INFORMATION",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Name:",
+               type: "text",
           },
 
           {
             title: "Address and telephone numbers: ",
+               type: "text",
           },
 
           {
             title: "Legal representative:",
+               type: "text",
           },
 
           {
             title: "Authorized representative:",
+               type: "text",
           },
 
           {
             title: "Primary emergency contact: ",
+               type: "text",
           },
 
           {
             title: "Case manager:  ",
+               type: "text",
           },
 
           {
             title: "Family member:   ",
+               type: "text",
           },
 
           {
             title: "Other:  ",
+               type: "text",
           },
 
           {
             title: "Financial worker:  ",
+               type: "text",
           },
 
           {
             title: "Residential contact: ",
+               type: "text",
           },
 
           {
             title: "Vocational contact:   ",
+               type: "text",
           },
 
           {
             title: "Other service provider: ",
+               type: "text",
           },
         ],
       },
 
       {
         title: "HEALTH-RELATED CONTACT INFORMATION",
-        type: "text",
-        options: [
+        type: "html",
+        subQuestion: [
           {
             title: "Name:",
+               type: "text",
           },
 
           {
             title: "Address and telephone numbers: ",
+               type: "text",
           },
 
           {
             title: "Primary health care professional: ",
+               type: "text",
           },
 
           {
             title: "Psychiatrist:",
+               type: "text",
           },
 
           {
             title: "Other mental health professional: ",
+               type: "text",
           },
 
           {
             title: "Neurologist:  ",
+               type: "text",
           },
 
           {
             title: "Dentist:    ",
+               type: "text",
           },
 
           {
             title: "Optometrist/Ophthalmologist:  ",
+               type: "text",
           },
 
           {
             title: "Audiologist:  ",
+               type: "text",
           },
 
           {
             title: "Pharmacy:  ",
+               type: "text",
           },
 
           {
             title: "Hospital of preference:",
+               type: "text",
           },
 
           {
             title: "Other health professional:",
+               type: "text",
           },
         ],
-      },
-    ],
+      }
+    ]
   },
 
   IndividualAbuse: {
@@ -1661,7 +1716,7 @@ const FormList = {
   <p style="margin: 0; padding: 0; font-weight: bold;">Licensing Division</p>
   <p style="margin: 0; padding: 0; font-weight: bold;">245D HCBS SAMPLE FORM</p>`,
         type: "html",
-        arrangement: "51"
+        arrangement: "51",
       },
 
       {
@@ -2165,8 +2220,6 @@ const FormList = {
           },
         ],
       },
-
-      
     ],
   },
 
@@ -2327,7 +2380,7 @@ const FormList = {
 
       {
         title:
-          "<b> Instructions </b> <p> Landlords/providers must have a written agreement with people who live in homes and receive foster care and supported living services (when provided in a licensed setting). You can use this sample residency agreement to document that people have been informed of and agree to the process the landlord/provider follows before ending services/housing. </p>",
+          "<h3> Instructions </h3> <p> Landlords/providers must have a written agreement with people who live in homes and receive foster care and supported living services (when provided in a licensed setting). You can use this sample residency agreement to document that people have been informed of and agree to the process the landlord/provider follows before ending services/housing. </p>",
         type: "html",
       },
 
@@ -2339,27 +2392,27 @@ const FormList = {
 
       {
         title: "Agreement",
+        type: "html",
+      },
+
+      {
+        title: "This residency agreement is between you",
         type: "text",
-        options: [
-          {
-            title: "This residency agreement is between you",
-            show: true,
-          },
-          {
-            title: "Enter guardians name",
-            show: true,
-          },
+      },
 
-          {
-            title: "Landlord/provider",
-            show: true,
-          },
+      {
+        title: "Enter guardians name",
+        type: "text",
+      },
 
-          {
-            title: "Located at",
-            show: true,
-          },
-        ],
+      {
+        title: "Landlord/provider",
+        type: "text",
+      },
+
+      {
+        title: "Located at",
+        type: "text",
       },
 
       {
@@ -2446,36 +2499,39 @@ const FormList = {
 
       {
         // changehoga,
-        title: "Signatures", 
+        title: "Signatures",
+        type: "html",
+      },
+
+      {
+        // changehoga,
+        title: "Persons signature",
         type: "text",
-        options: [
-          {
-            title: "Persons signature",
-            show: true,
-          },
-          {
-            title: "Date",
-            show: false,
-          },
+      },
 
-          {
-            title: "Legal representative’s signature",
-            show: true,
-          },
-          {
-            title: "Date",
-            show: false,
-          },
+      {
+        title: "Date",
+        type: "text",
+      },
 
-          {
-            title: "Program representative’s signature",
-            show: true,
-          },
-          {
-            title: "Date",
-            show: false,
-          },
-        ],
+      {
+        title: "Legal representative’s signature",
+        type: "text",
+      },
+
+      {
+        title: "Date",
+        type: "text",
+      },
+
+      {
+        title: "Program representative’s signature",
+        type: "text",
+      },
+
+      {
+        title: "Date",
+        type: "text",
       },
     ],
   },

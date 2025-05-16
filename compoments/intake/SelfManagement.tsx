@@ -5,8 +5,13 @@ import HtmlRenderer from "./common/HtmlRenderer";
 import TextInput from "./common/TextInput";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import ESignature from "../E-Signature/E-signature";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
 
-function SELFMANAGEMENT() {
+function SELFMANAGEMENT({
+  handleBack,
+  handleNext,
+  currentStep,
+}: any) {
   const [formData, setFormData] = useState();
 
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -24,6 +29,41 @@ function SELFMANAGEMENT() {
         }))
       );
   }, [dataGet]);
+
+
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement>,
+      questionId: string,
+      optionId: string | null,
+      isMultiple: boolean,
+      type: string
+    ) => {
+      const { value, checked } = e.target;
+  
+      const arrayfound = formData?.map((quest: any) => {
+        if (quest.questionId === questionId) {
+          let multipleValue = quest.multipleValue;
+          const optionFound = multipleValue?.find(
+            (option: any) => option === optionId
+          );
+          if (optionFound) {
+            multipleValue = multipleValue.filter((val: any) => val !== optionId);
+          } else {
+            multipleValue.push(optionId);
+          }
+  
+          if (isMultiple) {
+            return { ...quest, multipleValue };
+          } else {
+            return { ...quest, value };
+          }
+        } else {
+          return quest;
+        }
+      });
+  
+      setFormData(arrayfound);
+    };
 
   const question = dataGet?.formQuestions
     ?.slice()
@@ -43,6 +83,23 @@ function SELFMANAGEMENT() {
     .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
   console.log(subQuestion, "subQuestion");
+
+  const [createAnswersMutation] = useCreateAnswersMutation();
+  const handleSubmit = async () => {
+    const payload = { formId: dataGet?.id, answers: formData };
+
+    console.log(payload, "handleSubmit");
+    handleNext();
+    // try {
+    //   const response = await createAnswersMutation(payload).unwrap();
+    //   if (response) {
+
+    //   }
+    //   console.log("Response:", response);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+  };
 
   return (
     <>
@@ -94,8 +151,8 @@ function SELFMANAGEMENT() {
 
                   <table className="table table-bordered my-5">
                     <thead>
-                      <tr>
-                        {/* Column Headers */}
+                      {/* <tr>
+                       
                         {coloum?.map(
                           (coloum: any, index: number) => (
                             <th key={index}>
@@ -111,7 +168,7 @@ function SELFMANAGEMENT() {
                             </th>
                           )
                         )}
-                      </tr>
+                      </tr> */}
                     </thead>
 
                     <tbody>
@@ -182,6 +239,29 @@ function SELFMANAGEMENT() {
               ))}
             </div>
           )}
+
+
+           <div className="d-flex justify-content-between mt-4 pb-5">
+          <button
+            className="btn btn-secondary"
+            onClick={handleBack}
+            disabled={currentStep === 1}
+          >
+            Back
+          </button>
+          {currentStep <= 8 ? (
+            <button className="btn btn-primary" onClick={handleSubmit}>
+              Next
+            </button>
+          ) : (
+            <button
+              className="btn btn-success"
+              onClick={() => alert("Form Submitted!")}
+            >
+              Submit
+            </button>
+          )}
+        </div>
         </div>
       </div>
     </>

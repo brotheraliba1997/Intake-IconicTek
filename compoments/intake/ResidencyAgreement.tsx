@@ -5,6 +5,7 @@ import HtmlRenderer from "./common/HtmlRenderer";
 import Textarea from "./common/Textarea";
 import CheckBox from "./common/CheckBox";
 import ESignature from "../E-Signature/E-signature";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
 
 function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
@@ -29,25 +30,21 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       );
   }, [dataGet]);
 
-
-  const [signature, setSignature] = useState<any> ()
-
-  const signatureValue = (val: any) => {
-    if (val) return setSignature(signature);
+  const signatureValue = (val: any, items: any) => {
+    setFormData((prev: any) =>
+      prev.map((quest: any) =>
+        quest.questionId === items ? { ...quest, signatureLink: val } : quest
+      )
+    );
   };
 
-
   const handleChange = (
-    
     e: React.ChangeEvent<HTMLInputElement>,
     questionId: string,
     optionId: string | null,
     isMultiple: boolean,
     type: string
-   
-    
   ) => {
-  
     const { value, checked } = e.target;
 
     const arrayfound = formData?.map((quest: any) => {
@@ -68,24 +65,16 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
             ...quest,
             multipleValue,
           };
-        } 
-        
-        else {
+        } else {
           return { ...quest, value };
         }
-       
-
-        
       } else {
         return quest;
       }
     });
-  
 
     setFormData(arrayfound);
   };
-
- 
 
   console.log(formData, "formData");
 
@@ -93,30 +82,23 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
 
- 
+     const [createAnswersMutation] = useCreateAnswersMutation();
 
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
     console.log(payload, "handleSubmit");
-    // handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
 
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    try {
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
+        handleNext();
+      }
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
-
-
-  
- 
-
-
- 
 
   return (
     <div className="card p-5">
@@ -140,7 +122,10 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                 )}
 
                 {items?.question?.type === "Signature" ? (
-                  <ESignature signatureValue={signatureValue} />
+                  <ESignature
+                    signatureValue={signatureValue}
+                    items={items?.id}
+                  />
                 ) : (
                   <input
                     type={items?.question?.type}

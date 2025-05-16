@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
-function ESignature({signatureValue} :any) {
+function ESignature({signatureValue, items} :any) {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
 
   const handleSave = () => {
     const dataUrl = sigCanvasRef.current
       ?.getTrimmedCanvas()
       .toDataURL("image/png");
-      signatureValue(dataUrl)
+      signatureValue(dataUrl, items)
     console.log(dataUrl, "signature"); // yeh string hogi (base64 image)
   };
 

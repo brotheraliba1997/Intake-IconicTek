@@ -14,7 +14,6 @@ function AuthorizationForMedication({
   const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-  console.log("dataGet", dataGet);
   const question = dataGet?.formQuestions
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
@@ -72,7 +71,6 @@ function AuthorizationForMedication({
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
-    console.log(payload, "handleSubmit");
     handleNext();
     // try {
     //   const response = await createAnswersMutation(payload).unwrap();
@@ -94,7 +92,6 @@ function AuthorizationForMedication({
 
         <div className="row pt-3">
           {question?.map((items: any, index: any) => {
-            console.log("items", items);
             if (
               items?.question?.type === "text" ||
               items?.question?.type === "date"

@@ -13,7 +13,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-
+  console.log("formData", formData);
   useEffect(() => {
     if (dataGet)
       setFormData(
@@ -76,8 +76,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
     .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-  console.log(subQuestion, "subQuestion");
-
   const [createAnswersMutation] = useCreateAnswersMutation();
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
@@ -111,10 +109,20 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                   {items?.question?.type !== "html" && (
                     <HtmlRenderer items={items} />
                   )}
-                  <TextInput
-                    items={items}
-                    index={index}
-                    // handleChange={handleChange}
+
+                  <input
+                    type={items?.question?.type}
+                    className="form-control"
+                    placeholder="Enter..."
+                    onChange={(e: any) =>
+                      handleChange(
+                        e,
+                        items?.id,
+                        null,
+                        false,
+                        items?.question?.type
+                      )
+                    }
                   />
                 </div>
               );
@@ -176,6 +184,15 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                                 <SubquestionChecbox
                                   subquestion={subquestion}
                                   index={i}
+                                  onChange={(e, optionId, isMultiple) =>
+                                    handleChange(
+                                      e,
+                                      subquestion.id,
+                                      optionId,
+                                      isMultiple,
+                                      subquestion.type
+                                    )
+                                  }
                                 />
                               </td>
                             </tr>

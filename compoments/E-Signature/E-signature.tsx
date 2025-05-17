@@ -1,13 +1,14 @@
 import React, { useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
-function ESignature() {
+function ESignature({signatureValue} :any) {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
 
   const handleSave = () => {
     const dataUrl = sigCanvasRef.current
       ?.getTrimmedCanvas()
       .toDataURL("image/png");
+      signatureValue(dataUrl)
     console.log(dataUrl, "signature"); // yeh string hogi (base64 image)
   };
 
@@ -18,7 +19,6 @@ function ESignature() {
   return (
     <>
       <div className="d-flex justify-content-between flex-column gap-4">
-       
         <div>
           <SignatureCanvas
             ref={sigCanvasRef}

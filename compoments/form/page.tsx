@@ -30,11 +30,6 @@ const StepComponent = dynamic(
 );
 
 function FormPage() {
-
-
-  
-
-
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
@@ -70,22 +65,77 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              <StandardRelease handleNext={handleNext} handleBack={handleBack} currentStep={currentStep}  />
+              <StandardRelease
+                handleNext={handleNext}
+                handleBack={handleBack}
+                currentStep={currentStep}
+              />
+              {/* <ResidencyAgreement
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            /> */}
               {/* <ServicesPlan /> */}
             </div>
           )}
 
-          {currentStep === 1 && <AuthorizationForMedication handleNext={handleNext} handleBack={handleBack} currentStep={currentStep} />} 
-          {currentStep === 2 && <SELFMANAGEMENT handleNext={handleNext} handleBack={handleBack} currentStep={currentStep}  />}
-          {currentStep === 3 && <FUNDSANDPROPERTY />}
-          {currentStep === 4 && <ADMISSIONFORM />}
-          {currentStep === 5 && <IndividualAbuse />}
-          {currentStep === 6 && <POLICYORIENTATIONRECEIPT />} 
-          {currentStep === 7 && <ResidencyAgreement />}
-          {currentStep === 8 && <ServicesPlan />}
+          {currentStep === 1 && (
+            <AuthorizationForMedication
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 2 && (
+            <SELFMANAGEMENT
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 3 && (
+            <FUNDSANDPROPERTY
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 4 && (
+            <ADMISSIONFORM
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 5 && (
+            <IndividualAbuse
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 6 && (
+            <POLICYORIENTATIONRECEIPT
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 7 && (
+            <ResidencyAgreement
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+          {currentStep === 8 && (
+            <ServicesPlan
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
         </div>
-
-        
       </div>
     </>
   );

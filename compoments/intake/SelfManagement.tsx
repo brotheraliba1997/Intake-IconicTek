@@ -1,208 +1,263 @@
 import React, { useEffect, useState } from "react";
-import HtmlRenderer from "./common/HtmlRenderer";
+import Formlist from "@/form";
 import SubquestionChecbox from "./common/Subquestion-Checbox";
-import ESignature from "../E-Signature/E-signature";
+import HtmlRenderer from "./common/HtmlRenderer";
+import TextInput from "./common/TextInput";
 import { useGetMyFormQuery } from "@/redux/services/form";
+import ESignature from "../E-Signature/E-signature";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
 
-interface FormField {
-  questionId: string;
-  value: string | boolean;
-  multipleValue: string[];
-  type: string;
-  parentQuestionId?: string;
-}
+function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
+  const [formData, setFormData] = useState();
 
-function SELFMANAGEMENT() {
-  const [formData, setFormData] = useState<FormField[]>([]);
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
   useEffect(() => {
-    if (dataGet) {
-      const initialData = dataGet.formQuestions.flatMap((q: any) => {
-        const base = {
-          questionId: q.id,
+    if (dataGet)
+      setFormData(
+        dataGet?.formQuestions?.map((items: any) => ({
+          questionId: items?.id,
           value: "",
           multipleValue: [],
-          type: q.question.type,
-        };
-
-        if (q.question.SubQuestion) {
-          return q.question.SubQuestion.map((sub: any) => ({
-            questionId: sub.id,
-            value: "",
-            multipleValue: [],
-            type: sub.type,
-            parentQuestionId: q.id,
-          }));
-        }
-        return [base];
-      });
-      setFormData(initialData);
-    }
+          type: items?.question.type,
+        }))
+      );
   }, [dataGet]);
-
-  const sortedQuestions = dataGet?.formQuestions?.sort(
-    (a: any, b: any) => a.arrangement - b.arrangement
-  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     questionId: string,
-    optionId?: string,
-    isCheckboxGroup?: boolean
+    optionId: string | null,
+    isMultiple: boolean,
+    type: string
   ) => {
-    const { value, checked, type } = e.target;
+    const { value, checked } = e.target;
 
-    setFormData((prev) =>
-      prev.map((item) => {
-        if (item.questionId === questionId) {
-          if (isCheckboxGroup && optionId) {
-            const newValue = checked
-              ? [...item.multipleValue, optionId]
-              : item.multipleValue.filter((v: string) => v !== optionId);
-            return { ...item, multipleValue: newValue };
-          }
-          return { ...item, value: type === "checkbox" ? checked : value };
+    const arrayfound = formData?.map((quest: any) => {
+      if (quest.questionId === questionId) {
+        let multipleValue = quest.multipleValue;
+        const optionFound = multipleValue?.find(
+          (option: any) => option === optionId
+        );
+        if (optionFound) {
+          multipleValue = multipleValue.filter((val: any) => val !== optionId);
+        } else {
+          multipleValue.push(optionId);
         }
-        return item;
-      })
-    );
+
+        if (isMultiple) {
+          return { ...quest, multipleValue };
+        } else {
+          return { ...quest, value };
+        }
+      } else {
+        return quest;
+      }
+    });
+
+    setFormData(arrayfound);
   };
 
-  const handleSignatureChange = (signature: string, questionId: string) => {
-    setFormData((prev) =>
-      prev.map((item) =>
-        item.questionId === questionId ? { ...item, value: signature } : item
-      )
-    );
-  };
+  const question = dataGet?.formQuestions
+    ?.slice()
+    ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-  const getFieldValue = (questionId: string) => {
-    return formData.find((fd) => fd.questionId === questionId)?.value || "";
-  };
+  const subQuestion = (question || [])
+    .map((item: any) => item?.question?.SubQuestion || [])
+    .flat()
+    .filter((sub: any) => sub.type === "date" || sub.type === "Signature")
+    .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-  const getMultipleValues = (questionId: string) => {
-    return (
-      formData.find((fd) => fd.questionId === questionId)?.multipleValue || []
-    );
+  const coloum = (question || [])
+    .map((item: any) => item?.question?.coloum || [])
+    .flat()
+
+    .sort((a: any, b: any) => a.arrangement - b.arrangement);
+
+  console.log(subQuestion, "subQuestion");
+
+  const [createAnswersMutation] = useCreateAnswersMutation();
+  const handleSubmit = async () => {
+    const payload = { formId: dataGet?.id, answers: formData };
+
+    console.log(payload, "handleSubmit");
+    handleNext();
+    // try {
+    //   const response = await createAnswersMutation(payload).unwrap();
+    //   if (response) {
+
+    //   }
+    //   console.log("Response:", response);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   };
 
   return (
-    <div className="card p-5">
-      <h3 className="card-title text-center">{dataGet?.title}</h3>
+    <>
+      <div className="card p-5">
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-      <div className="row pt-3">
-        {sortedQuestions?.map((question: any) => {
-          if (question.question.type === "html") {
-            return (
-              <div key={question.id} className="col-12 my-3">
-                <HtmlRenderer items={question} />
-              </div>
-            );
-          }
+        <div className="row pt-3">
+          {question?.map((items: any, index: any) => {
+            if (
+              items?.question?.type === "text" ||
+              items?.question?.type === "date"
+            ) {
+              return (
+                <div key={index} className="col-lg-6 my-3">
+                  {items?.question?.type !== "html" && (
+                    <HtmlRenderer items={items} />
+                  )}
+                  <TextInput
+                    items={items}
+                    index={index}
+                    // handleChange={handleChange}
+                  />
+                </div>
+              );
+            }
 
-          if (["text", "date"].includes(question.question.type)) {
-            return (
-              <div key={question.id} className="col-lg-6 my-3">
-                <label className="form-label">{question.question.title}</label>
-                <input
-                  type={question.question.type}
-                  value={getFieldValue(question.id) as string}
-                  onChange={(e) => handleChange(e, question.id)}
-                  className="form-control"
-                />
-              </div>
-            );
-          }
+            return null;
+          })}
+        </div>
 
-          if (question.question.type === "table") {
-            return (
-              <div key={question.id} className="col-12 my-5">
-                <h5>{question.question.title}</h5>
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      {question.question.coloum
-                        ?.sort(
-                          (a: any, b: any) => a.arrangement - b.arrangement
-                        )
-                        .map((col: any) => (
-                          <th key={col.id}>{col.title}</th>
-                        ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {question.question.SubQuestion?.map((subq: any) => (
-                      <tr key={subq.id}>
-                        <td>
-                          {subq.title}
-                          {subq.options?.map((option: any) => (
-                            <div key={option.id} className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                checked={getMultipleValues(subq.id).includes(
-                                  option.id
-                                )}
-                                onChange={(e) =>
-                                  handleChange(e, subq.id, option.id, true)
-                                }
-                              />
-                              <label className="form-check-label">
-                                {option.title}
-                              </label>
-                            </div>
-                          ))}
-                        </td>
-                        <td>
-                          <textarea
-                            className="form-control"
-                            value={getFieldValue(subq.id) as string}
-                            onChange={(e) => handleChange(e, subq.id)}
+        {question?.map((items: any, index: any) => (
+          <div
+            key={index}
+            className="d-flex mb-2 justify-content-between w-100 align-items-center"
+          >
+            <div>
+              {items?.question?.type === "html" && (
+                <>
+                  <HtmlRenderer items={items} />
+                </>
+              )}
+
+              {items?.question?.type === "table" && (
+                <>
+                  {/* Table Title */}
+                  {items?.title && (
+                    <p className="text-left">{items?.question.title}</p>
+                  )}
+
+                  <table className="table table-bordered my-5">
+                    <thead>
+                      {/* <tr>
+                       
+                        {coloum?.map(
+                          (coloum: any, index: number) => (
+                            <th key={index}>
+                              <p
+                                style={{
+                                  textWrap: "wrap",
+                                  width: "350px",
+                                  padding: "0 20px",
+                                }}
+                              >
+                                {coloum?.title}
+                              </p>
+                            </th>
+                          )
+                        )}
+                      </tr> */}
+                    </thead>
+
+                    <tbody>
+                      {/* SubQuestion as rows */}
+                      {items?.question?.SubQuestion &&
+                        items?.question?.SubQuestion.length > 0 &&
+                        items?.question?.SubQuestion.map(
+                          (subquestion: any, i: number) => (
+                            <tr key={i}>
+                              <td colSpan={items?.coloum?.length || 1}>
+                                <SubquestionChecbox
+                                  subquestion={subquestion}
+                                  index={i}
+                                />
+                              </td>
+                            </tr>
+                          )
+                        )}
+                    </tbody>
+                  </table>
+                </>
+              )}
+
+              {items?.SubQuestion && items.SubQuestion.length > 0 && (
+                <div className="row my-2">
+                  {items.SubQuestion.map((sub: any, i: number) => (
+                    <div className="col-lg-6" key={i}>
+                      {(sub?.type === "Signature" || sub?.type === "date") && (
+                        <>
+                          <label className="form-label">{sub.title}</label>
+                          <input
+                            type={sub?.type}
+                            className="form-control mb-3"
+                            placeholder="Enter..."
                           />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            );
-          }
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
 
-          return null;
-        })}
-      </div>
+        <div className="mt-5 d-flex flex-column gap-4">
+          <h3>Signature:</h3>
+          {subQuestion && subQuestion.length > 0 && (
+            <div className="row">
+              {subQuestion.map((sub: any, i: number) => (
+                <div className="col-lg-6 mb-4 " key={i}>
+                  {(sub?.type === "Signature" || sub?.type === "date") && (
+                    <>
+                      <h6 className=" ">{sub.title}</h6>
+                    </>
+                  )}
 
-      <div className="mt-5">
-        <h3>Signatures</h3>
-        <div className="row">
-          {sortedQuestions
-            ?.flatMap((q: any) => q.question.SubQuestion || [])
-            ?.filter((subq: any) => ["date", "Signature"].includes(subq.type))
-            ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-            ?.map((subq: any) => (
-              <div key={subq.id} className="col-lg-6 mb-4">
-                <label className="form-label">{subq.title}</label>
-                {subq.type === "Signature" ? (
-                  <ESignature
-                    onSave={(sig) => handleSignatureChange(sig, subq.id)}
-                    signature={getFieldValue(subq.id) as string}
-                  />
-                ) : (
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={getFieldValue(subq.id) as string}
-                    onChange={(e) => handleChange(e, subq.id)}
-                  />
-                )}
-              </div>
-            ))}
+                  {sub?.type === "Signature" ? (
+                    <ESignature />
+                  ) : sub?.type === "date" ? (
+                    <input
+                      type={sub.type}
+                      className="form-control mb-3"
+                      placeholder="Enter..."
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="d-flex justify-content-between mt-4 pb-5">
+            <button
+              className="btn btn-secondary"
+              onClick={handleBack}
+              disabled={currentStep === 1}
+            >
+              Back
+            </button>
+            {currentStep <= 8 ? (
+              <button className="btn btn-primary" onClick={handleSubmit}>
+                Next
+              </button>
+            ) : (
+              <button
+                className="btn btn-success"
+                onClick={() => alert("Form Submitted!")}
+              >
+                Submit
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -5,7 +5,7 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 import TextInput from "./common/TextInput";
 import HtmlRenderer from "./common/HtmlRenderer";
 
-function ADMISSIONFORM() {
+function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState(
     Formlist?.STANDARDRELEASEOFINFORMATION?.questions?.map((itms) => ({
       questionId: itms?.id,

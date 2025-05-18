@@ -33,6 +33,14 @@ function POLICYORIENTATIONRECEIPT({
         }))
       );
   }, [dataGet]);
+  // const [formData, setFormData] = useState(
+  //   Formlist?.STANDARDRELEASEOFINFORMATION?.formQuestions?.map((itms) => ({
+  //     questionId: itms?.id,
+  //     value: "",
+  //     multipleValue: [],
+  //     type: itms?.type,
+  //   }))
+  // );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,

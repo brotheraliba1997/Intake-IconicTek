@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import React from "react";
 import ESignature from "../E-Signature/E-signature";
 
-function ServicesPlan() {
+function ServicesPlan({ handleBack, handleNext, currentStep }: any) {
   const tabsList = [
     "30-Day Service Plan Review ",
     "Quarterly Service Plan Review",
@@ -32,9 +32,6 @@ function ServicesPlan() {
 
           <ESignature />
         </div>
-
-
-        
       </div>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 
-function IndividualAbuse() {
+function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState(
     Formlist?.IndividualAbuse?.formQuestions?.map((itms) => ({
       questionId: itms?.id,
@@ -100,8 +100,6 @@ function IndividualAbuse() {
             <div className="d-flex flex-column gap-2 my-2 w-100">
               {/* <h4 className="card-title">{items.title}</h4> */}
 
-          
-
               <div>
                 {items.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
@@ -114,7 +112,7 @@ function IndividualAbuse() {
                         {sub?.title && (
                           <label className="form-label">{sub.title}</label>
                         )}
-                        {sub?.type !== "Signature"  && (
+                        {sub?.type !== "Signature" && (
                           <input
                             type={sub?.type} // ✅ Use option.type instead of items.type
                             className="form-control mb-3"

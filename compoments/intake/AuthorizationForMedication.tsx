@@ -14,7 +14,6 @@ function AuthorizationForMedication({
   const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-
   const question = dataGet?.formQuestions
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
@@ -72,7 +71,6 @@ function AuthorizationForMedication({
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
-    console.log(payload, "handleSubmit");
     handleNext();
     // try {
     //   const response = await createAnswersMutation(payload).unwrap();
@@ -112,6 +110,15 @@ function AuthorizationForMedication({
                     type={items?.question?.type}
                     className="form-control"
                     placeholder="Enter..."
+                    onChange={(e: any) =>
+                      handleChange(
+                        e,
+                        items?.id,
+                        null,
+                        false,
+                        items?.question?.type
+                      )
+                    }
                   />
                 </div>
               );
@@ -150,7 +157,15 @@ function AuthorizationForMedication({
                               type={option.type}
                               className="form-check-input"
                               id={`option-${index}-${i}`}
-                              onChange={(e: any) => handleChange(e, items?.id)}
+                              onChange={(e: any) =>
+                                handleChange(
+                                  e,
+                                  items?.id,
+                                  option.id,
+                                  option.isMultiple,
+                                  items?.question?.type
+                                )
+                              }
                             />
                             <label
                               className="form-check-label"
@@ -174,8 +189,7 @@ function AuthorizationForMedication({
           </div>
         ))}
 
-
-         <div className="d-flex justify-content-between mt-4 pb-5">
+        <div className="d-flex justify-content-between mt-4 pb-5">
           <button
             className="btn btn-secondary"
             onClick={handleBack}

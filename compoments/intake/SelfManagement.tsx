@@ -7,17 +7,13 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 
-function SELFMANAGEMENT({
-  handleBack,
-  handleNext,
-  currentStep,
-}: any) {
+function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-
+  console.log("formData", formData);
   useEffect(() => {
     if (dataGet)
       setFormData(
@@ -30,40 +26,39 @@ function SELFMANAGEMENT({
       );
   }, [dataGet]);
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    questionId: string,
+    optionId: string | null,
+    isMultiple: boolean,
+    type: string
+  ) => {
+    const { value, checked } = e.target;
 
-    const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement>,
-      questionId: string,
-      optionId: string | null,
-      isMultiple: boolean,
-      type: string
-    ) => {
-      const { value, checked } = e.target;
-  
-      const arrayfound = formData?.map((quest: any) => {
-        if (quest.questionId === questionId) {
-          let multipleValue = quest.multipleValue;
-          const optionFound = multipleValue?.find(
-            (option: any) => option === optionId
-          );
-          if (optionFound) {
-            multipleValue = multipleValue.filter((val: any) => val !== optionId);
-          } else {
-            multipleValue.push(optionId);
-          }
-  
-          if (isMultiple) {
-            return { ...quest, multipleValue };
-          } else {
-            return { ...quest, value };
-          }
+    const arrayfound = formData?.map((quest: any) => {
+      if (quest.questionId === questionId) {
+        let multipleValue = quest.multipleValue;
+        const optionFound = multipleValue?.find(
+          (option: any) => option === optionId
+        );
+        if (optionFound) {
+          multipleValue = multipleValue.filter((val: any) => val !== optionId);
         } else {
-          return quest;
+          multipleValue.push(optionId);
         }
-      });
-  
-      setFormData(arrayfound);
-    };
+
+        if (isMultiple) {
+          return { ...quest, multipleValue };
+        } else {
+          return { ...quest, value };
+        }
+      } else {
+        return quest;
+      }
+    });
+
+    setFormData(arrayfound);
+  };
 
   const question = dataGet?.formQuestions
     ?.slice()
@@ -75,14 +70,11 @@ function SELFMANAGEMENT({
     .filter((sub: any) => sub.type === "date" || sub.type === "Signature")
     .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-
-     const coloum = (question || [])
+  const coloum = (question || [])
     .map((item: any) => item?.question?.coloum || [])
     .flat()
-    
-    .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-  console.log(subQuestion, "subQuestion");
+    .sort((a: any, b: any) => a.arrangement - b.arrangement);
 
   const [createAnswersMutation] = useCreateAnswersMutation();
   const handleSubmit = async () => {
@@ -117,10 +109,20 @@ function SELFMANAGEMENT({
                   {items?.question?.type !== "html" && (
                     <HtmlRenderer items={items} />
                   )}
-                  <TextInput
-                    items={items}
-                    index={index}
-                    // handleChange={handleChange}
+
+                  <input
+                    type={items?.question?.type}
+                    className="form-control"
+                    placeholder="Enter..."
+                    onChange={(e: any) =>
+                      handleChange(
+                        e,
+                        items?.id,
+                        null,
+                        false,
+                        items?.question?.type
+                      )
+                    }
                   />
                 </div>
               );
@@ -182,6 +184,15 @@ function SELFMANAGEMENT({
                                 <SubquestionChecbox
                                   subquestion={subquestion}
                                   index={i}
+                                  onChange={(e, optionId, isMultiple) =>
+                                    handleChange(
+                                      e,
+                                      subquestion.id,
+                                      optionId,
+                                      isMultiple,
+                                      subquestion.type
+                                    )
+                                  }
                                 />
                               </td>
                             </tr>
@@ -240,28 +251,27 @@ function SELFMANAGEMENT({
             </div>
           )}
 
-
-           <div className="d-flex justify-content-between mt-4 pb-5">
-          <button
-            className="btn btn-secondary"
-            onClick={handleBack}
-            disabled={currentStep === 1}
-          >
-            Back
-          </button>
-          {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleSubmit}>
-              Next
-            </button>
-          ) : (
+          <div className="d-flex justify-content-between mt-4 pb-5">
             <button
-              className="btn btn-success"
-              onClick={() => alert("Form Submitted!")}
+              className="btn btn-secondary"
+              onClick={handleBack}
+              disabled={currentStep === 1}
             >
-              Submit
+              Back
             </button>
-          )}
-        </div>
+            {currentStep <= 8 ? (
+              <button className="btn btn-primary" onClick={handleSubmit}>
+                Next
+              </button>
+            ) : (
+              <button
+                className="btn btn-success"
+                onClick={() => alert("Form Submitted!")}
+              >
+                Submit
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>

@@ -1,6 +1,7 @@
 import React from "react";
 
 function TextInput({ handleChange, items }: any) {
+  console.log("items", items);
   return (
     <input
       type={items.type}

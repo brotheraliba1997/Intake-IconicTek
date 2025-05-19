@@ -3,16 +3,11 @@ import React, { useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { FormData, FormQuestions, Option } from "@/types/form-data";
-
-type AnswerData = {
-  questionId: string;
-  value: string;
-  multipleValue: string[];
-  type: string;
-};
+import { AnswerData } from "@/types/common";
 
 function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
+
   const formName = "FUNDS AND PROPERTY AUTHORIZATION";
   const dataGet: FormData = data?.data?.find(
     (items: any) => items?.title === formName
@@ -29,6 +24,8 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         }))
       );
   }, [dataGet]);
+
+  console.log("dataGet", dataGet);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,

@@ -4,3 +4,10 @@ export interface MenuItemType {
   icons: string;
   subItems?: { label: string; path: string }[];
 }
+
+export type AnswerData = {
+  questionId: string;
+  value: string;
+  multipleValue: string[];
+  type: string;
+};

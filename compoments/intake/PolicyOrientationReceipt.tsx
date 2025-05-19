@@ -1,21 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
+import CheckBox from "./common/CheckBox";
+import HtmlRenderer from "./common/HtmlRenderer";
 
 function POLICYORIENTATIONRECEIPT({
   handleBack,
   handleNext,
   currentStep,
 }: any) {
-  const [formData, setFormData] = useState(
-    Formlist?.STANDARDRELEASEOFINFORMATION?.formQuestions?.map((itms) => ({
-      questionId: itms?.id,
-      value: "",
-      multipleValue: [],
-      type: itms?.type,
-    }))
-  );
+  const [formData, setFormData] = useState();
+
+  const { data, isLoading, error } = useGetMyFormQuery({});
+
+  const formName = "Policy Orientation Receipt";
+
+  const dataGet = data?.data?.find((items: any) => items?.title === formName);
+
+  const question = dataGet?.formQuestions
+    ?.slice()
+    ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
+
+  useEffect(() => {
+    if (dataGet)
+      setFormData(
+        dataGet?.formQuestions?.map((items: any) => ({
+          questionId: items?.id,
+          value: "",
+          multipleValue: [],
+          type: items?.question.type,
+        }))
+      );
+  }, [dataGet]);
+  // const [formData, setFormData] = useState(
+  //   Formlist?.STANDARDRELEASEOFINFORMATION?.formQuestions?.map((itms) => ({
+  //     questionId: itms?.id,
+  //     value: "",
+  //     multipleValue: [],
+  //     type: itms?.type,
+  //   }))
+  // );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -51,39 +76,45 @@ function POLICYORIENTATIONRECEIPT({
     setFormData(arrayfound);
   };
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
-
-  const formName = "Policy Orientation Receipt";
-
-  const dataGet = data?.data?.find((items: any) => items?.title === formName);
-
-  const question = dataGet?.formQuestions
-    ?.slice()
-    ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-    ?.map((items: any) => items?.question);
-
   console.log(question, "datadata");
+
+  const handleSubmit = async () => {
+    const payload = { formId: dataGet?.id, answers: formData };
+
+    console.log(payload, "handleSubmit");
+    // handleNext();
+    // try {
+    //   const response = await createAnswersMutation(payload).unwrap();
+    //   if (response) {
+
+    //   }
+    //   console.log("Response:", response);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+  };
 
   return (
     <>
       <div className="card p-5">
-        <h3 className="card-title text-center">{/* {question.title} */}</h3>
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
         <div className="row pt-3">
-          {question?.map((items: any, index) => {
-            if (items.type === "text" || items.type === "date") {
+          {question?.map((items: any, index: number) => {
+            if (
+              items?.question?.type === "text" ||
+              items?.question?.type === "date"
+            ) {
               return (
                 <div key={index} className="col-lg-6 mb-4">
-                  {items.type !== "html" && (
-                    <div
-                      className="pb-2"
-                      dangerouslySetInnerHTML={{ __html: items.title }}
-                    />
+                  {items?.question?.type !== "html" && (
+                    <HtmlRenderer items={items} />
                   )}
                   <input
-                    type={items.type}
+                    type={items?.question?.type}
                     className="form-control"
                     placeholder="Enter..."
+                    onChange={(e: any) => handleChange(e, items?.id)}
                   />
                 </div>
               );
@@ -92,64 +123,81 @@ function POLICYORIENTATIONRECEIPT({
             return null;
           })}
         </div>
-        {question?.map((items, index) => (
+        {question?.map((items: any, index: any) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
           >
             <div className="d-flex flex-column gap-2 my-2 w-100">
-              {items.type !== "html" &&
-                items.type !== "text" &&
-                items.type !== "date" && (
+              {items?.question?.type !== "html" &&
+                items?.question?.type !== "text" &&
+                items?.question?.type !== "date" && (
                   <>
-                    <div dangerouslySetInnerHTML={{ __html: items.title }} />
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: items?.question?.title,
+                      }}
+                    />
                   </>
                 )}
 
               <div className="row">
-                {items.type === "textarea" && (
+                {items?.question?.type === "textarea" && (
                   <textarea className="form-control" id="" rows={3}></textarea>
                 )}
 
-                {items.type === "checkbox" &&
-                  items?.options &&
-                  items.options.length > 0 && (
-                    <div className="row">
-                      {items.options.map((option: any, i) => (
-                        <div className="col-lg-12" key={i}>
-                          <div className="form-check mb-2">
-                            {option.show ? (
-                              <>
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`option-${index}-${i}`}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`option-${index}-${i}`}
-                                >
-                                  {option.title}
-                                </label>
-                              </>
-                            ) : (
-                              <p className="fw-bold">{option.title}</p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                {items.question?.type === "checkbox" &&
+                  items?.question?.options?.length > 0 && (
+                    <>
+                      <div className="mb-2">
+                        <HtmlRenderer items={items} />
+                      </div>
+                      <div className="row">
+                        {items?.question?.options.map(
+                          (option: any, i: number) => (
+                            <CheckBox
+                              key={i}
+                              option={option}
+                              optionIndex={i}
+                              index={index}
+                              handleChange={handleChange}
+                              items={items}
+                            />
+                          )
+                        )}
+                      </div>
+                    </>
                   )}
 
-                {items.type === "html" && (
-                  <>
-                    <div dangerouslySetInnerHTML={{ __html: items.title }} />
-                  </>
+                {items?.question?.type === "html" && (
+                  <HtmlRenderer items={items} />
                 )}
               </div>
             </div>
           </div>
         ))}
+
+        <div className="d-flex justify-content-between mt-4 pb-5">
+          <button
+            className="btn btn-secondary"
+            onClick={handleBack}
+            disabled={currentStep === 1}
+          >
+            Back
+          </button>
+          {currentStep <= 8 ? (
+            <button className="btn btn-primary" onClick={handleSubmit}>
+              Next
+            </button>
+          ) : (
+            <button
+              className="btn btn-success"
+              onClick={() => alert("Form Submitted!")}
+            >
+              Submit
+            </button>
+          )}
+        </div>
       </div>
     </>
   );

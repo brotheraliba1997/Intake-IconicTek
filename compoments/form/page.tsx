@@ -70,12 +70,8 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               />
-              {/* <ResidencyAgreement
-              handleNext={handleNext}
-              handleBack={handleBack}
-              currentStep={currentStep}
-            /> */}
-              {/* <ServicesPlan /> */}
+           
+              
             </div>
           )}
 

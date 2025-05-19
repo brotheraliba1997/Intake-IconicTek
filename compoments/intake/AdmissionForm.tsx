@@ -51,7 +51,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
 
   const { data, isLoading, error } = useGetMyFormQuery({});
 
-  const formName = "ADMISSION FORM AND DATA SHEET";
+  
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 

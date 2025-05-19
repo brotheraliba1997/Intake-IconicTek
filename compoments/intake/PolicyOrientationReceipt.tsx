@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 
-function POLICYORIENTATIONRECEIPT() {
+function POLICYORIENTATIONRECEIPT({
+  handleBack,
+  handleNext,
+  currentStep,
+}: any) {
   const [formData, setFormData] = useState(
     Formlist?.STANDARDRELEASEOFINFORMATION?.formQuestions?.map((itms) => ({
       questionId: itms?.id,

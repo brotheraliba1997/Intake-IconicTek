@@ -2,86 +2,74 @@
 import React, { useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
+import { FormData, FormQuestions, Option } from "@/types/form-data";
+import { AnswerData } from "@/types/common";
 
 function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
-  const formName = "FUNDS AND PROPERTY AUTHORIZATION";
-  const dataGet = data?.data?.find((items: any) => items?.title === formName);
-  console.log(dataGet, "dataGet");
 
-  const [formData, setFormData] = useState();
+  const formName = "FUNDS AND PROPERTY AUTHORIZATION";
+  const dataGet: FormData = data?.data?.find(
+    (items: any) => items?.title === formName
+  );
+  const [formData, setFormData] = useState<AnswerData[]>([]);
   useEffect(() => {
     if (dataGet)
       setFormData(
-        dataGet?.formQuestions?.map((items: any) => ({
-          questionId: items?.id,
+        dataGet?.formQuestions?.map((question: any) => ({
+          questionId: question?.questionId,
           value: "",
           multipleValue: [],
-          type: items?.question.type,
+          type: question?.question.type,
         }))
       );
   }, [dataGet]);
 
-    const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement>,
-      questionId: string,
-      optionId: string | null,
-      isMultiple: boolean,
-      type: string
-    ) => {
-      console.log(isMultiple, "isMultiple");
-      const { value, checked } = e.target;
-  
-      const arrayfound = formData?.map((quest: any) => {
-        if (quest?.questionId === questionId) {
-          if (isMultiple) {
-            let multipleValue = quest.multipleValue;
-            const optionFound = multipleValue?.find(
-              (option: any) => option === optionId
-            );
-            if (optionFound) {
-              multipleValue = multipleValue.filter(
-                (val: any) => val !== optionId
-              );
-            } else {
-              multipleValue.push(optionId);
-            }
-            return {
-              ...quest,
-              multipleValue,
-            };
+  console.log("dataGet", dataGet);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    questionId: string,
+    optionId: string | null,
+    isMultiple: boolean,
+    type: string
+  ) => {
+    const { value, checked } = e.target;
+
+    const arrayfound = formData.map((quest: AnswerData) => {
+      if (quest.questionId === questionId) {
+        if (isMultiple && optionId) {
+          let multipleValue = [...quest.multipleValue];
+
+          if (checked) {
+            multipleValue.push(optionId);
           } else {
-            return { ...quest, value };
+            multipleValue = multipleValue.filter((val) => val !== optionId);
           }
+          return {
+            ...quest,
+            multipleValue,
+          };
         } else {
-          return quest;
+          return { ...quest, value };
         }
-      });
-  
-      setFormData(arrayfound);
-    };
+      } else {
+        return quest;
+      }
+    });
+
+    setFormData(arrayfound);
+  };
 
   const question = dataGet?.formQuestions
     ?.slice()
-    ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-    // ?.map((items: any) => items?.question);
-
-  console.log(question, "question");
+    ?.sort(
+      (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
+    );
 
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
-
-    console.log(payload, "handleSubmit");
-        handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
-    
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    handleNext();
   };
 
   return (
@@ -90,7 +78,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         <h3 className="card-title text-center">
           {Formlist?.FUNDSANDPROPERTY?.title}
         </h3>
-        {question?.map((items: any, index: any) => (
+        {question?.map((items: FormQuestions, index: number) => (
           <div
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
@@ -98,62 +86,112 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
             <div className="d-flex flex-column gap-2 my-2 w-100">
               {items?.question?.type !== "html" && (
                 <>
-                  <div dangerouslySetInnerHTML={{ __html: items?.question?.title }} />
+                  <div
+                    dangerouslySetInnerHTML={{ __html: items?.question?.title }}
+                  />
                 </>
               )}
 
               <div>
-                {(items?.question.type === "text" || items?.question.type === "date") && (
+                {" "}
+                {(items?.question.type === "text" ||
+                  items?.question.type === "date") && (
                   <input
-                    type={items.type}
+                    type={items.question.type === "date" ? "date" : "text"}
                     className="form-control"
                     placeholder="Enter..."
+                    value={
+                      formData.find((q) => q.questionId === items.questionId)
+                        ?.value || ""
+                    }
+                    onChange={(e) => {
+                      handleChange(
+                        e,
+                        items.questionId,
+                        null,
+                        false,
+                        items.question.type
+                      );
+                    }}
                   />
                 )}
                 {items?.question.type === "textarea" && (
-                  <textarea className="form-control" id="" rows={3}></textarea>
+                  <textarea
+                    className="form-control"
+                    id=""
+                    rows={3}
+                    value={
+                      formData.find((q) => q.questionId === items.questionId)
+                        ?.value || ""
+                    }
+                    onChange={(e) => {
+                      handleChange(
+                        e as unknown as React.ChangeEvent<HTMLInputElement>,
+                        items.questionId,
+                        null,
+                        false,
+                        items.question.type
+                      );
+                    }}
+                  ></textarea>
                 )}
-
-                {items?.question?.options && items?.question.options.length > 0 && (
-                  <div className="row">
-                    {items?.question.options.map((option: any, i) => (
-                      <div className="col-lg-12" key={i}>
-                        <div className="form-check mb-2">
-                          {option.show ? (
-                            <>
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                id={`option-${index}-${i}`}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`option-${index}-${i}`}
-                              >
-                                {option.title}
-                              </label>
-                            </>
-                          ) : (
-                            <p className="fw-bold">{option.title}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {items?.question?.options &&
+                  items?.question.options.length > 0 && (
+                    <div className="row">
+                      {items?.question.options.map(
+                        (option: Option, i: number) => (
+                          <div className="col-lg-12" key={i}>
+                            <div className="form-check mb-2">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                  id={`option-${index}-${i}`}
+                                  checked={
+                                    formData
+                                      .find(
+                                        (q) => q.questionId === items.questionId
+                                      )
+                                      ?.multipleValue.includes(option.id) ||
+                                    false
+                                  }
+                                  onChange={(e) => {
+                                    handleChange(
+                                      e,
+                                      option.questionId,
+                                      option.id,
+                                      true,
+                                      items.question.type
+                                    );
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label ms-2"
+                                  htmlFor={`option-${index}-${i}`}
+                                >
+                                  {option.title}
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
               </div>
 
               {items?.question.type === "html" && (
                 <>
-                  <div dangerouslySetInnerHTML={{ __html: items?.question.title }} />
+                  <div
+                    dangerouslySetInnerHTML={{ __html: items?.question.title }}
+                  />
                 </>
               )}
             </div>
           </div>
         ))}
 
-
-         <div className="d-flex justify-content-between mt-4 pb-5">
+        <div className="d-flex justify-content-between mt-4 pb-5">
           <button
             className="btn btn-secondary"
             onClick={handleBack}

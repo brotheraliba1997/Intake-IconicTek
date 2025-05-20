@@ -181,12 +181,12 @@ function POLICYORIENTATIONRECEIPT({
           <button
             className="btn btn-secondary"
             onClick={handleBack}
-            disabled={currentStep === 1}
+            disabled={currentStep === 0}
           >
             Back
           </button>
           {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleSubmit}>
+            <button className="btn btn-primary" onClick={handleNext}>
               Next
             </button>
           ) : (

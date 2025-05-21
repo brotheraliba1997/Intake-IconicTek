@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ESignature from "../E-Signature/E-signature";
+import HospitalLogo from "./common/HospitalLogo";
 
 function ServicesPlan({ handleBack, handleNext, currentStep }: any) {
   const tabsList = [
@@ -12,7 +13,8 @@ function ServicesPlan({ handleBack, handleNext, currentStep }: any) {
   return (
     <>
       <div className="container ">
-        <div className="card p-5 ">
+        <div className="card px-5 pb-5 pt-3">
+          <HospitalLogo />
           <h5 className="fw-bold pb-3">Service Plan Review: </h5>
 
           {tabsList?.map((items: any, index) => (

@@ -12,22 +12,8 @@ import ResidencyAgreement from "../intake/ResidencyAgreement";
 import ServicesPlan from "../intake/ServicesPlan";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 import Formlist from "@/form";
-
-const StepperComponent = dynamic(
-  () => import("react-form-stepper").then((mod) => mod.Stepper),
-  {
-    loading: () => <p>Loading...</p>,
-    ssr: false,
-  }
-);
-
-const StepComponent = dynamic(
-  () => import("react-form-stepper").then((mod) => mod.Step),
-  {
-    loading: () => <p>Loading...</p>,
-    ssr: false,
-  }
-);
+import { stepLabels } from "@/constants/stepLabels";
+import { Stepper } from "../Stepper/Stepper";
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -43,24 +29,7 @@ function FormPage() {
   return (
     <>
       <div className="container mt-5 ">
-        <StepperComponent
-          className="d-flex  justify-content-around"
-          activeStep={currentStep}
-          styleConfig={{
-            activeBgColor: "#17635C",
-            completedBgColor: "#3494FB",
-          }}
-        >
-          <StepComponent label="Personal Info" />
-          <StepComponent label="Contact Info" />
-          <StepComponent label="Review" />
-          <StepComponent label="Fund Sand Property" />
-          <StepComponent label="Admission " />
-          <StepComponent label="Individual Abuse " />
-          <StepComponent label="Policy Orientation " />
-          <StepComponent label="Residency Agreement " />
-          <StepComponent label="Services Plan " />
-        </StepperComponent>
+        <Stepper steps={stepLabels} currentStep={currentStep} />
 
         <div className="mt-4">
           {currentStep === 0 && (
@@ -71,14 +40,11 @@ function FormPage() {
                 currentStep={currentStep}
               /> */}
 
-
-               <SELFMANAGEMENT
+              <SELFMANAGEMENT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
               />
-           
-              
             </div>
           )}
 

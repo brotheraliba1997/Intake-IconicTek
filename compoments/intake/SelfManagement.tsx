@@ -7,6 +7,7 @@ import TextInput from "./common/TextInput";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
+import HospitalLogo from "./common/HospitalLogo";
 
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
@@ -242,7 +243,9 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
   return (
     <>
-      <div className="card p-5">
+      <div className="card px-5 pb-5 pt-3">
+        <HospitalLogo />
+
         <h3 className="card-title text-center">{dataGet?.title}</h3>
 
         <div className="row pt-3 ">

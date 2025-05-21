@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { AnswerData } from "@/types/common";
 import { FormQuestions } from "@/types/form-data";
+import HospitalLogo from "./common/HospitalLogo";
 
 function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState<AnswerData[]>([]);
@@ -77,7 +78,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     });
   };
 
-  console.log(formData, "formData")
+  console.log(formData, "formData");
 
   const questions = dataGet?.formQuestions
     ?.slice()
@@ -85,15 +86,15 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
 
-     const handleSubmit = async () => {
+  const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
     console.log(payload, "handleSubmit");
-        handleNext();
+    handleNext();
     // try {
     //   const response = await createAnswersMutation(payload).unwrap();
     //   if (response) {
-    
+
     //   }
     //   console.log("Response:", response);
     // } catch (error) {
@@ -101,11 +102,10 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     // }
   };
 
-
-
   return (
     <>
-      <div className="card p-5">
+      <div className="card px-5 pb-5 pt-3">
+        <HospitalLogo />
         <h3 className="card-title text-center">{dataGet?.title}</h3>
         {questions?.map((items: FormQuestions, index: number) => (
           <div

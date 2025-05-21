@@ -4,6 +4,7 @@ import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { FormData, FormQuestions, Option } from "@/types/form-data";
 import { AnswerData } from "@/types/common";
+import HospitalLogo from "./common/HospitalLogo";
 
 function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -74,7 +75,8 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
 
   return (
     <>
-      <div className="card p-5">
+      <div className="card px-5 pb-5 pt-3">
+        <HospitalLogo />
         <h3 className="card-title text-center">
           {Formlist?.FUNDSANDPROPERTY?.title}
         </h3>

@@ -3,6 +3,7 @@ import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { AnswerData } from "@/types/common";
 import ESignature from "../E-Signature/E-signature";
+import HospitalLogo from "./common/HospitalLogo";
 
 function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState<AnswerData[]>([]);
@@ -128,7 +129,8 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
 
   return (
     <>
-      <div className="card p-5">
+      <div className="cardpx-5 pb-5 pt-3">
+        <HospitalLogo />{" "}
         <h3 className="card-title text-center">
           {Formlist?.IndividualAbuse?.title}
         </h3>

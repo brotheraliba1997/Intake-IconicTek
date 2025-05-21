@@ -3,6 +3,8 @@ import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 import HtmlRenderer from "./common/HtmlRenderer";
+import Image from "next/image";
+import HospitalLogo from "./common/HospitalLogo";
 
 function AuthorizationForMedication({
   handleBack,
@@ -86,11 +88,11 @@ function AuthorizationForMedication({
 
   return (
     <>
-      <div className="card p-5">
+      <div className="card px-5 pb-5 pt-3">
+        <HospitalLogo />
         <h3 className="card-title text-center">
           {data?.data?.find((items: any) => items?.title === formName)?.title}
         </h3>
-
         <div className="row pt-3">
           {question?.map((items: any, index: any) => {
             if (
@@ -128,7 +130,6 @@ function AuthorizationForMedication({
             return null;
           })}
         </div>
-
         {question?.map((items: any, index: any) => (
           <div
             key={index}
@@ -189,7 +190,6 @@ function AuthorizationForMedication({
             </div>
           </div>
         ))}
-
         <div className="d-flex justify-content-between mt-4 pb-5">
           <button
             className="btn btn-secondary"

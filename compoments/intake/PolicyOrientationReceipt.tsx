@@ -4,6 +4,7 @@ import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import CheckBox from "./common/CheckBox";
 import HtmlRenderer from "./common/HtmlRenderer";
+import HospitalLogo from "./common/HospitalLogo";
 
 function POLICYORIENTATIONRECEIPT({
   handleBack,
@@ -96,7 +97,8 @@ function POLICYORIENTATIONRECEIPT({
 
   return (
     <>
-      <div className="card p-5">
+      <div className="cardpx-5 pb-5 pt-3">
+        <HospitalLogo />
         <h3 className="card-title text-center">{dataGet?.title}</h3>
 
         <div className="row pt-3">

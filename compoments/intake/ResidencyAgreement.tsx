@@ -6,6 +6,7 @@ import Textarea from "./common/Textarea";
 import CheckBox from "./common/CheckBox";
 import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
+import HospitalLogo from "./common/HospitalLogo";
 
 function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
@@ -82,7 +83,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
 
-     const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation] = useCreateAnswersMutation();
 
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
@@ -101,7 +102,8 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   };
 
   return (
-    <div className="card p-5">
+    <div className="card px-5 pb-5 pt-3">
+      <HospitalLogo />
       <h3 className="card-title text-center">
         {data?.data?.find((items: any) => items?.title === formName)?.title}
       </h3>

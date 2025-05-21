@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Formlist from "@/form";
 import SubquestionChecbox from "./common/Subquestion-Checbox";
@@ -32,7 +33,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
-  console.log(dataGet, "dataGet");
+  console.log(data, "dataGet");
 
   useEffect(() => {
     if (dataGet)
@@ -104,8 +105,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     setFormData(arrayfound);
   };
 
-  
-
   const question = dataGet?.formQuestions;
   const [createAnswersMutation] = useCreateAnswersMutation();
   const handleSubmit = async () => {
@@ -129,8 +128,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       case "html":
         return (
           <>
-            {" "}
-            <HtmlRenderer items={items} />{" "}
+            {type === "html" && <HtmlRenderer items={items} />}
+
             <div className="row mt-5">
               {items?.question?.SubQuestion?.slice()
                 ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
@@ -146,9 +145,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                       className="form-control mb-3"
                       placeholder="Enter..."
                       onChange={(e) =>
-                        handleChange({
-                          
-                        }
+                        handleChange(
                           e,
                           items?.id,
                           null,
@@ -160,7 +157,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                     />
                   </div>
                 ))}
-            </div>{" "}
+            </div>
           </>
         );
 
@@ -168,24 +165,26 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       case "date":
         return (
           <>
-            <div className="col-lg-6 my-3">
-              <HtmlRenderer items={items} />
-              {type === "text" && (
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter text..."
-                  onChange={(e: any) => handleChange(e, items?.id)}
-                />
-              )}
-              {type === "date" && (
-                <input
-                  type="date"
-                  className="form-control"
-                  onChange={(e: any) => handleChange(e, items?.id)}
-                />
-              )}
-            </div>
+            {(type === "text" || type === "date") && (
+              <div className="col-lg-6 my-3">
+                <HtmlRenderer items={items} />
+                {type === "text" && (
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter text..."
+                    onChange={(e: any) => handleChange(e, items?.id)}
+                  />
+                )}
+                {type === "date" && (
+                  <input
+                    type="date"
+                    className="form-control"
+                    onChange={(e: any) => handleChange(e, items?.id)}
+                  />
+                )}
+              </div>
+            )}
           </>
         );
 

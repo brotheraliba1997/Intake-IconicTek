@@ -105,6 +105,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     setFormData(arrayfound);
   };
 
+  console.log(formData, "formData");
+
   const question = dataGet?.formQuestions;
   const [createAnswersMutation] = useCreateAnswersMutation();
   const handleSubmit = async () => {
@@ -134,27 +136,38 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
               {items?.question?.SubQuestion?.slice()
                 ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
                 ?.map((sub: any, i: any) => (
-                  <div className="d-flex gap-4 mb-5" key={i}>
-                    <ESignature
-                      signatureValue={signatureValue}
-                      items={sub.id}
-                    />
+                  <div key={sub.id} className="col-lg-6 mb-4">
+                    {sub?.type === "Signature" && (
+                      <>
+                        <p>{sub?.title}</p>
+                        <ESignature
+                          signatureValue={signatureValue}
+                          items={sub.id}
+                        />
+                      </>
+                    )}
 
-                    <input
-                      type="date"
-                      className="form-control mb-3"
-                      placeholder="Enter..."
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          items?.id,
-                          null,
-                          false,
-                          items?.question?.type,
-                          sub?.id
-                        )
-                      }
-                    />
+                    {/* Show Date */}
+                    {sub?.type === "date" && (
+                      <>
+                        <p>{sub?.title}</p>
+                        <input
+                          type="date"
+                          className="form-control"
+                          placeholder="Enter..."
+                          onChange={(e) =>
+                            handleChange(
+                              e,
+                              items?.id,
+                              null,
+                              false,
+                              items?.question?.type,
+                              sub?.id
+                            )
+                          }
+                        />
+                      </>
+                    )}
                   </div>
                 ))}
             </div>

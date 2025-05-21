@@ -3,8 +3,6 @@ import Image from "next/image";
 import React, { useRef, useState } from "react";
 
 
-
-
 export default function TypeSignature({ signatureValue, items }: any) {
   const [text, setText] = useState("");
   const [color, setColor] = useState("#000000");
@@ -18,10 +16,8 @@ export default function TypeSignature({ signatureValue, items }: any) {
     ctx.fillStyle = color;
     ctx.font = `100px`;
     ctx.fillText(text, 10, 50);
-   
     const dataUrl = canvas.toDataURL();
     setBase64Image(dataUrl);
-
     signatureValue(dataUrl, items);
   };
 

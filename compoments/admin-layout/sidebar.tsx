@@ -41,7 +41,7 @@ function Sidebar() {
     //   label: "Clients",
     //   path: "/dashboard/clients",
     //   icons: <IoSettingsOutline />,
-    // },
+    // },f
 
     { label: "Intake", path: "/dashboard/intake", icons: <FaWpforms /> },
 

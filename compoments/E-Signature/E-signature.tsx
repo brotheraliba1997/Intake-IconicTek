@@ -5,6 +5,7 @@ import Image from "next/image";
 
 function ESignature({ signatureValue, items }: any) {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
+   const [penColor, setPenColor] = useState("#000000");
 
   const handleSave = () => {
     const dataUrl = sigCanvasRef.current
@@ -16,63 +17,78 @@ function ESignature({ signatureValue, items }: any) {
 
   const handleClear = () => {
     sigCanvasRef.current?.clear();
-    setSignatureToggle(false);
+  
   };
 
-  const [signatureToggle, setSignatureToggle] = useState(false);
 
   return (
     <>
-      <div className="d-flex justify-content-between flex-column gap-4">
+      <div className="p-4 d-flex justify-content-between flex-column gap-2">
         <div>
-          {/* <h6>Signature</h6> */}
-          {signatureToggle ? (
-            <div style={{ border: "1px solid #B1C5DD", borderRadius: "5px" }}>
-              <SignatureCanvas
-                ref={sigCanvasRef}
-                onEnd={() => handleSave()}
-                penColor="black"
-                canvasProps={{
-                  className: "signature-canvas",
-                  width: window.innerWidth < 500 ? window.innerWidth - 40 : 500,
-                  height: 180,
-                }}
-              />
-            </div>
-          ) : (
-            <div
-              onClick={() => setSignatureToggle(true)}
-              style={{
-                border: "1px solid #B1C5DD",
-                borderRadius: "5px",
-                width:  window.innerWidth < 500 ? window.innerWidth - 40 : 500,
+          <div style={{ borderBottom: "3px solid #B1C5DD", borderRadius: "5px" }}>
+            <SignatureCanvas
+              ref={sigCanvasRef}
+              onEnd={() => handleSave()}
+            penColor={penColor}
+              canvasProps={{
+                className: "signature-canvas",
+                width: window.innerWidth < 500 ? window.innerWidth - 40 : 500,
                 height: 180,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
               }}
-            >
-              <Image
-                src={Signature}
-                width={80}
-                height={80}
-                alt="signature"
-                objectFit="contain"
-              />
-            </div>
-          )}
+            />
+          </div>
         </div>
 
         <div className="d-flex gap-4">
-          <button
+         
+        </div>
+
+
+        <div className="d-flex justify-content-between">
+          <div className="d-flex gap-4">
+ <label>Select Color:</label>
+
+        <div
+          style={{
+            height: 24,
+            width: 24,
+            borderRadius: "50%",
+            overflow: "hidden",
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <input
+            type="color"
+            value={penColor}
+            onChange={(e) => setPenColor(e.target.value)}
+            style={{
+              height: "100%",
+              width: "100%",
+              border: "none",
+              padding: 0,
+              margin: 0,
+              borderRadius: "50%",
+              appearance: "none", // this is important
+              WebkitAppearance: "none", // for Safari
+              cursor: "pointer",
+            }}
+          />
+        </div>
+
+          </div>
+      
+         <p
             onClick={handleClear}
-            type="button"
-            className="btn btn-primary"
+         
+            className=" text-secondary"
           >
             Clear
-          </button>
-        </div>
+          </p>
+      </div>
       </div>
     </>
   );

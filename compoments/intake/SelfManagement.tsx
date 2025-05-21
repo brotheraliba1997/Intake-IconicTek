@@ -7,11 +7,14 @@ import TextInput from "./common/TextInput";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
+import SignatureCompoment from "../E-Signature/signature";
 
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
   const signatureValue = (val: any, items: any) => {
+
+    console.log(val, items, "subQuestion")
     setFormData((prev: any) =>
       prev.map((quest: any) => {
         if (Array.isArray(quest.subQuestion)) {
@@ -139,8 +142,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                   <div key={sub.id} className="col-lg-6 mb-4">
                     {sub?.type === "Signature" && (
                       <>
-                        <p>{sub?.title}</p>
-                        <ESignature
+                        <h5>{sub?.title}</h5>
+                        <SignatureCompoment
                           signatureValue={signatureValue}
                           items={sub.id}
                         />
@@ -150,7 +153,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                     {/* Show Date */}
                     {sub?.type === "date" && (
                       <>
-                        <p>{sub?.title}</p>
+                        <h5>{sub?.title}</h5>
                         <input
                           type="date"
                           className="form-control"

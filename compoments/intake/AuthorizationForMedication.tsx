@@ -71,16 +71,17 @@ function AuthorizationForMedication({
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
-    handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
+    console.log(payload, "payload");
 
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    try {
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
+        handleNext();
+      }
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

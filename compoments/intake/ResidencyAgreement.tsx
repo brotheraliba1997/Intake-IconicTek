@@ -1,212 +1,145 @@
-import React, { useEffect, useState } from "react";
-import Formlist from "@/form";
-import { useGetMyFormQuery } from "@/redux/services/form";
-import HtmlRenderer from "./common/HtmlRenderer";
-import Textarea from "./common/Textarea";
-import CheckBox from "./common/CheckBox";
-import ESignature from "../E-Signature/E-signature";
-import { useCreateAnswersMutation } from "@/redux/services/answer";
+ <div className="card p-5">
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
-  const [formData, setFormData] = useState();
+        <div className="row pt-3">
+          {question?.map((items: any, index: any) => {
+            if (
+              items?.question?.type === "text" ||
+              items?.question?.type === "date"
+            ) {
+              return (
+                <div key={index} className="col-lg-6 my-3">
+                  {items?.question?.type !== "html" && (
+                    <HtmlRenderer items={items} />
+                  )}
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
-
-  const formName =
-    "Residency Agreement Template for Foster Care and Supported Living Services (SLS) under the BI, CAC, CADI and DD waivers";
-
-  const dataGet = data?.data?.find((items: any) => items?.title === formName);
-  console.log(dataGet, "NEwDAta");
-
-  useEffect(() => {
-    if (dataGet)
-      setFormData(
-        dataGet?.formQuestions?.map((items: any) => ({
-          questionId: items?.id,
-          value: "",
-          multipleValue: [],
-          type: items?.question.type,
-        }))
-      );
-  }, [dataGet]);
-
-  const signatureValue = (val: any, items: any) => {
-    setFormData((prev: any) =>
-      prev.map((quest: any) =>
-        quest.questionId === items ? { ...quest, signatureLink: val } : quest
-      )
-    );
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    questionId: string,
-    optionId: string | null,
-    isMultiple: boolean,
-    type: string
-  ) => {
-    const { value, checked } = e.target;
-
-    const arrayfound = formData?.map((quest: any) => {
-      if (quest?.questionId === questionId) {
-        if (isMultiple) {
-          let multipleValue = quest.multipleValue;
-          const optionFound = multipleValue?.find(
-            (option: any) => option === optionId
-          );
-          if (optionFound) {
-            multipleValue = multipleValue.filter(
-              (val: any) => val !== optionId
-            );
-          } else {
-            multipleValue.push(optionId);
-          }
-          return {
-            ...quest,
-            multipleValue,
-          };
-        } else {
-          return { ...quest, value };
-        }
-      } else {
-        return quest;
-      }
-    });
-
-    setFormData(arrayfound);
-  };
-
-  console.log(formData, "formData");
-
-  const question = dataGet?.formQuestions
-    ?.slice()
-    ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
-
-     const [createAnswersMutation] = useCreateAnswersMutation();
-
-  const handleSubmit = async () => {
-    const payload = { formId: dataGet?.id, answers: formData };
-
-    console.log(payload, "handleSubmit");
-
-    try {
-      const response = await createAnswersMutation(payload).unwrap();
-      if (response) {
-        handleNext();
-      }
-      console.log("Response:", response);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  return (
-    <div className="card p-5">
-      <h3 className="card-title text-center">
-        {data?.data?.find((items: any) => items?.title === formName)?.title}
-      </h3>
-      <div className="row pt-3">
-        {question?.map((items: any, index: number) => {
-          if (
-            items?.question?.type === "text" ||
-            items?.question?.type === "date" ||
-            items?.question?.type === "Signature"
-          ) {
-            {
-              console.log(items?.id, "itemsitemsitems");
-            }
-            return (
-              <div key={index} className="col-lg-6 mb-4">
-                {items?.question?.type !== "html" && (
-                  <HtmlRenderer items={items} />
-                )}
-
-                {items?.question?.type === "Signature" ? (
-                  <ESignature
-                    signatureValue={signatureValue}
-                    items={items?.id}
-                  />
-                ) : (
                   <input
                     type={items?.question?.type}
                     className="form-control"
                     placeholder="Enter..."
                     onChange={(e: any) => handleChange(e, items?.id)}
                   />
-                )}
-              </div>
-            );
-          }
+                </div>
+              );
+            }
 
-          return null;
-        })}
-      </div>
+            return null;
+          })}
+        </div>
 
-      {question?.map((items: any, index: any) => (
-        <>
+        {question?.map((items: any, index: any) => (
           <div
             key={index}
-            className="d-flex justify-content-between w-100 align-items-center mb-2"
+            className="d-flex mb-2 justify-content-between w-100 align-items-center"
           >
-            <div className="d-flex flex-column gap-2  w-100 my-2">
-              {items.question?.type === "textarea" && (
-                <Textarea items={items} handleChange={handleChange} />
-              )}
-
-              {items.question?.type === "checkbox" &&
-                items?.question?.options?.length > 0 && (
-                  <>
-                    <div className="mb-2">
-                      <HtmlRenderer items={items} />
-                    </div>
-                    <div className="row">
-                      {items?.question?.options.map(
-                        (option: any, i: number) => (
-                          <CheckBox
-                            key={i}
-                            option={option}
-                            optionIndex={i}
-                            index={index}
-                            handleChange={handleChange}
-                            items={items}
-                          />
-                        )
-                      )}
-                    </div>
-                  </>
-                )}
-
+            <div>
               {items?.question?.type === "html" && (
-                <HtmlRenderer items={items} />
+                <>
+                  <HtmlRenderer items={items} />
+                </>
               )}
+
+              {items?.question?.type === "table" && (
+                <>
+                  {/* Table Title */}
+                  {items?.title && (
+                    <p className="text-left">{items?.question.title}</p>
+                  )}
+
+                  <table className="table table-bordered my-5">
+                    <thead></thead>
+
+                    <tbody>
+                      {items?.question?.SubQuestion &&
+                        items?.question?.SubQuestion.length > 0 &&
+                        items?.question?.SubQuestion.map(
+                          (subquestion: any, i: number) => (
+                            <tr key={i}>
+                              <td colSpan={items?.coloum?.length || 1}>
+                                <SubquestionChecbox
+                                  subquestion={subquestion}
+                                  index={i}
+                                  onChange={(e, optionId, isMultiple) =>
+                                    handleChange(
+                                      e,
+                                      items?.id,
+                                      optionId,
+                                      isMultiple,
+                                      subquestion.type,
+                                      subquestion?.id
+                                    )
+                                  }
+                                />
+                              </td>
+                            </tr>
+                          )
+                        )}
+                    </tbody>
+                  </table>
+                </>
+              )}
+
+              {/* {items?.id} */}
+
+              <div className="row mt-5">
+                {items?.question?.SubQuestion?.filter(
+                  (sub: any) => sub.type === "date" || sub.type === "Signature"
+                )
+                  ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+                  ?.map((sub: any, i: any) => (
+                    <div className="col-lg-6 mb-5" key={i}>
+                      <h6>{sub.title}</h6>
+
+                      {sub.type === "Signature" ? (
+                        <ESignature
+                          signatureValue={signatureValue}
+                          items={sub.id}
+                        />
+                      ) : sub.type === "date" ? (
+                        <input
+                          type="date"
+                          className="form-control mb-3"
+                          placeholder="Enter..."
+                          onChange={(e) =>
+                            handleChange(
+                              e,
+                              items?.id,
+                              null,
+                              false,
+                              items?.question?.type,
+                              sub?.id
+                            )
+                          }
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
-        </>
-      ))}
+        ))}
 
-      <div className="d-flex justify-content-between mt-4 pb-5">
-        <button
-          className="btn btn-secondary"
-          onClick={handleBack}
-          disabled={currentStep === 0}
-        >
-          Back
-        </button>
-        {currentStep <= 8 ? (
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            Next
-          </button>
-        ) : (
-          <button
-            className="btn btn-success"
-            onClick={() => alert("Form Submitted!")}
-          >
-            Submit
-          </button>
-        )}
+        <div className="mt-5 d-flex flex-column gap-4">
+          <div className="d-flex justify-content-between mt-4 pb-5">
+            <button
+              className="btn btn-secondary"
+              onClick={handleBack}
+              disabled={currentStep === 1}
+            >
+              Back
+            </button>
+            {currentStep <= 8 ? (
+              <button className="btn btn-primary" onClick={handleSubmit}>
+                Next
+              </button>
+            ) : (
+              <button
+                className="btn btn-success"
+                onClick={() => alert("Form Submitted!")}
+              >
+                Submit
+              </button>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
-
-export default ResidencyAgreement;

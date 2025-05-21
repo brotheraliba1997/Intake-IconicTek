@@ -77,11 +77,32 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     });
   };
 
+  console.log(formData, "formData")
+
   const questions = dataGet?.formQuestions
     ?.slice()
     ?.sort(
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
+
+     const handleSubmit = async () => {
+    const payload = { formId: dataGet?.id, answers: formData };
+
+    console.log(payload, "handleSubmit");
+        handleNext();
+    // try {
+    //   const response = await createAnswersMutation(payload).unwrap();
+    //   if (response) {
+    
+    //   }
+    //   console.log("Response:", response);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+  };
+
+
+
   return (
     <>
       <div className="card p-5">
@@ -152,7 +173,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
             Back
           </button>
           {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleNext}>
+            <button className="btn btn-primary" onClick={handleSubmit}>
               Next
             </button>
           ) : (

@@ -10,10 +10,30 @@ import { useCreateAnswersMutation } from "@/redux/services/answer";
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
+  const signatureValue = (val: any, items: any) => {
+    setFormData((prev: any) =>
+      prev.map((quest: any) => {
+        if (Array.isArray(quest.subQuestion)) {
+          const updateQuestion = quest?.subQuestion?.map((subquest: any) => {
+            if (subquest?.id === items) {
+              return { ...subquest, signatureLink: val };
+            } else {
+              return subquest;
+            }
+          });
+          return { ...quest, subQuestion: updateQuestion };
+        }
+        return quest;
+      })
+    );
+  };
+
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-  console.log("formData", formData);
+
+  console.log(dataGet, "dataGet");
+
   useEffect(() => {
     if (dataGet)
       setFormData(
@@ -22,6 +42,12 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           value: "",
           multipleValue: [],
           type: items?.question.type,
+          subQuestion: items?.question?.SubQuestion?.map((sub: any) => ({
+            value: "",
+            multipleValue: [],
+            type: sub?.type,
+            id: sub?.id,
+          })),
         }))
       );
   }, [dataGet]);
@@ -31,12 +57,30 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     questionId: string,
     optionId: string | null,
     isMultiple: boolean,
-    type: string
+    type: string,
+    subQuestionId: string
   ) => {
     const { value, checked } = e.target;
-
     const arrayfound = formData?.map((quest: any) => {
       if (quest.questionId === questionId) {
+        let subQuestionFound = quest?.subQuestion?.map((subQues: any) => {
+          if (subQues?.id === subQuestionId) {
+            let multipleValue = subQues.multipleValue;
+            const optionFound = multipleValue?.find(
+              (option: any) => option === optionId
+            );
+            if (optionFound) {
+              multipleValue = multipleValue.filter(
+                (val: any) => val !== optionId
+              );
+            } else {
+              multipleValue.push(optionId);
+            }
+            return { ...subQues, multipleValue };
+          } else {
+            return subQues;
+          }
+        });
         let multipleValue = quest.multipleValue;
         const optionFound = multipleValue?.find(
           (option: any) => option === optionId
@@ -48,9 +92,9 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         }
 
         if (isMultiple) {
-          return { ...quest, multipleValue };
+          return { ...quest, multipleValue, subQuestion: subQuestionFound };
         } else {
-          return { ...quest, value };
+          return { ...quest, value, subQuestion: subQuestionFound };
         }
       } else {
         return quest;
@@ -60,37 +104,128 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     setFormData(arrayfound);
   };
 
-  const question = dataGet?.formQuestions
-    ?.slice()
-    ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
+  
 
-  const subQuestion = (question || [])
-    .map((item: any) => item?.question?.SubQuestion || [])
-    .flat()
-    .filter((sub: any) => sub.type === "date" || sub.type === "Signature")
-    .sort((a: any, b: any) => a.arrangement - b.arrangement);
-
-  const coloum = (question || [])
-    .map((item: any) => item?.question?.coloum || [])
-    .flat()
-
-    .sort((a: any, b: any) => a.arrangement - b.arrangement);
-
+  const question = dataGet?.formQuestions;
   const [createAnswersMutation] = useCreateAnswersMutation();
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
 
     console.log(payload, "handleSubmit");
-    handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
 
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    try {
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
+        handleNext();
+      }
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+    switch (type) {
+      case "html":
+        return (
+          <>
+            {" "}
+            <HtmlRenderer items={items} />{" "}
+            <div className="row mt-5">
+              {items?.question?.SubQuestion?.slice()
+                ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+                ?.map((sub: any, i: any) => (
+                  <div className="d-flex gap-4 mb-5" key={i}>
+                    <ESignature
+                      signatureValue={signatureValue}
+                      items={sub.id}
+                    />
+
+                    <input
+                      type="date"
+                      className="form-control mb-3"
+                      placeholder="Enter..."
+                      onChange={(e) =>
+                        handleChange({
+                          
+                        }
+                          e,
+                          items?.id,
+                          null,
+                          false,
+                          items?.question?.type,
+                          sub?.id
+                        )
+                      }
+                    />
+                  </div>
+                ))}
+            </div>{" "}
+          </>
+        );
+
+      case "text":
+      case "date":
+        return (
+          <>
+            <div className="col-lg-6 my-3">
+              <HtmlRenderer items={items} />
+              {type === "text" && (
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter text..."
+                  onChange={(e: any) => handleChange(e, items?.id)}
+                />
+              )}
+              {type === "date" && (
+                <input
+                  type="date"
+                  className="form-control"
+                  onChange={(e: any) => handleChange(e, items?.id)}
+                />
+              )}
+            </div>
+          </>
+        );
+
+      case "table":
+        return (
+          <>
+            {items?.question?.type === "table" && (
+              <div className="my-5">
+                {items?.question?.title && (
+                  <p className="text-left">{items?.question?.title}</p>
+                )}
+
+                {items?.question?.SubQuestion?.map(
+                  (subquestion: any, i: number) => (
+                    <div key={i} className="mb-3">
+                      <SubquestionChecbox
+                        subquestion={subquestion}
+                        index={i}
+                        onChange={(e, optionId, isMultiple) =>
+                          handleChange(
+                            e,
+                            items?.id,
+                            optionId,
+                            isMultiple,
+                            subquestion.type,
+                            subquestion?.id
+                          )
+                        }
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -98,159 +233,23 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       <div className="card p-5">
         <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-        <div className="row pt-3">
-          {question?.map((items: any, index: any) => {
-            if (
-              items?.question?.type === "text" ||
-              items?.question?.type === "date"
-            ) {
-              return (
-                <div key={index} className="col-lg-6 my-3">
-                  {items?.question?.type !== "html" && (
-                    <HtmlRenderer items={items} />
-                  )}
-
-                  <input
-                    type={items?.question?.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                    onChange={(e: any) =>
-                      handleChange(
-                        e,
-                        items?.id,
-                        null,
-                        false,
-                        items?.question?.type
-                      )
-                    }
-                  />
-                </div>
-              );
-            }
-
-            return null;
-          })}
+        <div className="row pt-3 ">
+          {question
+            ?.slice()
+            ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+            ?.map((items: any, index: any) => (
+              <>
+                {getComponent({
+                  type: items?.question?.type,
+                  items,
+                  handleChange,
+                  signatureValue,
+                })}
+              </>
+            ))}
         </div>
 
-        {question?.map((items: any, index: any) => (
-          <div
-            key={index}
-            className="d-flex mb-2 justify-content-between w-100 align-items-center"
-          >
-            <div>
-              {items?.question?.type === "html" && (
-                <>
-                  <HtmlRenderer items={items} />
-                </>
-              )}
-
-              {items?.question?.type === "table" && (
-                <>
-                  {/* Table Title */}
-                  {items?.title && (
-                    <p className="text-left">{items?.question.title}</p>
-                  )}
-
-                  <table className="table table-bordered my-5">
-                    <thead>
-                      {/* <tr>
-                       
-                        {coloum?.map(
-                          (coloum: any, index: number) => (
-                            <th key={index}>
-                              <p
-                                style={{
-                                  textWrap: "wrap",
-                                  width: "350px",
-                                  padding: "0 20px",
-                                }}
-                              >
-                                {coloum?.title}
-                              </p>
-                            </th>
-                          )
-                        )}
-                      </tr> */}
-                    </thead>
-
-                    <tbody>
-                      {/* SubQuestion as rows */}
-                      {items?.question?.SubQuestion &&
-                        items?.question?.SubQuestion.length > 0 &&
-                        items?.question?.SubQuestion.map(
-                          (subquestion: any, i: number) => (
-                            <tr key={i}>
-                              <td colSpan={items?.coloum?.length || 1}>
-                                <SubquestionChecbox
-                                  subquestion={subquestion}
-                                  index={i}
-                                  onChange={(e, optionId, isMultiple) =>
-                                    handleChange(
-                                      e,
-                                      subquestion.id,
-                                      optionId,
-                                      isMultiple,
-                                      subquestion.type
-                                    )
-                                  }
-                                />
-                              </td>
-                            </tr>
-                          )
-                        )}
-                    </tbody>
-                  </table>
-                </>
-              )}
-
-              {items?.SubQuestion && items.SubQuestion.length > 0 && (
-                <div className="row my-2">
-                  {items.SubQuestion.map((sub: any, i: number) => (
-                    <div className="col-lg-6" key={i}>
-                      {(sub?.type === "Signature" || sub?.type === "date") && (
-                        <>
-                          <label className="form-label">{sub.title}</label>
-                          <input
-                            type={sub?.type}
-                            className="form-control mb-3"
-                            placeholder="Enter..."
-                          />
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-
         <div className="mt-5 d-flex flex-column gap-4">
-          <h3>Signature:</h3>
-          {subQuestion && subQuestion.length > 0 && (
-            <div className="row">
-              {subQuestion.map((sub: any, i: number) => (
-                <div className="col-lg-6 mb-4 " key={i}>
-                  {(sub?.type === "Signature" || sub?.type === "date") && (
-                    <>
-                      <h6 className=" ">{sub.title}</h6>
-                    </>
-                  )}
-
-                  {sub?.type === "Signature" ? (
-                    <ESignature />
-                  ) : sub?.type === "date" ? (
-                    <input
-                      type={sub.type}
-                      className="form-control mb-3"
-                      placeholder="Enter..."
-                    />
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          )}
-
           <div className="d-flex justify-content-between mt-4 pb-5">
             <button
               className="btn btn-secondary"

@@ -5,12 +5,19 @@ import { useCreateAnswersMutation } from "@/redux/services/answer";
 import HtmlRenderer from "./common/HtmlRenderer";
 import Image from "next/image";
 import HospitalLogo from "./common/HospitalLogo";
+import StepperButtons from "../common/StepperButtons";
+
+interface AuthorizationForMedicationProps {
+  handleBack: () => void;
+  handleNext: () => void;
+  currentStep: number;
+}
 
 function AuthorizationForMedication({
   handleBack,
   handleNext,
   currentStep,
-}: any) {
+}: AuthorizationForMedicationProps) {
   const { data, isLoading, error } = useGetMyFormQuery({});
 
   const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
@@ -72,8 +79,6 @@ function AuthorizationForMedication({
 
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
-
-    console.log(payload, "payload");
 
     try {
       const response = await createAnswersMutation(payload).unwrap();
@@ -190,27 +195,15 @@ function AuthorizationForMedication({
             </div>
           </div>
         ))}
-        <div className="d-flex justify-content-between mt-4 pb-5">
-          <button
-            className="btn btn-secondary"
-            onClick={handleBack}
-            disabled={currentStep === 1}
-          >
-            Back
-          </button>
-          {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleSubmit}>
-              Next
-            </button>
-          ) : (
-            <button
-              className="btn btn-success"
-              onClick={() => alert("Form Submitted!")}
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        <StepperButtons
+          currentStep={currentStep}
+          totalSteps={8}
+          onNavigate={(direction) => {
+            if (direction === "back") handleBack();
+            else if (direction === "next") handleSubmit();
+            else if (direction === "submit") alert("Form Submitted!");
+          }}
+        />
       </div>
     </>
   );

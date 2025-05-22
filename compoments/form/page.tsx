@@ -28,7 +28,7 @@ function FormPage() {
 
   return (
     <>
-      <div className="container mt-5 ">
+      <div className="container mt-5">
         <Stepper steps={stepLabels} currentStep={currentStep} />
 
         <div className="mt-4">

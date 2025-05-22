@@ -6,10 +6,9 @@ interface StepperProps {
     label: string;
   }[];
   currentStep: number;
-  className?: string;
 }
 
-export function Stepper({ steps, currentStep, className }: StepperProps) {
+export function Stepper({ steps, currentStep }: StepperProps) {
   const formatLabel = (label: string) => {
     // Split words and add line break for better formatting
     const words = label.split(" ");
@@ -27,7 +26,7 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
   };
 
   return (
-    <div className={`container ${className}`}>
+    <div className={`container card py-4 rounded shadow-lg`}>
       <div className="d-flex align-items-center justify-content-center w-100 stepper-container">
         {steps.map((step, index) => (
           <React.Fragment key={index}>

@@ -2,7 +2,6 @@
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-
 export default function TypeSignature({ signatureValue, items }: any) {
   const [text, setText] = useState("");
   const [color, setColor] = useState("#000000");

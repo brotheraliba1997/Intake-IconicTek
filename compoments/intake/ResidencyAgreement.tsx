@@ -7,6 +7,7 @@ import CheckBox from "./common/CheckBox";
 import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 import HospitalLogo from "./common/HospitalLogo";
+import StepperButtons from "../common/StepperButtons";
 
 function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
@@ -186,27 +187,15 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         </>
       ))}
 
-      <div className="d-flex justify-content-between mt-4 pb-5">
-        <button
-          className="btn btn-secondary"
-          onClick={handleBack}
-          disabled={currentStep === 0}
-        >
-          Back
-        </button>
-        {currentStep <= 8 ? (
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            Next
-          </button>
-        ) : (
-          <button
-            className="btn btn-success"
-            onClick={() => alert("Form Submitted!")}
-          >
-            Submit
-          </button>
-        )}
-      </div>
+      <StepperButtons
+        currentStep={currentStep}
+        totalSteps={8}
+        onNavigate={(direction) => {
+          if (direction === "back") handleBack();
+          else if (direction === "next") handleSubmit();
+          else if (direction === "submit") alert("Form Submitted!");
+        }}
+      />
     </div>
   );
 }

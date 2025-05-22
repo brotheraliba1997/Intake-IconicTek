@@ -12,7 +12,6 @@ import { useSession } from "next-auth/react";
 import CompanyForm from "./CompanyForm";
 import DotsLoader from "../common/loaders/dotsLoader";
 
-
 const MyCompanyForm: React.FC = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -25,6 +24,7 @@ const MyCompanyForm: React.FC = () => {
     // refetch: refetchMyCompany,
   } = useGetMyCompanyQuery({});
 
+  console.log(company, "company");
   // useEffect(() => {
   //   refetchCompanyById();
   // }, []);

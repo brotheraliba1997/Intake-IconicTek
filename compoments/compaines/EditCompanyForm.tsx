@@ -26,7 +26,7 @@ const EditCompanyForm: React.FC = () => {
     refetchCompanyById();
   }, []);
 
-  console.log(company, "company")
+  console.log(company, "company");
 
   const [updateCompany, { isLoading: isSubmitLoading }] =
     useUpdateCompanyMutation();
@@ -40,8 +40,6 @@ const EditCompanyForm: React.FC = () => {
     state: company?.data?.state,
     zipCode: company?.data?.zipCode,
     address: company?.data?.address,
-  
-    
   };
 
   const submitHandler = async (data: CompanyData) => {

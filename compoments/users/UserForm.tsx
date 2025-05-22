@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { UserData, UserFormDataType } from "@/types/user";
 // import Button from "@/components/common/Button";
 import { CompanyData } from "@/types/company";
@@ -61,9 +62,8 @@ const UserForm = ({
       .email("Invalid email address")
       .required("Email Address is required"),
 
-
-      state: Yup.string().required("state is required"),
-      city: Yup.string().required("city is required"),
+    state: Yup.string().required("state is required"),
+    city: Yup.string().required("city is required"),
 
     password: Yup.string().when("$isAdd", ([isAdd], passSchema) => {
       console.log("isAdd:", isAdd); // Debug log

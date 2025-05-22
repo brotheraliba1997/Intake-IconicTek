@@ -25,7 +25,6 @@ function Sidebar() {
 
   const superAdminMenuItems = [
     { label: "Dashboard", path: "/dashboard", icons: <FiHome /> },
-
     { label: "Companies", path: "/dashboard/companies", icons: <FaSuitcase /> },
     { label: "Plan", path: "/dashboard/plan", icons: <FaRegClipboard /> },
     { label: "User", path: "/dashboard/users", icons: <BsPerson /> },
@@ -58,7 +57,7 @@ function Sidebar() {
       subItems: [
         {
           label: "My Company",
-          path: "/dashboard/companies",
+          path: "/dashboard/companies/my-company",
           icons: <FaSuitcase />,
         },
       ],
@@ -168,7 +167,11 @@ function Sidebar() {
               <MenuItem item={item} key={index} />
             ))}
 
-            <li className="cursor-pointer " style={{marginLeft: "10px"}} onClick={signoutHandler}>
+            <li
+              className="cursor-pointer "
+              style={{ marginLeft: "10px" }}
+              onClick={signoutHandler}
+            >
               <Link href="/login" className="pt-2">
                 <FiLogOut /> <span>Sign Out</span>
               </Link>

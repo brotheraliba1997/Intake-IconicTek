@@ -9,13 +9,14 @@ import ESignature from "../E-Signature/E-signature";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 import SignatureCompoment from "../E-Signature/signature";
 import HospitalLogo from "./common/HospitalLogo";
+import handleChange from "../utlity/handleFormChange";
+
 
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
   const signatureValue = (val: any, items: any) => {
-
-    console.log(val, items, "subQuestion")
+    console.log(val, items, "subQuestion");
     setFormData((prev: any) =>
       prev.map((quest: any) => {
         if (Array.isArray(quest.subQuestion)) {
@@ -37,7 +38,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
-  console.log(data, "dataGet");
+  console.log(dataGet, "dataGet");
 
   useEffect(() => {
     if (dataGet)
@@ -57,57 +58,57 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       );
   }, [dataGet]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    questionId: string,
-    optionId: string | null,
-    isMultiple: boolean,
-    type: string,
-    subQuestionId: string
-  ) => {
-    const { value, checked } = e.target;
-    const arrayfound = formData?.map((quest: any) => {
-      if (quest.questionId === questionId) {
-        let subQuestionFound = quest?.subQuestion?.map((subQues: any) => {
-          if (subQues?.id === subQuestionId) {
-            let multipleValue = subQues.multipleValue;
-            const optionFound = multipleValue?.find(
-              (option: any) => option === optionId
-            );
-            if (optionFound) {
-              multipleValue = multipleValue.filter(
-                (val: any) => val !== optionId
-              );
-            } else {
-              multipleValue.push(optionId);
-            }
-            return { ...subQues, multipleValue };
-          } else {
-            return subQues;
-          }
-        });
-        let multipleValue = quest.multipleValue;
-        const optionFound = multipleValue?.find(
-          (option: any) => option === optionId
-        );
-        if (optionFound) {
-          multipleValue = multipleValue.filter((val: any) => val !== optionId);
-        } else {
-          multipleValue.push(optionId);
-        }
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   questionId: string,
+  //   optionId: string | null,
+  //   isMultiple: boolean,
+  //   type: string,
+  //   subQuestionId: string
+  // ) => {
+  //   const { value, checked } = e.target;
+  //   const arrayfound = formData?.map((quest: any) => {
+  //     if (quest.questionId === questionId) {
+  //       let subQuestionFound = quest?.subQuestion?.map((subQues: any) => {
+  //         if (subQues?.id === subQuestionId) {
+  //           let multipleValue = subQues.multipleValue;
+  //           const optionFound = multipleValue?.find(
+  //             (option: any) => option === optionId
+  //           );
+  //           if (optionFound) {
+  //             multipleValue = multipleValue.filter(
+  //               (val: any) => val !== optionId
+  //             );
+  //           } else {
+  //             multipleValue.push(optionId);
+  //           }
+  //           return { ...subQues, multipleValue };
+  //         } else {
+  //           return subQues;
+  //         }
+  //       });
+  //       let multipleValue = quest.multipleValue;
+  //       const optionFound = multipleValue?.find(
+  //         (option: any) => option === optionId
+  //       );
+  //       if (optionFound) {
+  //         multipleValue = multipleValue.filter((val: any) => val !== optionId);
+  //       } else {
+  //         multipleValue.push(optionId);
+  //       }
 
-        if (isMultiple) {
-          return { ...quest, multipleValue, subQuestion: subQuestionFound };
-        } else {
-          return { ...quest, value, subQuestion: subQuestionFound };
-        }
-      } else {
-        return quest;
-      }
-    });
+  //       if (isMultiple) {
+  //         return { ...quest, multipleValue, subQuestion: subQuestionFound };
+  //       } else {
+  //         return { ...quest, value, subQuestion: subQuestionFound };
+  //       }
+  //     } else {
+  //       return quest;
+  //     }
+  //   });
 
-    setFormData(arrayfound);
-  };
+  //   setFormData(arrayfound);
+  // };
 
   console.log(formData, "formData");
 
@@ -151,7 +152,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                       </>
                     )}
 
-                    {/* Show Date */}
                     {sub?.type === "date" && (
                       <>
                         <h5>{sub?.title}</h5>
@@ -160,14 +160,13 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                           className="form-control"
                           placeholder="Enter..."
                           onChange={(e) =>
-                            handleChange(
-                              e,
-                              items?.id,
-                              null,
-                              false,
-                              items?.question?.type,
-                              sub?.id
-                            )
+                            handleChange(e, formData, setFormData, {
+                              questionId: items?.id,
+                              optionId: null,
+                              isMultiple: false,
+                              type: items?.question?.type,
+                              subQuestionId: sub?.id,
+                            })
                           }
                         />
                       </>
@@ -190,14 +189,22 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                     type="text"
                     className="form-control"
                     placeholder="Enter text..."
-                    onChange={(e: any) => handleChange(e, items?.id)}
+                    onChange={(e: any) =>
+                      handleChange(e, formData, setFormData, {
+                        questionId: items?.id,
+                      })
+                    }
                   />
                 )}
                 {type === "date" && (
                   <input
                     type="date"
                     className="form-control"
-                    onChange={(e: any) => handleChange(e, items?.id)}
+                     onChange={(e: any) =>
+                      handleChange(e, formData, setFormData, {
+                        questionId: items?.id,
+                      })
+                    }
                   />
                 )}
               </div>
@@ -221,14 +228,15 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         subquestion={subquestion}
                         index={i}
                         onChange={(e, optionId, isMultiple) =>
-                          handleChange(
-                            e,
-                            items?.id,
-                            optionId,
-                            isMultiple,
-                            subquestion.type,
-                            subquestion?.id
-                          )
+                          handleChange(e, formData, setFormData, {
+                            questionId: items?.id,
+                            optionId: optionId,
+                            isMultiple: isMultiple,
+                            // type: subquestion.type,
+                            type: "radio",
+                            subQuestionId: subquestion?.id,
+                           
+                          })
                         }
                       />
                     </div>

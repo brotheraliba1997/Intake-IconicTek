@@ -2,10 +2,19 @@
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-export default function TypeSignature({ signatureValue, items }: any) {
+export default function TypeSignature({
+  signatureValue,
+  items,
+  formData,
+}: any) {
   const [text, setText] = useState("");
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
+
+  const signatureValueRepeat = formData?.find(
+    (item: any) => item?.title === "Name"
+  );
+
   const canvasRef = useRef<any>(null);
 
   const generateImage = () => {
@@ -26,7 +35,7 @@ export default function TypeSignature({ signatureValue, items }: any) {
         <div style={{ borderBottom: "1px solid black" }}>
           <input
             type="text"
-            value={text}
+            value={signatureValueRepeat?.value}
             onChange={(e) => setText(e.target.value)}
             style={{
               fontSize: "20px",

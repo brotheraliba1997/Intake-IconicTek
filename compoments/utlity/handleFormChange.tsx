@@ -20,6 +20,7 @@ const handleChange = (
     subQuestionId: string | null;
   }
 ) => {
+  
   const { value } = e.target;
 
   const arrayfound = formData?.map((quest: any) => {

@@ -8,7 +8,7 @@ import Image from "next/image";
 import Signature from "@/public/img/signature/signature.jpeg";
 import TypeSignature from "./typesignature";
 
-function SignatureCompoment({ signatureValue, items, label }: any) {
+function SignatureCompoment({ signatureValue, items, label, formData }: any) {
   const [toggle, setToggly] = useState(false);
 
   const [show, setShow] = useState(false);
@@ -106,7 +106,7 @@ function SignatureCompoment({ signatureValue, items, label }: any) {
         {toggle ? (
           <ESignature signatureValue={signatureValue} items={items} />
         ) : (
-          <TypeSignature signatureValue={signatureValue} items={items} />
+          <TypeSignature signatureValue={signatureValue} items={items} formData={formData} />
         )}
       </Modal>
     </>

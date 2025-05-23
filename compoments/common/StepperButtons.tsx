@@ -26,6 +26,7 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({
       {!isLastStep ? (
         <button
           className="btn"
+          type="submit"
           onClick={() => onNavigate("next")}
           style={{ backgroundColor: "#00A5A8", color: "white" }}
         >

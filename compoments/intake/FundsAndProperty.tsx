@@ -6,6 +6,8 @@ import { FormData, FormQuestions, Option } from "@/types/form-data";
 import { AnswerData } from "@/types/common";
 import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
+import HtmlRenderer from "./common/HtmlRenderer";
+import handleChange from "../utlity/handleFormChange";
 
 function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -29,39 +31,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
 
   console.log("dataGet", dataGet);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    questionId: string,
-    optionId: string | null,
-    isMultiple: boolean,
-    type: string
-  ) => {
-    const { value, checked } = e.target;
-
-    const arrayfound = formData.map((quest: AnswerData) => {
-      if (quest.questionId === questionId) {
-        if (isMultiple && optionId) {
-          let multipleValue = [...quest.multipleValue];
-
-          if (checked) {
-            multipleValue.push(optionId);
-          } else {
-            multipleValue = multipleValue.filter((val) => val !== optionId);
-          }
-          return {
-            ...quest,
-            multipleValue,
-          };
-        } else {
-          return { ...quest, value };
-        }
-      } else {
-        return quest;
-      }
-    });
-
-    setFormData(arrayfound);
-  };
+  console.log(formData, "formData");
 
   const question = dataGet?.formQuestions
     ?.slice()
@@ -71,137 +41,115 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
 
   const handleSubmit = async () => {
     const payload = { formId: dataGet?.id, answers: formData };
-    handleNext();
+    // handleNext();
+  };
+
+  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+    switch (type) {
+      case "html":
+        return (
+          <>
+            <div className="mt-4 mb-2">
+              {type === "html" && <HtmlRenderer items={items} />}
+            </div>
+          </>
+        );
+
+      case "text":
+        return (
+          <>
+            {(type === "text" || type === "date") && (
+              <div className="col-lg-12 mt-5">
+                <HtmlRenderer items={items} />
+                {type === "text" && (
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter text..."
+                    required={true}
+                    onChange={(e: any) =>
+                      handleChange(e, formData, setFormData, {
+                        questionId: items?.id,
+                      })
+                    }
+                  />
+                )}
+              </div>
+            )}
+          </>
+        );
+
+      case "checkbox":
+        return (
+          type === "checkbox" &&
+          items?.question?.options &&
+          items.question.options.length > 0 && (
+            <div className="row ">
+              {items.question.options.map((option: Option, i: number) => (
+                <div className="col-lg-6" key={i}>
+                  <div className="form-check mb-2">
+                    <div>
+                      <input
+                        className="form-check-input"
+                        onChange={(e) =>
+                          handleChange(e, formData, setFormData, {
+                            questionId: items?.id,
+                            optionId: option.id,
+                            isMultiple: false,
+                            type: "radio",
+                          })
+                        }
+                        type="radio"
+                      />
+                      <label className="form-check-label ">
+                        {option.title}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
     <>
       <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
-        <h3 className="card-title text-center">
-          {Formlist?.FUNDSANDPROPERTY?.title}
-        </h3>
-        {question?.map((items: FormQuestions, index: number) => (
-          <div
-            key={index}
-            className="d-flex justify-content-between w-100 align-items-center"
-          >
-            <div className="d-flex flex-column gap-2 my-2 w-100">
-              {items?.question?.type !== "html" && (
-                <>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: items?.question?.title }}
-                  />
-                </>
-              )}
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-              <div>
-                {" "}
-                {(items?.question.type === "text" ||
-                  items?.question.type === "date") && (
-                  <input
-                    type={items.question.type === "date" ? "date" : "text"}
-                    className="form-control"
-                    placeholder="Enter..."
-                    value={
-                      formData.find((q) => q.questionId === items.questionId)
-                        ?.value || ""
-                    }
-                    onChange={(e) => {
-                      handleChange(
-                        e,
-                        items.questionId,
-                        null,
-                        false,
-                        items.question.type
-                      );
-                    }}
-                  />
-                )}
-                {items?.question.type === "textarea" && (
-                  <textarea
-                    className="form-control"
-                    id=""
-                    rows={3}
-                    value={
-                      formData.find((q) => q.questionId === items.questionId)
-                        ?.value || ""
-                    }
-                    onChange={(e) => {
-                      handleChange(
-                        e as unknown as React.ChangeEvent<HTMLInputElement>,
-                        items.questionId,
-                        null,
-                        false,
-                        items.question.type
-                      );
-                    }}
-                  ></textarea>
-                )}
-                {items?.question?.options &&
-                  items?.question.options.length > 0 && (
-                    <div className="row">
-                      {items?.question.options.map(
-                        (option: Option, i: number) => (
-                          <div className="col-lg-12" key={i}>
-                            <div className="form-check mb-2">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`option-${index}-${i}`}
-                                  checked={
-                                    formData
-                                      .find(
-                                        (q) => q.questionId === items.questionId
-                                      )
-                                      ?.multipleValue.includes(option.id) ||
-                                    false
-                                  }
-                                  onChange={(e) => {
-                                    handleChange(
-                                      e,
-                                      option.questionId,
-                                      option.id,
-                                      true,
-                                      items.question.type
-                                    );
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label ms-2"
-                                  htmlFor={`option-${index}-${i}`}
-                                >
-                                  {option.title}
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  )}
-              </div>
-
-              {items?.question.type === "html" && (
+        <form onSubmit={handleSubmit}>
+          <div className="row pt-3 ">
+            {question
+              ?.slice()
+              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+              ?.map((items: any, index: any) => (
                 <>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: items?.question.title }}
-                  />
+                  {getComponent({
+                    type: items?.question?.type,
+                    items,
+                    handleChange,
+                    // signatureValue,
+                  })}
                 </>
-              )}
-            </div>
+              ))}
           </div>
-        ))}
-        <StepperButtons
-          currentStep={currentStep}
-          totalSteps={8}
-          onNavigate={(direction) => {
-            if (direction === "back") handleBack();
-            else if (direction === "next") handleSubmit();
-            else if (direction === "submit") alert("Form Submitted!");
-          }}
-        />
+
+          <StepperButtons
+            currentStep={currentStep}
+            totalSteps={8}
+            onNavigate={(direction) => {
+              if (direction === "back") handleBack();
+              else if (direction === "next") return;
+              else if (direction === "submit") alert("Form Submitted!");
+            }}
+          />
+        </form>
       </div>
     </>
   );

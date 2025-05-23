@@ -15,9 +15,7 @@ import StepperButtons from "../common/StepperButtons";
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
- 
-
-  const signatureValue = (val: any, items: any) => {
+  const signatureValue = ({value: val, itemsid:items} :any) => {
     console.log(val, items, "subQuestion");
     setFormData((prev: any) =>
       prev.map((quest: any) => {
@@ -50,6 +48,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
+  console.log(formData, "formData");
   console.log(dataGet, "dataGet");
 
   useEffect(() => {
@@ -60,6 +59,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           value: "",
           multipleValue: [],
           type: items?.question.type,
+          title: items?.question?.title,
           subQuestion: items?.question?.SubQuestion?.map((sub: any) => ({
             value: "",
             multipleValue: [],
@@ -72,7 +72,12 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
   const question = dataGet?.formQuestions;
   const [createAnswersMutation] = useCreateAnswersMutation();
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    e.preventDefault();
     const payload = { formId: dataGet?.id, answers: formData };
 
     console.log(payload, "handleSubmit");
@@ -107,6 +112,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                           signatureValue={signatureValue}
                           items={sub.id}
                           label={sub?.title}
+                          formData={formData}
                         />
                       </>
                     )}
@@ -117,6 +123,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         <input
                           type="date"
                           className="form-control"
+                          required
                           placeholder="Enter..."
                           onChange={(e) =>
                             handleChange(e, formData, setFormData, {
@@ -148,6 +155,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                     type="text"
                     className="form-control"
                     placeholder="Enter text..."
+                    required={true}
                     onChange={(e: any) =>
                       handleChange(e, formData, setFormData, {
                         questionId: items?.id,
@@ -159,6 +167,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                   <input
                     type="date"
                     className="form-control"
+                    required
                     onChange={(e: any) =>
                       handleChange(e, formData, setFormData, {
                         questionId: items?.id,
@@ -171,7 +180,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      case "table":
+        case "table":
         return (
           <>
             {items?.question?.type === "table" && (
@@ -191,7 +200,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                             questionId: items?.id,
                             optionId: optionId,
                             isMultiple: isMultiple,
-                            // type: subquestion.type,
+
                             type: "radio",
                             subQuestionId: subquestion?.id,
                           })
@@ -216,32 +225,33 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         <HospitalLogo />
 
         <h3 className="card-title text-center">{dataGet?.title}</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="row pt-3 ">
+            {question
+              ?.slice()
+              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+              ?.map((items: any, index: any) => (
+                <>
+                  {getComponent({
+                    type: items?.question?.type,
+                    items,
+                    handleChange,
+                    signatureValue,
+                  })}
+                </>
+              ))}
+          </div>
 
-        <div className="row pt-3 ">
-          {question
-            ?.slice()
-            ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-            ?.map((items: any, index: any) => (
-              <>
-                {getComponent({
-                  type: items?.question?.type,
-                  items,
-                  handleChange,
-                  signatureValue,
-                })}
-              </>
-            ))}
-        </div>
-
-        <StepperButtons
-          currentStep={currentStep}
-          totalSteps={8}
-          onNavigate={(direction) => {
-            if (direction === "back") handleBack();
-            else if (direction === "next") handleSubmit();
-            else if (direction === "submit") alert("Form Submitted!");
-          }}
-        />
+          <StepperButtons
+            currentStep={currentStep}
+            totalSteps={8}
+            onNavigate={(direction) => {
+              if (direction === "back") handleBack();
+              else if (direction === "next") return;
+              else if (direction === "submit") alert("Form Submitted!");
+            }}
+          />
+        </form>
       </div>
     </>
   );

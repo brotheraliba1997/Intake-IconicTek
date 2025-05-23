@@ -11,14 +11,24 @@ import SignatureCompoment from "../E-Signature/signature";
 import HospitalLogo from "./common/HospitalLogo";
 import handleChange from "../utlity/handleFormChange";
 
-
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
+
+ 
 
   const signatureValue = (val: any, items: any) => {
     console.log(val, items, "subQuestion");
     setFormData((prev: any) =>
       prev.map((quest: any) => {
+        if (Array.isArray(quest.questionId)) {
+          if (quest.questionId === items) {
+            return { ...quest, signatureLink: val };
+          } else {
+            return quest;
+          }
+        }
+
+        //
         if (Array.isArray(quest.subQuestion)) {
           const updateQuestion = quest?.subQuestion?.map((subquest: any) => {
             if (subquest?.id === items) {
@@ -28,8 +38,9 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
             }
           });
           return { ...quest, subQuestion: updateQuestion };
+        } else {
+          return quest;
         }
-        return quest;
       })
     );
   };
@@ -57,60 +68,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         }))
       );
   }, [dataGet]);
-
-  // const handleChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   questionId: string,
-  //   optionId: string | null,
-  //   isMultiple: boolean,
-  //   type: string,
-  //   subQuestionId: string
-  // ) => {
-  //   const { value, checked } = e.target;
-  //   const arrayfound = formData?.map((quest: any) => {
-  //     if (quest.questionId === questionId) {
-  //       let subQuestionFound = quest?.subQuestion?.map((subQues: any) => {
-  //         if (subQues?.id === subQuestionId) {
-  //           let multipleValue = subQues.multipleValue;
-  //           const optionFound = multipleValue?.find(
-  //             (option: any) => option === optionId
-  //           );
-  //           if (optionFound) {
-  //             multipleValue = multipleValue.filter(
-  //               (val: any) => val !== optionId
-  //             );
-  //           } else {
-  //             multipleValue.push(optionId);
-  //           }
-  //           return { ...subQues, multipleValue };
-  //         } else {
-  //           return subQues;
-  //         }
-  //       });
-  //       let multipleValue = quest.multipleValue;
-  //       const optionFound = multipleValue?.find(
-  //         (option: any) => option === optionId
-  //       );
-  //       if (optionFound) {
-  //         multipleValue = multipleValue.filter((val: any) => val !== optionId);
-  //       } else {
-  //         multipleValue.push(optionId);
-  //       }
-
-  //       if (isMultiple) {
-  //         return { ...quest, multipleValue, subQuestion: subQuestionFound };
-  //       } else {
-  //         return { ...quest, value, subQuestion: subQuestionFound };
-  //       }
-  //     } else {
-  //       return quest;
-  //     }
-  //   });
-
-  //   setFormData(arrayfound);
-  // };
-
-  console.log(formData, "formData");
 
   const question = dataGet?.formQuestions;
   const [createAnswersMutation] = useCreateAnswersMutation();
@@ -200,7 +157,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                   <input
                     type="date"
                     className="form-control"
-                     onChange={(e: any) =>
+                    onChange={(e: any) =>
                       handleChange(e, formData, setFormData, {
                         questionId: items?.id,
                       })
@@ -235,7 +192,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                             // type: subquestion.type,
                             type: "radio",
                             subQuestionId: subquestion?.id,
-                           
                           })
                         }
                       />

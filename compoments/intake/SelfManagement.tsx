@@ -10,6 +10,7 @@ import { useCreateAnswersMutation } from "@/redux/services/answer";
 import SignatureCompoment from "../E-Signature/signature";
 import HospitalLogo from "./common/HospitalLogo";
 import handleChange from "../utlity/handleFormChange";
+import StepperButtons from "../common/StepperButtons";
 
 function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
@@ -105,6 +106,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         <SignatureCompoment
                           signatureValue={signatureValue}
                           items={sub.id}
+                          label={sub?.title}
                         />
                       </>
                     )}
@@ -231,29 +233,15 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
             ))}
         </div>
 
-        <div className="mt-5 d-flex flex-column gap-4">
-          <div className="d-flex justify-content-between mt-4 pb-5">
-            <button
-              className="btn btn-secondary"
-              onClick={handleBack}
-              disabled={currentStep === 1}
-            >
-              Back
-            </button>
-            {currentStep <= 8 ? (
-              <button className="btn btn-primary" onClick={handleSubmit}>
-                Next
-              </button>
-            ) : (
-              <button
-                className="btn btn-success"
-                onClick={() => alert("Form Submitted!")}
-              >
-                Submit
-              </button>
-            )}
-          </div>
-        </div>
+        <StepperButtons
+          currentStep={currentStep}
+          totalSteps={8}
+          onNavigate={(direction) => {
+            if (direction === "back") handleBack();
+            else if (direction === "next") handleSubmit();
+            else if (direction === "submit") alert("Form Submitted!");
+          }}
+        />
       </div>
     </>
   );

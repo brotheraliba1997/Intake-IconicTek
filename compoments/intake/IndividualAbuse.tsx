@@ -4,6 +4,7 @@ import { useGetMyFormQuery } from "@/redux/services/form";
 import { AnswerData } from "@/types/common";
 import ESignature from "../E-Signature/E-signature";
 import HospitalLogo from "./common/HospitalLogo";
+import StepperButtons from "../common/StepperButtons";
 
 function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState<AnswerData[]>([]);
@@ -126,6 +127,21 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   };
 
   console.log("form", formData);
+  const handleSubmit = async () => {
+    const payload = { formId: dataGet?.id, answers: formData };
+
+    console.log(payload, "handleSubmit");
+    handleNext();
+    // try {
+    //   const response = await createAnswersMutation(payload).unwrap();
+    //   if (response) {
+
+    //   }
+    //   console.log("Response:", response);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+  };
 
   return (
     <>
@@ -265,27 +281,15 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
             </div>
           </div>
         ))}
-        <div className="d-flex justify-content-between mt-4 pb-5">
-          <button
-            className="btn btn-secondary"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
-            Back
-          </button>
-          {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleNext}>
-              Next
-            </button>
-          ) : (
-            <button
-              className="btn btn-success"
-              onClick={() => alert("Form Submitted!")}
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        <StepperButtons
+          currentStep={currentStep}
+          totalSteps={8}
+          onNavigate={(direction) => {
+            if (direction === "back") handleBack();
+            else if (direction === "next") handleSubmit();
+            else if (direction === "submit") alert("Form Submitted!");
+          }}
+        />
       </div>
     </>
   );

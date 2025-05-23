@@ -40,7 +40,7 @@ function FormPage() {
                 currentStep={currentStep}
               /> */}
 
-              <SELFMANAGEMENT
+              <FUNDSANDPROPERTY
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

@@ -21,7 +21,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
     if (dataGet)
       setFormData(
         dataGet?.formQuestions?.map((question: any) => ({
-          questionId: question?.questionId,
+          questionId: question?.id,
           value: "",
           multipleValue: [],
           type: question?.question.type,
@@ -88,9 +88,13 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
               {items.question.options.map((option: Option, i: number) => (
                 <div className="col-lg-6" key={i}>
                   <div className="form-check mb-2">
-                    <div>
+                   
                       <input
+                        type="radio"
                         className="form-check-input"
+                          name={`option`}
+                          // id={`option-${i}`}
+                          
                         onChange={(e) =>
                           handleChange(e, formData, setFormData, {
                             questionId: items?.id,
@@ -99,12 +103,11 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                             type: "radio",
                           })
                         }
-                        type="radio"
                       />
                       <label className="form-check-label ">
                         {option.title}
                       </label>
-                    </div>
+                   
                   </div>
                 </div>
               ))}

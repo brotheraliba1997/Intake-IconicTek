@@ -20,11 +20,13 @@ const handleChange = (
     subQuestionId: string | null;
   }
 ) => {
-  
   const { value } = e.target;
 
   const arrayfound = formData?.map((quest: any) => {
     if (quest.questionId === questionId) {
+      if (type === "radio") {
+        return { ...quest, value: optionId };
+      }
       let subQuestionFound = [];
       let multipleValue = [];
       if (subQuestionId) {

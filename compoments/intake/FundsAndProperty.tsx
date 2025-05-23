@@ -8,6 +8,7 @@ import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
 import HtmlRenderer from "./common/HtmlRenderer";
 import handleChange from "../utlity/handleFormChange";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
 
 function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -39,16 +40,33 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
 
-  const handleSubmit = async () => {
+const [createAnswersMutation] = useCreateAnswersMutation();
+  const handleSubmit = async (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    e.preventDefault();
     const payload = { formId: dataGet?.id, answers: formData };
-    // handleNext();
+
+    console.log(payload, "handleSubmit");
+
+    try {
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
+        handleNext();
+      }
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }                                                                              
   };
 
   const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
     switch (type) {
       case "html":
         return (
-          <>
+          <>          
             <div className="mt-4 mb-2">
               {type === "html" && <HtmlRenderer items={items} />}
             </div>
@@ -56,7 +74,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         );
 
       case "text":
-        return (
+        return (             
           <>
             {(type === "text" || type === "date") && (
               <div className="col-lg-12 mt-5">
@@ -64,16 +82,16 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                 {type === "text" && (
                   <input
                     type="text"
-                    className="form-control"
-                    placeholder="Enter text..."
+                    className="form-control"                                
+                    placeholder="Enter text..."                      
                     required={true}
                     onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {
+                      handleChange(e, formData, setFormData, {       
                         questionId: items?.id,
                       })
                     }
-                  />
-                )}
+                  />                      
+                )}      
               </div>
             )}
           </>
@@ -90,7 +108,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                   <div className="form-check mb-2">
                    
                       <input
-                        type="radio"
+                        type="radio"               
                         className="form-check-input"
                           name={`option`}
                           // id={`option-${i}`}
@@ -99,7 +117,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                           handleChange(e, formData, setFormData, {
                             questionId: items?.id,
                             optionId: option.id,
-                            isMultiple: false,
+                            isMultiple: false,                 
                             type: "radio",
                           })
                         }

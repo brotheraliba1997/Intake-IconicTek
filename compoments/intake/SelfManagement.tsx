@@ -115,7 +115,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                           formData={formData}
                         />
                       </>
-                    )}
+                    )}                         
 
                     {sub?.type === "date" && (
                       <>
@@ -123,14 +123,14 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         <input
                           type="date"
                           className="form-control"
-                          required
+                          required           
                           placeholder="Enter..."
                           onChange={(e) =>
                             handleChange(e, formData, setFormData, {
                               questionId: items?.id,
                               optionId: null,
                               isMultiple: false,
-                              type: items?.question?.type,
+                              type: items?.question?.type,                                          
                               subQuestionId: sub?.id,
                             })
                           }

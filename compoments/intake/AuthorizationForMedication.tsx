@@ -44,8 +44,6 @@ function AuthorizationForMedication({
       );
   }, [dataGet]);
 
-  console.log(formData, "formData");
-
   const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
     switch (type) {
       case "html":

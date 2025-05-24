@@ -41,6 +41,8 @@ const MyCompanyForm: React.FC = () => {
     state: company?.data?.state,
     zipCode: company?.data?.zipCode,
     address: company?.data?.address,
+    profilePic: company?.data?.profilePic,
+
     timezone: company?.data?.timezone ?? "",
   };
 

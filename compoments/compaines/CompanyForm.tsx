@@ -1,6 +1,6 @@
 "use client";
 import { CompanyData } from "@/types/company";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -39,16 +39,18 @@ const CompanyForm = ({
   >([]);
 
   const validationSchema = Yup.object().shape({
-    companyemail: Yup.string().required("Company Email is required"),
+    // companyemail: Yup.string().required("Company Email is required"),
     email: Yup.string().required("Email is required"),
     description: Yup.string().required("Description is required"),
-    clientname: Yup.string().required("Client Name is required"),
+    // clientname: Yup.string().required("Client Name is required"),
     name: Yup.string().required("Client Name is required"),
     phone: Yup.string().required("Phone is required"),
     address: Yup.string().required("Address is required"),
     city: Yup.string().required("City is required"),
     state: Yup.string().required("State is required"),
     zipCode: Yup.string().required("Zip Code is required"),
+    // profilePic: Yup.string(),
+    profilePic: Yup.string().nullable().notRequired(),
   });
 
   const {
@@ -61,10 +63,21 @@ const CompanyForm = ({
   } = useForm<CompanyData>({
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues ?? {
-      companyemail: "",
+      // companyemail: "",
+      email: "",
       description: "",
+      // clientname: "",
+      name: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      profilePic: "",
     },
   });
+
+  console.log("error==>", errors);
 
   console.log(watch(), "watch");
   // const [selectedImage, setSelectedImage] = useState(defaultimg);
@@ -72,26 +85,51 @@ const CompanyForm = ({
   const [selectedImage, setSelectedImage] = useState<string>(defaultimg);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleChangePic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleChangePic = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string); // base64 image preview
+        const base64String = reader.result as string;
+        setSelectedImage(base64String); // preview
+        setValue("profilePic", base64String, { shouldValidate: true }); // ✅ register with form
+        console.log("Selected image base64 path:", base64String);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  useEffect(() => {
+    if (initialValues?.profilePic) {
+      setSelectedImage(initialValues.profilePic); // assume it's a base64 image string
+      setValue("profilePic", initialValues.profilePic); // set in form
+    } else {
+      setSelectedImage(defaultimg); // fallback image
+    }
+  }, [initialValues?.profilePic, setValue]);
+
   return (
     <div className="card-body">
-      <form action="" className="row" onSubmit={handleSubmit(submitHandler)}>
+      <form
+        className="row"
+        onSubmit={handleSubmit(submitHandler)}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   console.log("Form clicked - test log");
+        // }}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   const values = watch();
+        //   console.log("Values from form (no validation):", values);
+        //   submitHandler(values);
+        // }}
+      >
         <div className="col-md-12">
           <div className="profile-img-wrap edit-img">
             {selectedImage && (
               <img
                 className="inline-block"
-                src={selectedImage}
+                src={selectedImage || defaultimg}
                 alt="Profile Pic"
                 width={150}
               />
@@ -130,7 +168,8 @@ const CompanyForm = ({
             <label htmlFor="#" className="form-label">
               Name{" "}
             </label>
-            {userProfile?.role == "admin" ? (
+            <input type="text" className="form-control" {...register("name")} />
+            {/* {userProfile?.role == "admin" ? (
               <input
                 type="text"
                 className="form-control"
@@ -151,7 +190,7 @@ const CompanyForm = ({
                   </>
                 ))}
               </select>
-            )}
+            )} */}
 
             {errors.name && (
               <div className="invalid-feedback">{errors.name.message}</div>

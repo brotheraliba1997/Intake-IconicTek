@@ -4,8 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import defaultimg from "@/public/img/profile.jpg";
+// import defaultimg from "@/public/img/profile.jpg";
 import { useGetMyProfileQuery } from "@/redux/services/users";
+import defaultimg from "@/public/img/camera.jpg"; // or use a public path like "/camera.png"
 
 const CompanyForm = ({
   initialValues = null,
@@ -81,7 +82,10 @@ const CompanyForm = ({
 
   console.log(watch(), "watch");
   // const [selectedImage, setSelectedImage] = useState(defaultimg);
-  const defaultimg = "https://cdn-icons-png.flaticon.com/512/747/747376.png"; // camera icon
+  // const defaultimg = "https://cdn-icons-png.flaticon.com/512/747/747376.png"; // camera icon
+  // const defaultimg = "https://cdn-icons-png.flaticon.com/512/685/685655.png";
+  const defaultimg = "/img/camera.jpg"; // this works with <img src="">
+
   const [selectedImage, setSelectedImage] = useState<string>(defaultimg);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,9 +133,11 @@ const CompanyForm = ({
             {selectedImage && (
               <img
                 className="inline-block"
-                src={selectedImage || defaultimg}
+                src={selectedImage}
                 alt="Profile Pic"
+                // width={150}
                 width={150}
+                height={150}
               />
             )}
             <div className="fileupload btn">

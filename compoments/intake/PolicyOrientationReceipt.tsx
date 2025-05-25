@@ -98,7 +98,7 @@ function POLICYORIENTATIONRECEIPT({
 
   return (
     <>
-      <div className="cardpx-5 pb-5 pt-3">
+      <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
         <h3 className="card-title text-center">{dataGet?.title}</h3>
 

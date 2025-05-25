@@ -5,6 +5,7 @@ import { AnswerData } from "@/types/common";
 import { FormQuestions } from "@/types/form-data";
 import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
+import HtmlRenderer from "./common/HtmlRenderer";
 
 function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState<AnswerData[]>([]);
@@ -103,77 +104,71 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     // }
   };
 
+  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+    switch (type) {
+      case "html":
+        return (
+          <div className="col-12 mb-3">
+            <HtmlRenderer items={items} />
+            <div className="row mt-3">
+              {items?.question?.SubQuestion?.map((subQ: any) => (
+                <div className="col-md-6 mb-3" key={subQ.id}>
+                  <label className="form-label">{subQ.title}</label>
+                  <input
+                    type={subQ.type}
+                    className="form-control"
+                    value={
+                      formData.find((f) => f.questionId === subQ.id)?.value ||
+                      ""
+                    }
+                    placeholder={`Enter ${subQ.title.split(":")[0]}`}
+                    onChange={(e) =>
+                      handleChange(e, subQ.id, null, false, subQ.type)
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
         <h3 className="card-title text-center">{dataGet?.title}</h3>
-        {questions?.map((items: FormQuestions, index: number) => (
-          <div
-            key={index}
-            className="d-flex justify-content-between w-100 align-items-center"
-          >
-            <div className="d-flex flex-column gap-2 my-2 w-100">
-              {items?.question.type === "html" && (
-                <>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: items?.question.title }}
-                  />
-                  <div className="row">
-                    {items.question?.SubQuestion?.map(
-                      (subQuest: any, index: number) => {
-                        if (
-                          subQuest.type === "text" ||
-                          subQuest.type === "date"
-                        ) {
-                          return (
-                            <div key={index} className="col-md-6 mb-3">
-                              <label className="form-label">
-                                {subQuest.title}
-                              </label>
-                              <input
-                                type={
-                                  subQuest.type === "date" ? "date" : "text"
-                                }
-                                className="form-control"
-                                placeholder="Enter..."
-                                value={
-                                  formData.find(
-                                    (q) => q.questionId === subQuest.id
-                                  )?.value || ""
-                                }
-                                onChange={(e) => {
-                                  handleChange(
-                                    e,
-                                    subQuest.id,
-                                    null,
-                                    false,
-                                    subQuest.type
-                                  );
-                                }}
-                              />
-                            </div>
-                          );
-                        }
-                        return null;
-                      }
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
 
-        <StepperButtons
-          currentStep={currentStep}
-          totalSteps={8}
-          onNavigate={(direction) => {
-            if (direction === "back") handleBack();
-            else if (direction === "next") handleSubmit();
-            else if (direction === "submit") alert("Form Submitted!");
-          }}
-        />
+        <form onSubmit={handleSubmit}>
+          <div className="row  my-5  ">
+            {questions
+              ?.slice()
+              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+              ?.map((items: any, index: any) => (
+                <>
+                  {getComponent({
+                    type: items?.question?.type,
+                    items,
+                    handleChange,
+                  })}
+                </>
+              ))}
+          </div>
+
+          <StepperButtons
+            currentStep={currentStep}
+            totalSteps={8}
+            onNavigate={(direction) => {
+              if (direction === "back") handleBack();
+              else if (direction === "next") return;
+              else if (direction === "submit") alert("Form Submitted!");
+            }}
+          />
+        </form>
       </div>
     </>
   );

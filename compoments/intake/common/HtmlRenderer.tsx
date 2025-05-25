@@ -1,11 +1,12 @@
 import React from "react";
+import handleChange from "../../utlity/handleFormChange";
 
-function HtmlRenderer({ handleChange, items, index }: any) {
+const HtmlRenderer: React.FC = ({ items }: any) => {
   return (
     <>
       <div dangerouslySetInnerHTML={{ __html: items?.question?.title }} />
     </>
   );
-}
+};
 
 export default HtmlRenderer;

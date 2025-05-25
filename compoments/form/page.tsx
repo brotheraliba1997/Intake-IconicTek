@@ -23,7 +23,7 @@ function FormPage() {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(currentStep - 1);
+    if (currentStep > 0) setCurrentStep(-1);
   };
 
   return (
@@ -40,7 +40,7 @@ function FormPage() {
                 currentStep={currentStep}
               /> */}
 
-              <FUNDSANDPROPERTY
+              <POLICYORIENTATIONRECEIPT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

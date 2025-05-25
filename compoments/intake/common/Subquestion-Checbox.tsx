@@ -29,7 +29,6 @@ function SubquestionChecbox({
               <input
                 className="form-check-input"
                 type="radio"
-                required
                 name={`subquestion-${index}`}
                 id={`option-${index}-${j}`}
                 onChange={(e) => {

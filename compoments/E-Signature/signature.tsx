@@ -123,9 +123,9 @@ function SignatureCompoment({
           alt="signature"
           objectFit="contain"
         /> */}
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} >
         <Modal.Header closeButton>
-          <Modal.Title> {label} </Modal.Title>
+          <Modal.Title style={{fontSize: "20px"}}> {label} </Modal.Title>
         </Modal.Header>
         <div className="d-flex justify-content-center align-items-center py-4">
           <div

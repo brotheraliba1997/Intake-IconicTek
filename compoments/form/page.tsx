@@ -23,12 +23,12 @@ function FormPage() {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(currentStep - 1);
+    if (currentStep > 0) setCurrentStep(-1);
   };
 
   return (
     <>
-      <div className="container mt-5 ">
+      <div className="container mt-5">
         <Stepper steps={stepLabels} currentStep={currentStep} />
 
         <div className="mt-4">
@@ -39,8 +39,12 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
-
-              <SELFMANAGEMENT
+              {/* <SELFMANAGEMENT
+                handleNext={handleNext}
+                handleBack={handleBack}
+                currentStep={currentStep}
+              /> */}
+              <ResidencyAgreement
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

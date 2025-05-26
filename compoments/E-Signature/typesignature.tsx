@@ -1,25 +1,49 @@
 "use client";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 
-
-export default function TypeSignature({ signatureValue, items }: any) {
-  const [text, setText] = useState("");
+export default function TypeSignature({
+  signatureValue,
+  items,
+  formData,
+  setShow,
+}: any) {
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
+
+  const signatureValueRepeat = formData?.find(
+    (item: any) => item?.title === "Name"
+  );
+
+  const [text, setText] = useState(signatureValueRepeat?.value);
+
+  console.log(text, "text")
+
   const canvasRef = useRef<any>(null);
 
   const generateImage = () => {
     const canvas = canvasRef.current;
+    const scale = 2;
+    canvas.width = 150 * scale;
+    canvas.height = 30 * scale;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = color;
-    ctx.font = `100px`;
+    ctx.font = "24px Arial";
     ctx.fillText(text, 10, 50);
     const dataUrl = canvas.toDataURL();
-    setBase64Image(dataUrl);
-    signatureValue(dataUrl, items);
+    if (text !== "") {
+      toast.success("Signature save successfully");
+      setBase64Image(dataUrl);
+      signatureValue(dataUrl, items);
+      setShow(false);
+    } else {
+      toast.error("Signature value Missing");
+    }
   };
+
+  console.log(signatureValue, "signatureValue");
 
   return (
     <>
@@ -28,6 +52,7 @@ export default function TypeSignature({ signatureValue, items }: any) {
           <input
             type="text"
             value={text}
+            required
             onChange={(e) => setText(e.target.value)}
             style={{
               fontSize: "20px",

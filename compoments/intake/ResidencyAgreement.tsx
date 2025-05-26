@@ -133,8 +133,6 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       const { questionId, type, subQuestionId, optionId, isMultiple } = config;
       const value = e?.target?.value;
 
-      
-
       if (subQuestionId) {
         const answers = getValues("answers");
         const questionIndex = answers.findIndex(

@@ -22,20 +22,22 @@ export default function TypeSignature({
 
   const generateImage = () => {
     const canvas = canvasRef.current;
+    const scale = 2;
+    canvas.width = 150 * scale;
+    canvas.height = 30 * scale;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = color;
-    ctx.font = `100px`;
+    ctx.font = "24px Arial";
     ctx.fillText(text, 10, 50);
     const dataUrl = canvas.toDataURL();
     if (text !== "") {
       toast.success("Signature save successfully");
       setBase64Image(dataUrl);
       signatureValue(dataUrl, items);
-      setShow(false)
+      setShow(false);
     } else {
       toast.error("Signature value Missing");
-      
     }
   };
 

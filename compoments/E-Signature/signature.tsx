@@ -32,36 +32,44 @@ function SignatureCompoment({
   return (
     <>
       {signatureData?.url ? (
-        <div
-          className="py-4 d-flex  "
-          style={{
-            width: "500px",
-            height: "150px",
-            cursor: "pointer",
-            borderBottom: "1px dashed black",
-            transition: "box-shadow 0.3s ease",
-          }}
-          onMouseEnter={(e) => {
+        <>
+          <div
+            className="py-4 d-flex flex-column "
+            style={{
+              width: "500px",
+              height: "150px",
+              cursor: "pointer",
+              borderBottom: "1px dashed black",
+              transition: "box-shadow 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = "none";
             }}
-        >
-          <div
-            className="position-relative w-100 h-100  rounded p-2 bg-white"
-            onClick={handleShow}
-            
           >
-            <Image
-              src={signatureData.url}
-              alt="Signature Preview"
-              // className="img-fluid h-50 w-50 object-fit-contain"
-              layout="fill"
-              style={{ objectFit: "contain" }}
-            />
+            <div className="position-relative w-100 h-100  rounded p-2 bg-white">
+              <Image
+                src={signatureData.url}
+                alt="Signature Preview"
+                // className="img-fluid h-50 w-50 object-fit-contain"
+                layout="fill"
+                style={{ objectFit: "contain" }}
+              />
+            </div>
           </div>
-        </div>
+          <div className="mt-2">
+            <button
+              type="button"
+              className="btn border-0 text-white px-3 py-2 rounded"
+              style={{ backgroundColor: "#17635C" }}
+              onClick={handleShow}
+            >
+              Edit
+            </button>
+          </div>
+        </>
       ) : (
         <div
           onClick={handleShow}

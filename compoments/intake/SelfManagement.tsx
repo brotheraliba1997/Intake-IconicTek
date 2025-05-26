@@ -21,19 +21,41 @@ const formSchema = z.object({
     z
       .object({
         questionId: z.any(),
-        value: z.string().min(1, { message: "This field is required" }),
+        value: z.string().optional(),
         multipleValue: z.array(z.any()),
         type: z.string(),
         title: z.string().optional(),
         subQuestion: z
           .array(
-            z.object({
-              value: z.string().min(1, { message: "This field is required" }),
-              multipleValue: z.array(z.any()).optional(),
-              type: z.string(),
-              id: z.any(),
-              signatureLink: z.string().optional(),
-            })
+            z
+              .object({
+                value: z.string(),
+                multipleValue: z.array(z.any()).optional(),
+                type: z.string(),
+                id: z.any(),
+                signatureLink: z.string().optional(),
+              })
+              .superRefine((data, ctx) => {
+                if (data.type === "Signature" && !data.signatureLink) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Signature is required",
+                    path: ["signatureLink"],
+                  });
+                } else if (data.type === "date" && !data.value) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Date is required",
+                    path: ["value"],
+                  });
+                } else if (data.type !== "Signature" && !data.value) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "This field is required",
+                    path: ["value"],
+                  });
+                }
+              })
           )
           .optional(),
       })
@@ -42,6 +64,18 @@ const formSchema = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
+            path: ["value"],
+          });
+        } else if (data.type === "date" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Date is required",
+            path: ["value"],
+          });
+        } else if (data.type === "table" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select an option",
             path: ["value"],
           });
         }
@@ -62,8 +96,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       answers: [],
     },
     resolver: zodResolver(formSchema),
-    mode: "onTouched", // Only validate on blur
-    reValidateMode: "onBlur", // Only revalidate on blur
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -72,23 +106,34 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
   useEffect(() => {
     if (dataGet) {
-      const initialFormData = dataGet?.formQuestions?.map(
-        (items: any, idx: number) => ({
+      // First sort the main questions
+      const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
+        (a: any, b: any) => a.arrangement - b.arrangement
+      );
+
+      const initialFormData = sortedQuestions.map((items: any, idx: number) => {
+        // Sort subquestions if they exist
+        const sortedSubQuestions = items?.question?.SubQuestion
+          ? [...items.question.SubQuestion].sort(
+              (a: any, b: any) => a.arrangement - b.arrangement
+            )
+          : [];
+
+        return {
           questionId: items?.id,
           value: "",
           multipleValue: [],
           type: items?.question.type,
           title: items?.question?.title,
-          subQuestion: items?.question?.SubQuestion?.map(
-            (sub: any, subIdx: number) => ({
-              value: "",
-              multipleValue: [],
-              type: sub?.type,
-              id: sub?.id,
-            })
-          ),
-        })
-      );
+          subQuestion: sortedSubQuestions.map((sub: any) => ({
+            value: "",
+            multipleValue: [],
+            type: sub?.type,
+            id: sub?.id,
+          })),
+        };
+      });
+
       setValue("answers", initialFormData);
     }
   }, [dataGet, setValue]);
@@ -106,10 +151,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
-
-  const handleFormError = (errors: any) => {
-    console.error("Form validation errors:", errors);
   };
 
   const handleFormChange = useCallback(
@@ -142,7 +183,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
               {
                 shouldDirty: true,
                 shouldTouch: true,
-                shouldValidate: false,
+                shouldValidate: true,
               }
             );
           }
@@ -152,7 +193,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         const questionIndex = answers.findIndex(
           (q) => q.questionId === questionId
         );
-        console.log(questionIndex, "questionIndexquestionIndex");
         if (questionIndex !== -1) {
           if (isMultiple) {
             const currentValues = answers[questionIndex].multipleValue || [];
@@ -162,7 +202,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
             setValue(`answers.${questionIndex}.multipleValue`, newValues, {
               shouldDirty: true,
               shouldTouch: true,
-              shouldValidate: false,
+              shouldValidate: true,
             });
           } else {
             setValue(
@@ -171,7 +211,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
               {
                 shouldDirty: true,
                 shouldTouch: true,
-                shouldValidate: false,
+                shouldValidate: true,
               }
             );
           }
@@ -180,32 +220,31 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-
   const signatureValue = (val, items) => {
-    console.log(val, "answerssobia");
     const answers = watch("answers");
-    console.log(items, "itemssssss");
     const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.questionId)) {
-        if (quest.questionId === items) {
-          return { ...quest, signatureLink: val };
-        }
-        return quest;
-      }
-
       if (Array.isArray(quest.subQuestion)) {
-        const updateQuestion = quest?.subQuestion?.map((subquest: any) => {
-          if (subquest?.id === items) {
-            return { ...subquest, signatureLink: val };
-          }
-          return subquest;
-        });
-        return { ...quest, subQuestion: updateQuestion };
+        const subIndex = quest.subQuestion.findIndex(
+          (sq: any) => sq.id === items
+        );
+        if (subIndex !== -1) {
+          const updatedSubQuestions = [...quest.subQuestion];
+          updatedSubQuestions[subIndex] = {
+            ...updatedSubQuestions[subIndex],
+            signatureLink: val,
+            value: " ", // Set a space to satisfy non-empty validation
+          };
+          return { ...quest, subQuestion: updatedSubQuestions };
+        }
       }
       return quest;
     });
 
-    setValue("answers", updatedAnswers);
+    setValue("answers", updatedAnswers, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   };
 
   const signatureUrlFind = watch()?.answers?.flatMap(
@@ -217,8 +256,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           url: item?.signatureLink || null,
         })) || []
   );
-
-  console.log(signatureUrlFind, "signatureUrlFind");
 
   const getComponent = ({
     type,
@@ -244,8 +281,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                   <div key={sub.id} className="col-lg-6 mb-4">
                     {sub?.type === "Signature" && (
                       <>
-                        <h5>{sub?.title}</h5>
-
+                        <h5>{sub?.title}</h5>{" "}
                         <SignatureCompoment
                           signatureValue={signatureValue}
                           items={sub.id}
@@ -256,11 +292,11 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                           )}
                         />
                         {errors?.answers?.[index]?.subQuestion?.[subIndex]
-                          ?.value && (
+                          ?.signatureLink && (
                           <span className="text-danger">
                             {
-                              errors.answers[index].subQuestion[subIndex].value
-                                .message
+                              errors.answers[index].subQuestion[subIndex]
+                                .signatureLink.message
                             }
                           </span>
                         )}
@@ -400,21 +436,25 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                 )}
 
                 {items?.question?.SubQuestion?.map(
-                  (subquestion: any, i: number) => (
-                    <div key={i} className="mb-3">
+                  (subquestion: any, subIndex: number) => (
+                    <div key={subquestion.id} className="mb-3">
                       <SubquestionChecbox
                         subquestion={subquestion}
-                        index={i}
+                        index={index} // This is the index from the main questions map
                         errors={errors}
-                        onChange={(e, optionId, isMultiple) =>
+                        onChange={(e, optionId, isMultiple) => {
                           handleFormChange(e, {
                             questionId: items?.id,
                             optionId: optionId,
                             isMultiple: isMultiple,
                             type: "radio",
                             subQuestionId: subquestion?.id,
-                          })
-                        }
+                          });
+                          // Clear error state when an option is selected
+                          setValue(`answers.${index}.value`, optionId, {
+                            shouldValidate: true,
+                          });
+                        }}
                       />
                     </div>
                   )
@@ -429,15 +469,13 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     }
   };
 
-  console.log("form values:", watch("answers"));
-
   return (
     <>
       <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
 
         <h3 className="card-title text-center">{dataGet?.title}</h3>
-        <form onSubmit={handleFormSubmit(onSubmit, handleFormError)}>
+        <form onSubmit={handleFormSubmit(onSubmit)}>
           <div className="row pt-3 ">
             {question
               ?.slice()

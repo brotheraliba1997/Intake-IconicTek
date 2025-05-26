@@ -96,7 +96,6 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
 
   const signatureValue = (val, items) => {
     const answers = watch("answers");
-
     const updatedAnswers = answers.map((quest: any) => {
       if (quest.questionId) {
         if (quest.questionId === items) {
@@ -134,7 +133,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       const { questionId, type, subQuestionId, optionId, isMultiple } = config;
       const value = e?.target?.value;
 
-      console.log(value, "valuessssss");
+      
 
       if (subQuestionId) {
         const answers = getValues("answers");

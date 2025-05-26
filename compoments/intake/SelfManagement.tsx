@@ -186,7 +186,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     const answers = watch("answers");
     console.log(items, "itemssssss");
     const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.questionId)) {
+      if (quest.questionId) {
         if (quest.questionId === items) {
           return { ...quest, signatureLink: val };
         }

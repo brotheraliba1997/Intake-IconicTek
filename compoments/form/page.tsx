@@ -49,7 +49,7 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
-              <FUNDSANDPROPERTY
+              <IndividualAbuse
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

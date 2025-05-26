@@ -14,6 +14,7 @@ import SignatureCompoment from "../E-Signature/signature";
 import HospitalLogo from "./common/HospitalLogo";
 import handleChange from "../utlity/handleFormChange";
 import StepperButtons from "../common/StepperButtons";
+import Image from "next/image";
 // Define the validation schema
 const formSchema = z.object({
   answers: z.array(
@@ -109,8 +110,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
   const handleFormError = (errors: any) => {
     console.error("Form validation errors:", errors);
-    // You can add a toast or alert here to show validation errors
-    alert("Please fill in all required fields");
   };
 
   const handleFormChange = useCallback(
@@ -128,7 +127,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       const value = e?.target?.value;
 
       if (subQuestionId) {
-        // Handle subquestion changes
         const answers = getValues("answers");
         const questionIndex = answers.findIndex(
           (q) => q.questionId === questionId
@@ -150,14 +148,13 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           }
         }
       } else {
-        // Handle main question changes
         const answers = getValues("answers");
         const questionIndex = answers.findIndex(
           (q) => q.questionId === questionId
         );
+        console.log(questionIndex, "questionIndexquestionIndex");
         if (questionIndex !== -1) {
           if (isMultiple) {
-            // Handle multiple choice questions
             const currentValues = answers[questionIndex].multipleValue || [];
             const newValues = currentValues.includes(optionId)
               ? currentValues.filter((v) => v !== optionId)
@@ -168,7 +165,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
               shouldValidate: false,
             });
           } else {
-            // Handle single value questions
             setValue(
               `answers.${questionIndex}.value`,
               value || optionId || "",
@@ -185,8 +181,10 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     [setValue, getValues]
   );
 
-  const signatureValue = ({ value: val, itemsid: items }: any) => {
+  const signatureValue = (val, items) => {
+    console.log(val, "answerssobia");
     const answers = watch("answers");
+    console.log(items, "itemssssss");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.questionId)) {
         if (quest.questionId === items) {
@@ -209,6 +207,18 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
     setValue("answers", updatedAnswers);
   };
+
+  const signatureUrlFind = watch()?.answers?.flatMap(
+    (ques: any) =>
+      ques?.subQuestion
+        ?.filter((sub: any) => sub?.type === "Signature")
+        .map((item: any) => ({
+          id: item?.id,
+          url: item?.signatureLink || null,
+        })) || []
+  );
+
+  console.log(signatureUrlFind, "signatureUrlFind");
 
   const getComponent = ({
     type,
@@ -235,11 +245,15 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                     {sub?.type === "Signature" && (
                       <>
                         <h5>{sub?.title}</h5>
+
                         <SignatureCompoment
                           signatureValue={signatureValue}
                           items={sub.id}
                           label={sub?.title}
                           formData={watch("answers")}
+                          signatureData={signatureUrlFind?.find(
+                            (signData) => signData?.id === sub?.id
+                          )}
                         />
                         {errors?.answers?.[index]?.subQuestion?.[subIndex]
                           ?.value && (
@@ -391,6 +405,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                       <SubquestionChecbox
                         subquestion={subquestion}
                         index={i}
+                        errors={errors}
                         onChange={(e, optionId, isMultiple) =>
                           handleFormChange(e, {
                             questionId: items?.id,

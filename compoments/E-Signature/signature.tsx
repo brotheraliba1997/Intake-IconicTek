@@ -8,59 +8,105 @@ import Image from "next/image";
 import Signature from "@/public/img/signature/signature.jpeg";
 import TypeSignature from "./typesignature";
 
-function SignatureCompoment({ signatureValue, items, label, formData }: any) {
+function SignatureCompoment({
+  signatureValue,
+  items,
+  label,
+  formData,
+  signatureData,
+}: any) {
   const [toggle, setToggly] = useState(false);
 
-  const [show, setShow] = useState(false);
+  console.log(items, "itemsitemsitems");
+  const signatureValueRepeat = formData?.find(
+    (item: any) => item?.title === "Name"
+  );
 
-  const handleClose = () => setShow(false);
+  const [show, setShow] = useState<any>();
+
+  const handleClose = () => setShow(signatureValueRepeat.value ? true : false);
   const handleShow = () => setShow(true);
+
+  // <Image src={signatureData?.url} layout="fill" objectFit="contain" />
 
   return (
     <>
-      <div
-        onClick={handleShow}
-        className="d-flex justify-content-center align-items-center"
-        style={{
-          border: "2px dashed #17635C40",
-          backgroundColor: "#ffffff",
-          borderRadius: "8px",
-          width: window.innerWidth < 500 ? window.innerWidth - 40 : 500,
-          height: 120,
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          position: "relative",
-          background: "#fafafa",
-        }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.backgroundColor = "#ffffff";
-          e.currentTarget.style.border = "2px dashed #17635C";
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.backgroundColor = "#fafafa";
-          e.currentTarget.style.border = "2px dashed #17635C40";
-        }}
-      >
+      {signatureData?.url ? (
         <div
+          className="py-4 d-flex  "
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            color: "#17635C",
+            width: "500px",
+            height: "150px",
+            cursor: "pointer",
+            borderBottom: "1px dashed black",
+            transition: "box-shadow 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "none";
+            }}
+        >
+          <div
+            className="position-relative w-100 h-100  rounded p-2 bg-white"
+            onClick={handleShow}
+            
+          >
+            <Image
+              src={signatureData.url}
+              alt="Signature Preview"
+              // className="img-fluid h-50 w-50 object-fit-contain"
+              layout="fill"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div
+          onClick={handleShow}
+          className="d-flex justify-content-center align-items-center"
+          style={{
+            border: "2px dashed #17635C40",
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            width: window.innerWidth < 500 ? window.innerWidth - 40 : 500,
+            height: 120,
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            position: "relative",
+            background: "#fafafa",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#ffffff";
+            e.currentTarget.style.border = "2px dashed #17635C";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "#fafafa";
+            e.currentTarget.style.border = "2px dashed #17635C40";
           }}
         >
-          <AiOutlineSignature size={22} />
-
-          <span
+          <div
             style={{
-              fontSize: "15px",
-              fontWeight: 400,
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              color: "#17635C",
             }}
           >
-            Add your signature
-          </span>
+            <AiOutlineSignature size={22} />
+
+            <span
+              style={{
+                fontSize: "15px",
+                fontWeight: 400,
+              }}
+            >
+              Add your signature
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* <Image
           src={Signature}
@@ -104,9 +150,18 @@ function SignatureCompoment({ signatureValue, items, label, formData }: any) {
         </div>
 
         {toggle ? (
-          <ESignature signatureValue={signatureValue} items={items} />
+          <ESignature
+            signatureValue={signatureValue}
+            items={items}
+            setShow={setShow}
+          />
         ) : (
-          <TypeSignature signatureValue={signatureValue} items={items} formData={formData} />
+          <TypeSignature
+            signatureValue={signatureValue}
+            items={items}
+            formData={formData}
+            setShow={setShow}
+          />
         )}
       </Modal>
     </>

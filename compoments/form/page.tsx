@@ -39,16 +39,21 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
-              <SELFMANAGEMENT
+              {/* <SELFMANAGEMENT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
-              />
+              /> */}
               {/* <POLICYORIENTATIONRECEIPT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
+              <FUNDSANDPROPERTY
+                handleNext={handleNext}
+                handleBack={handleBack}
+                currentStep={currentStep}
+              />
             </div>
           )}
 

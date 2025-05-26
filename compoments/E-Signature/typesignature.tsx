@@ -18,6 +18,8 @@ export default function TypeSignature({
 
   const [text, setText] = useState(signatureValueRepeat?.value);
 
+  console.log(text, "text")
+
   const canvasRef = useRef<any>(null);
 
   const generateImage = () => {
@@ -49,7 +51,7 @@ export default function TypeSignature({
         <div style={{ borderBottom: "1px solid black" }}>
           <input
             type="text"
-            value={text.value}
+            value={text}
             required
             onChange={(e) => setText(e.target.value)}
             style={{

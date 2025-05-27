@@ -241,7 +241,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {(type === "text" || type === "date") && (
-              <div className="col-lg-6 my-3">
+              <div className="col-lg-5 my-4">
                 <HtmlRenderer items={items} />
                 {type === "text" && (
                   <Controller
@@ -314,20 +314,24 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       case "Signature":
         return (
           <>
-            <h5>{items?.question?.title}</h5>
-            {items?.question?.type === "Signature" && (
-              <>
-                <SignatureCompoment
-                  signatureValue={signatureValue}
-                  items={items.id}
-                  label={items?.title}
-                  formData={watch("answers")}
-                  signatureData={signatureUrlFind?.find(
-                    (signData) => signData?.id === items?.id
-                  )}
-                />
-              </>
-            )}
+            <div className="row"></div>
+            <div className="col-md-6 my-3">
+              <h5>{items?.question?.title}</h5>
+              {items?.question?.type === "Signature" && (
+                <>
+                  <SignatureCompoment
+                    signatureValue={signatureValue}
+                    items={items.id}
+                    label={items?.title}
+                    formData={watch("answers")}
+                    signatureData={signatureUrlFind?.find(
+                      (signData) => signData?.id === items?.id
+                    )}
+                  />
+                </>
+              )}
+            </div>
+            {/* </div> */}
           </>
         );
 

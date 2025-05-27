@@ -1402,7 +1402,7 @@ const FormList = {
 
   ADMISSIONFORMANDDATASHEET: {
     title: "ADMISSION FORM AND DATA SHEET",
-     questions: [
+    questions: [
       {
         title:
           "*This form is completed at service initiation and updated as needed. Dated signatures are obtained at initiation and with changes.",
@@ -1415,56 +1415,52 @@ const FormList = {
         subQuestion: [
           {
             title: "Name",
-             type: "text",
+            type: "text",
           },
-          { title: "Date of birth", 
-               type: "date",
-           },
+          { title: "Date of birth", type: "date" },
           {
             title: "Address:",
-               type: "text",
+            type: "text",
           },
-          { title: "Home telephone number: " ,
-               type: "text",
-           },
+          { title: "Home telephone number: ", type: "text" },
           {
             title: "Cell phone number:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Email address:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Date of admission or re-admission:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Language(s) spoken:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Guardianship type (self, private, public): ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Religious preference: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Marital status: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Other:  ",
-               type: "text",
+            type: "text",
           },
         ],
       },
@@ -1475,37 +1471,37 @@ const FormList = {
         subQuestion: [
           {
             title: "Gender:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Race: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Height:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Weight:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Hair color: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Eye color: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Distinguishing characteristics/identifying marks: ",
-               type: "text",
+            type: "text",
           },
         ],
       },
@@ -1516,27 +1512,27 @@ const FormList = {
         subQuestion: [
           {
             title: "Social Security Number (SSN):",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Medical Assistance Number: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "County of responsibility:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "County of financial responsibility: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Burial account number:  ",
-               type: "text",
+            type: "text",
           },
         ],
       },
@@ -1547,28 +1543,28 @@ const FormList = {
         subQuestion: [
           {
             title: "Diagnoses:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Allergies: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Protocols (seizure, diabetic, etc.):",
-               type: "text",
+            type: "text",
           },
 
           {
             title:
               "Medical equipment, devices, or adaptive aides or technology used:  ",
-             type: "text",
-            },
+            type: "text",
+          },
 
           {
             title: "Specialized dietary needs:   ",
-               type: "text",
+            type: "text",
           },
         ],
       },
@@ -1579,62 +1575,62 @@ const FormList = {
         subQuestion: [
           {
             title: "Name:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Address and telephone numbers: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Legal representative:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Authorized representative:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Primary emergency contact: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Case manager:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Family member:   ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Other:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Financial worker:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Residential contact: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Vocational contact:   ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Other service provider: ",
-               type: "text",
+            type: "text",
           },
         ],
       },
@@ -1645,66 +1641,66 @@ const FormList = {
         subQuestion: [
           {
             title: "Name:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Address and telephone numbers: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Primary health care professional: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Psychiatrist:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Other mental health professional: ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Neurologist:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Dentist:    ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Optometrist/Ophthalmologist:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Audiologist:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Pharmacy:  ",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Hospital of preference:",
-               type: "text",
+            type: "text",
           },
 
           {
             title: "Other health professional:",
-               type: "text",
+            type: "text",
           },
         ],
-      }
-    ]
+      },
+    ],
   },
 
   IndividualAbuse: {
@@ -2386,7 +2382,7 @@ const FormList = {
 
       {
         title:
-          "<p>Once signed and completed:</p>  <ul><li>The person and legal representative must receive a copy  </li> <li>The provider/landlord must maintain a copy in the person’s record. </li></ul>",
+          "<p>Once signed and completed:</p><ul><li>The person and legal representative must receive a copy.</li><li>The provider/landlord must maintain a copy in the person’s record.</li></ul>",
         type: "html",
       },
 

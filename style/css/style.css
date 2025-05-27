@@ -2196,7 +2196,7 @@ button.bg-danger:hover {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 2;
+  z-index: 1000;
   height: 60px;
   /* border-bottom: 1px solid #b8adad; */
 }

@@ -35,21 +35,13 @@ function FormPage() {
           {currentStep === 0 && (
             <div>
               {/* <StandardRelease
+              // rehta hai hamza
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
-              {/* <SELFMANAGEMENT
-                handleNext={handleNext}
-                handleBack={handleBack}
-                currentStep={currentStep}
-              /> */}
-              {/* <POLICYORIENTATIONRECEIPT
-                handleNext={handleNext}
-                handleBack={handleBack}
-                currentStep={currentStep}
-              /> */}
-              <SELFMANAGEMENT
+
+              <POLICYORIENTATIONRECEIPT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
@@ -59,6 +51,7 @@ function FormPage() {
 
           {currentStep === 1 && (
             <AuthorizationForMedication
+              // rehta hai hamza
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -66,6 +59,7 @@ function FormPage() {
           )}
           {currentStep === 2 && (
             <SELFMANAGEMENT
+              // done hai
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -73,6 +67,7 @@ function FormPage() {
           )}
           {currentStep === 3 && (
             <FUNDSANDPROPERTY
+              // rehta hai hammad
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -80,6 +75,7 @@ function FormPage() {
           )}
           {currentStep === 4 && (
             <ADMISSIONFORM
+              // rehta hai hamza
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -87,6 +83,7 @@ function FormPage() {
           )}
           {currentStep === 5 && (
             <IndividualAbuse
+              // rehta hai hamza
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -94,6 +91,7 @@ function FormPage() {
           )}
           {currentStep === 6 && (
             <POLICYORIENTATIONRECEIPT
+              // rehta hai hammad
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -101,6 +99,7 @@ function FormPage() {
           )}
           {currentStep === 7 && (
             <ResidencyAgreement
+              // done hai ui rehti hai Shezad
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

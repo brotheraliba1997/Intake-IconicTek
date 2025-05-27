@@ -82,53 +82,63 @@ export function Stepper({ steps, currentStep }: StepperProps) {
 
       <style jsx>{`
         .stepper-container {
-          gap: 0;
-          position: relative;
+          // flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          // gap: 20px;
           padding: 0 20px;
         }
+
         .step-item {
-          min-width: 110px;
-          max-width: 130px;
+          flex: 1 0 100px; /* Flex grow, shrink, basis */
+          max-width: 120px;
+          min-width: 80px;
           position: relative;
         }
+
         .circle-container {
-          position: relative;
           width: 100%;
           display: flex;
           justify-content: center;
           align-items: center;
+          position: relative;
         }
+
         .label-container {
           margin-top: 12px;
           min-height: 32px;
           display: flex;
           align-items: flex-start;
           justify-content: center;
+          text-align: center;
         }
+
         .step-label {
           font-size: 11px;
           line-height: 1.3;
           font-weight: 500;
-          display: block;
         }
+
         .stepper-active {
           background: #1caa9e;
           border: none;
           position: relative;
           z-index: 2;
         }
+
         .stepper-inactive {
           background: white;
           border: 2px solid #d9d9d9;
           position: relative;
           z-index: 2;
         }
+
         .border-circle {
           background: #d9d9d9;
         }
+
         .stepper-text-active {
           color: #1caa9e;
         }
+
         .line-wrapper {
           position: absolute;
           width: 100%;
@@ -136,16 +146,35 @@ export function Stepper({ steps, currentStep }: StepperProps) {
           display: flex;
           align-items: center;
         }
+
         .stepper-line-active,
         .stepper-line-inactive {
           height: 2px;
           width: 100%;
         }
+
         .stepper-line-active {
           background: #1caa9e;
         }
+
         .stepper-line-inactive {
           background: #e0e0e0;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 992px) {
+          .stepper-container {
+            gap: 30px 10px; /* row gap, column gap */
+            justify-content: flex-start;
+          }
+
+          .step-item {
+            max-width: 100px;
+          }
+
+          .step-label {
+            font-size: 10px;
+          }
         }
       `}</style>
     </div>

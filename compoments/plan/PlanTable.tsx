@@ -94,7 +94,6 @@ function PlanTable() {
         <TableRowAction
           id={e.id}
           editUrl={`/dashboard/plan/${e.id}/edit`}
-         
           deleteModalView="DELETE_PROGRAM"
         />
       ),
@@ -105,16 +104,13 @@ function PlanTable() {
   const isLoading = false;
 
   return (
-   
-     
-        <Table
-          title={"Programs"}
-          columns={columns}
-          dataSource={programsList?.data}
-          isLoading={isLoading}
-          hidePagination={true}
-        />
-    
+    <Table
+      title={"Programs"}
+      columns={columns}
+      dataSource={programsList?.data}
+      isLoading={isLoading}
+      hidePagination={true}
+    />
   );
 }
 

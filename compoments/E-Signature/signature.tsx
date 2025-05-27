@@ -36,7 +36,7 @@ function SignatureCompoment({
           <div
             className="py-4 d-flex flex-column "
             style={{
-              width: "500px",
+              width: "430px",
               height: "150px",
               cursor: "pointer",
               borderBottom: "1px dashed black",
@@ -78,7 +78,7 @@ function SignatureCompoment({
             border: "2px dashed #17635C40",
             backgroundColor: "#ffffff",
             borderRadius: "8px",
-            width: window.innerWidth < 500 ? window.innerWidth - 40 : 500,
+            width: window.innerWidth < 430 ? window.innerWidth - 40 : 430,
             height: 120,
             cursor: "pointer",
             transition: "all 0.2s ease",
@@ -123,9 +123,9 @@ function SignatureCompoment({
           alt="signature"
           objectFit="contain"
         /> */}
-      <Modal show={show} >
+      <Modal show={show}>
         <Modal.Header closeButton>
-          <Modal.Title style={{fontSize: "20px"}}> {label} </Modal.Title>
+          <Modal.Title style={{ fontSize: "20px" }}> {label} </Modal.Title>
         </Modal.Header>
         <div className="d-flex justify-content-center align-items-center py-4">
           <div

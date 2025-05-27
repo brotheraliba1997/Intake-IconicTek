@@ -49,7 +49,7 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               /> */}
-              <IndividualAbuse
+              <SELFMANAGEMENT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

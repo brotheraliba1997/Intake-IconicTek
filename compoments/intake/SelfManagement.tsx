@@ -78,6 +78,8 @@ const formSchema = z.object({
             message: "Please select an option",
             path: ["value"],
           });
+        } else if (data.type === "html" && !data.value) {
+          return;
         }
       })
   ),
@@ -103,7 +105,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-
   useEffect(() => {
     if (dataGet) {
       // First sort the main questions

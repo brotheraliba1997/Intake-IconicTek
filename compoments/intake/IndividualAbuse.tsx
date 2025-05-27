@@ -1,129 +1,253 @@
-import React, { useEffect, useState } from "react";
-import Formlist from "@/form";
+"use client";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useGetMyFormQuery } from "@/redux/services/form";
-import { AnswerData } from "@/types/common";
-import ESignature from "../E-Signature/E-signature";
 import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
 import HtmlRenderer from "./common/HtmlRenderer";
-import handleChange from "../utlity/handleFormChange";
+import SignatureCompoment from "../E-Signature/signature";
+
+// Define the validation schema
+const formSchema = z.object({
+  answers: z.array(
+    z
+      .object({
+        questionId: z.any(),
+        value: z.string().optional(),
+        multipleValue: z.array(z.any()),
+        type: z.string(),
+        subQuestion: z
+          .array(
+            z.object({
+              id: z.any(),
+              value: z.string().optional(),
+              multipleValue: z.array(z.any()).optional(),
+              type: z.string(),
+              signatureLink: z.string().optional(),
+            })
+          )
+          .optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.type === "text" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["value"],
+          });
+        } else if (data.type === "checkbox" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select an option",
+            path: ["value"],
+          });
+        }
+      })
+  ),
+});
 
 function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
-  const [formData, setFormData] = useState<AnswerData[]>([]);
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      answers: [],
+    },
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   const formName = "Individual Abuse";
   const { data, isLoading, error } = useGetMyFormQuery({});
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
-  useEffect(() => {
-    if (dataGet)
-      setFormData(
-        dataGet?.formQuestions?.map((question: any) => ({
-          questionId: question?.questionId,
+  // Sort questions once and store in a memoized value
+  const sortedQuestions = React.useMemo(() => {
+    return [...(dataGet?.formQuestions || [])].sort(
+      (a: any, b: any) => a.arrangement - b.arrangement
+    );
+  }, [dataGet?.formQuestions]);
+
+  // Initialize form data with sorted questions
+  React.useEffect(() => {
+    if (dataGet) {
+      const initialFormData = sortedQuestions.map((item: any) => {
+        const subQuestions =
+          item?.question?.SubQuestion?.map((sub: any) => ({
+            id: sub.id,
+            value: "",
+            multipleValue: [],
+            type: sub.type,
+            signatureLink: "",
+          })) || [];
+
+        return {
+          questionId: item.id,
           value: "",
           multipleValue: [],
-          type: question?.question.type,
-        }))
-      );
-  }, [dataGet]);
+          type: item.question.type,
+          subQuestion: subQuestions,
+        };
+      });
 
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-  const questions = dataGet?.formQuestions;
-
-  const handleSubmit = async () => {
-    const payload = { formId: dataGet?.id, answers: formData };
-
-    console.log(payload, "handleSubmit");
-    handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
-
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+      setValue("answers", initialFormData);
+    }
+  }, [dataGet, setValue, sortedQuestions]);
+  const onSubmit = async (data: any) => {
+    try {
+      const payload = { formId: dataGet?.id, answers: data.answers };
+      console.log(payload, "handleSubmit");
+      handleNext();
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
-
-  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+  const getComponent = ({
+    type,
+    items,
+    index,
+  }: {
+    type: string;
+    items: any;
+    index: number;
+  }) => {
     switch (type) {
       case "html":
-        return <>{<HtmlRenderer items={items} />}</>;
+        return (
+          <div className="mb-4">
+            <HtmlRenderer items={items} />
+            {items?.question?.SubQuestion?.map((sub: any, subIndex: number) => {
+              if (sub.type === "Signature") {
+                return (
+                  <div key={sub.id} className="col-lg-6 mb-4">
+                    <h5>{sub.title}</h5>
+                    <SignatureCompoment
+                      signatureValue={(val: string) => {
+                        const answers = watch("answers");
+                        const updatedAnswers = answers.map((quest: any) => {
+                          if (quest.questionId === items.id) {
+                            const updatedSubQuestions = quest.subQuestion.map(
+                              (sq: any) => {
+                                if (sq.id === sub.id) {
+                                  return {
+                                    ...sq,
+                                    signatureLink: val,
+                                    value: " ",
+                                  };
+                                }
+                                return sq;
+                              }
+                            );
+                            return {
+                              ...quest,
+                              subQuestion: updatedSubQuestions,
+                            };
+                          }
+                          return quest;
+                        });
+                        setValue("answers", updatedAnswers, {
+                          shouldValidate: true,
+                        });
+                      }}
+                      items={sub.id}
+                      label={sub.title}
+                      formData={watch("answers")}
+                    />
+                    {errors?.answers?.[index]?.subQuestion?.[subIndex]
+                      ?.signatureLink && (
+                      <span className="text-danger">
+                        {
+                          errors.answers[index].subQuestion[subIndex]
+                            .signatureLink.message
+                        }
+                      </span>
+                    )}
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        );
+
       case "text":
       case "date":
         return (
-          <>
-            {(type === "text" || type === "date") && (
-              <div className="col-lg-6 mb-4">
-                <HtmlRenderer items={items} />
-                {type === "text" && (
+          <div className="col-lg-6 mb-4">
+            <HtmlRenderer items={items} />
+            <Controller
+              name={`answers.${index}.value`}
+              control={control}
+              rules={{ required: "This field is required" }}
+              render={({ field }) => (
+                <div>
                   <input
-                    type="text"
-                    required
-                    className="form-control"
-                    placeholder="Enter text..."
-                    onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {
-                        questionId: items?.id,
-                      })
-                    }
+                    type={type === "text" ? "text" : "date"}
+                    className={`form-control ${
+                      errors?.answers?.[index]?.value ? "is-invalid" : ""
+                    }`}
+                    placeholder={type === "text" ? "Enter text..." : ""}
+                    {...field}
                   />
-                )}
-                {type === "date" && (
-                  <input
-                    type="date"
-                    className="form-control"
-                    required
-                    onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {
-                        questionId: items?.id,
-                      })
-                    }
-                  />
-                )}
-              </div>
-            )}
-          </>
+                  {errors?.answers?.[index]?.value && (
+                    <div className="invalid-feedback d-block">
+                      {errors.answers[index].value.message}
+                    </div>
+                  )}
+                </div>
+              )}
+            />
+          </div>
         );
 
       case "checkbox":
         return (
-          <>
-            {items?.question?.type === "checkbox" && (
-              <>
-                {items?.question?.options &&
-                  items?.question?.options.length > 0 && (
-                    <div className="row mb-4">
-                      {items?.question.options.map((option: any, i: any) => {
-                        console.log("option", option);
-                        return (
-                          <div className="col-lg-6" key={i}>
-                            <div className="form-check mb-2">
-                              <input
-                                required
-                                type={option.type}
-                                className="form-check-input"
-                                onChange={(e) =>
-                                  handleChange(e, formData, setFormData, {
-                                    questionId: items?.id,
-                                    optionId: option.id,
-                                    isMultiple: option.isMultiple,
-                                  })
-                                }
-                              />
-                              <label className="form-check-label">
-                                {option.title}
-                              </label>
-                            </div>
-                          </div>
-                        );
-                      })}
+          items?.question?.options?.length > 0 && (
+            <div className="mb-4">
+              <HtmlRenderer items={items} />
+              <div className="row">
+                {items.question.options.map((option: any, i: number) => (
+                  <div className="col-lg-6" key={option.id}>
+                    <div className="form-check mb-2">
+                      <Controller
+                        name={`answers.${index}.value`}
+                        control={control}
+                        rules={{ required: "Please select an option" }}
+                        render={({ field }) => (
+                          <>
+                            <input
+                              type="radio"
+                              className={`form-check-input ${
+                                errors?.answers?.[index]?.value
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              id={`option-${index}-${i}`}
+                              checked={field.value === option.id}
+                              onChange={() => field.onChange(option.id)}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`option-${index}-${i}`}
+                            >
+                              {option.title}
+                            </label>
+                          </>
+                        )}
+                      />
                     </div>
-                  )}
-              </>
-            )}
-          </>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
         );
 
       default:
@@ -134,24 +258,19 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   return (
     <>
       <div className="card px-5 pb-5 pt-3">
-        <HospitalLogo />{" "}
-        <h3 className="card-title text-center">
-          {data?.data?.find((items: any) => items?.title === formName)?.title}
-        </h3>
-        <form onSubmit={handleSubmit}>
-          <div className="row  my-5  ">
-            {questions
-              ?.slice()
-              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-              ?.map((items: any, index: any) => (
-                <>
-                  {getComponent({
-                    type: items?.question?.type,
-                    items,
-                    handleChange,
-                  })}
-                </>
-              ))}
+        <HospitalLogo />
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
+        <form onSubmit={handleFormSubmit(onSubmit)}>
+          <div className="row my-5">
+            {sortedQuestions.map((items: any, index: number) => (
+              <React.Fragment key={items.id}>
+                {getComponent({
+                  type: items?.question?.type,
+                  items,
+                  index: sortedQuestions.findIndex((q) => q.id === items.id),
+                })}
+              </React.Fragment>
+            ))}
           </div>
 
           <StepperButtons
@@ -160,7 +279,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
             onNavigate={(direction) => {
               if (direction === "back") handleBack();
               else if (direction === "next") return;
-              else if (direction === "submit") alert("Form Submitted!");
+              else if (direction === "submit") handleFormSubmit(onSubmit)();
             }}
           />
         </form>

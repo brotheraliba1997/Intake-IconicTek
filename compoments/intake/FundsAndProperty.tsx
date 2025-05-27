@@ -1,72 +1,113 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Formlist from "@/form";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { FormData, FormQuestions, Option } from "@/types/form-data";
-import { AnswerData } from "@/types/common";
 import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
 import HtmlRenderer from "./common/HtmlRenderer";
-import handleChange from "../utlity/handleFormChange";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 
-function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
-  const { data, isLoading, error } = useGetMyFormQuery({});
+// Define the validation schema
+const formSchema = z.object({
+  answers: z.array(
+    z
+      .object({
+        questionId: z.any(),
+        value: z.string().optional(),
+        multipleValue: z.array(z.any()),
+        type: z.string(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.type === "text" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["value"],
+          });
+        } else if (data.type === "checkbox" && !data.value) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select an option",
+            path: ["value"],
+          });
+        }
+      })
+  ),
+});
 
+function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      answers: [],
+    },
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+  const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "FUNDS AND PROPERTY AUTHORIZATION";
   const dataGet: FormData = data?.data?.find(
     (items: any) => items?.title === formName
   );
-  const [formData, setFormData] = useState<AnswerData[]>([]);
-  useEffect(() => {
-    if (dataGet)
-      setFormData(
-        dataGet?.formQuestions?.map((question: any) => ({
-          questionId: question?.id,
-          value: "",
-          multipleValue: [],
-          type: question?.question.type,
-        }))
-      );
-  }, [dataGet]);
 
-  console.log("dataGet", dataGet);
-
-  console.log(formData, "formData");
-
-  const question = dataGet?.formQuestions
-    ?.slice()
-    ?.sort(
+  // Sort questions once and store in a ref to maintain consistency
+  const sortedQuestions = React.useMemo(() => {
+    return [...(dataGet?.formQuestions || [])].sort(
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
+  }, [dataGet?.formQuestions]);
 
-const [createAnswersMutation] = useCreateAnswersMutation();
-  const handleSubmit = async (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    e.preventDefault();
-    const payload = { formId: dataGet?.id, answers: formData };
+  // Initialize form data with sorted questions
+  React.useEffect(() => {
+    if (dataGet) {
+      const initialFormData = sortedQuestions.map((question: any) => ({
+        questionId: question?.id,
+        value: "",
+        multipleValue: [],
+        type: question?.question.type,
+      }));
 
-    console.log(payload, "handleSubmit");
+      setValue("answers", initialFormData);
+    }
+  }, [dataGet, setValue, sortedQuestions]);
 
+  const question = sortedQuestions;
+
+  const [createAnswersMutation] = useCreateAnswersMutation();
+
+  const onSubmit = async (data: any) => {
     try {
+      const payload = { formId: dataGet?.id, answers: data.answers };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
         handleNext();
       }
-      console.log("Response:", response);
     } catch (error) {
       console.error("Error:", error);
-    }                                                                              
+    }
   };
-
-  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+  const getComponent = ({
+    type,
+    items,
+    index,
+  }: {
+    type: string;
+    items: any;
+    index: number;
+  }) => {
     switch (type) {
       case "html":
         return (
-          <>          
+          <>
             <div className="mt-4 mb-2">
               {type === "html" && <HtmlRenderer items={items} />}
             </div>
@@ -74,24 +115,33 @@ const [createAnswersMutation] = useCreateAnswersMutation();
         );
 
       case "text":
-        return (             
+        return (
           <>
-            {(type === "text" || type === "date") && (
+            {type === "text" && (
               <div className="col-lg-12 mt-5">
                 <HtmlRenderer items={items} />
-                {type === "text" && (
-                  <input
-                    type="text"
-                    className="form-control"                                
-                    placeholder="Enter text..."                      
-                    required={true}
-                    onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {       
-                        questionId: items?.id,
-                      })
-                    }
-                  />                      
-                )}      
+                <Controller
+                  name={`answers.${index}.value`}
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <div>
+                      <input
+                        type="text"
+                        className={`form-control ${
+                          errors?.answers?.[index]?.value ? "is-invalid" : ""
+                        }`}
+                        placeholder="Enter text..."
+                        {...field}
+                      />
+                      {errors?.answers?.[index]?.value && (
+                        <div className="invalid-feedback d-block">
+                          {errors.answers[index].value.message}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
             )}
           </>
@@ -99,33 +149,40 @@ const [createAnswersMutation] = useCreateAnswersMutation();
 
       case "checkbox":
         return (
-          type === "checkbox" &&
           items?.question?.options &&
           items.question.options.length > 0 && (
-            <div className="row ">
+            <div className="row">
+              <HtmlRenderer items={items} />
               {items.question.options.map((option: Option, i: number) => (
                 <div className="col-lg-6" key={i}>
                   <div className="form-check mb-2">
-                   
-                      <input
-                        type="radio"               
-                        className="form-check-input"
-                          name={`option`}
-                          // id={`option-${i}`}
-                          
-                        onChange={(e) =>
-                          handleChange(e, formData, setFormData, {
-                            questionId: items?.id,
-                            optionId: option.id,
-                            isMultiple: false,                 
-                            type: "radio",
-                          })
-                        }
-                      />
-                      <label className="form-check-label ">
-                        {option.title}
-                      </label>
-                   
+                    <Controller
+                      name={`answers.${index}.value`}
+                      control={control}
+                      rules={{ required: "Please select an option" }}
+                      render={({ field }) => (
+                        <>
+                          <input
+                            type="radio"
+                            className={`form-check-input ${
+                              errors?.answers?.[index]?.value
+                                ? "is-invalid"
+                                : ""
+                            }`}
+                            name={`option-${items.id}`}
+                            id={`option-${index}-${i}`}
+                            checked={field.value === option.id}
+                            onChange={() => field.onChange(option.id)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`option-${index}-${i}`}
+                          >
+                            {option.title}
+                          </label>
+                        </>
+                      )}
+                    />
                   </div>
                 </div>
               ))}
@@ -144,30 +201,26 @@ const [createAnswersMutation] = useCreateAnswersMutation();
         <HospitalLogo />
         <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-        <form onSubmit={handleSubmit}>
-          <div className="row pt-3 ">
-            {question
-              ?.slice()
-              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-              ?.map((items: any, index: any) => (
-                <>
-                  {getComponent({
-                    type: items?.question?.type,
-                    items,
-                    handleChange,
-                    // signatureValue,
-                  })}
-                </>
-              ))}
+        <form onSubmit={handleFormSubmit(onSubmit)}>
+          {" "}
+          <div className="row pt-3">
+            {question?.map((items: any, index: number) => (
+              <React.Fragment key={items.id}>
+                {getComponent({
+                  type: items?.question?.type,
+                  items,
+                  index: sortedQuestions.findIndex((q) => q.id === items.id), // Use consistent index
+                })}
+              </React.Fragment>
+            ))}
           </div>
-
           <StepperButtons
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {
               if (direction === "back") handleBack();
               else if (direction === "next") return;
-              else if (direction === "submit") alert("Form Submitted!");
+              else if (direction === "submit") handleFormSubmit(onSubmit)();
             }}
           />
         </form>

@@ -9,43 +9,67 @@ import StepperButtons from "../common/StepperButtons";
 import HtmlRenderer from "./common/HtmlRenderer";
 import SignatureCompoment from "../E-Signature/signature";
 
-// Define the validation schema
-const formSchema = z.object({
-  answers: z.array(
-    z
-      .object({
-        questionId: z.any(),
-        value: z.string().optional(),
-        multipleValue: z.array(z.any()),
-        type: z.string(),
-        subQuestion: z
-          .array(
-            z.object({
-              id: z.any(),
-              value: z.string().optional(),
-              multipleValue: z.array(z.any()).optional(),
-              type: z.string(),
-              signatureLink: z.string().optional(),
-            })
-          )
-          .optional(),
-      })
-      .superRefine((data, ctx) => {
-        if (data.type === "text" && !data.value) {
+// Define validation schemas
+const subQuestionSchema = z.object({
+  id: z.any(),
+  value: z.string().optional(),
+  multipleValue: z.array(z.any()).optional(),
+  type: z.string(),
+  signatureLink: z.string().optional(),
+});
+
+const answerSchema = z
+  .object({
+    questionId: z.any(),
+    value: z.string().optional(),
+    multipleValue: z.array(z.any()),
+    type: z.string(),
+    subQuestion: z.array(subQuestionSchema).optional(),
+  })
+  .superRefine((data, ctx) => {
+    // Validate main question
+    if (data.type === "text" && !data.value) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "This field is required",
+        path: ["value"],
+      });
+    } else if (data.type === "checkbox" && data.multipleValue.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select at least one option",
+        path: ["multipleValue"],
+      });
+    } else if (data.type === "radio" && !data.value) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select an option",
+        path: ["value"],
+      });
+    }
+
+    // Validate subquestions
+    if (data.subQuestion) {
+      data.subQuestion.forEach((sub, subIndex) => {
+        if (sub.type === "Signature" && !sub.signatureLink) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Signature is required",
+            path: ["subQuestion", subIndex, "signatureLink"],
+          });
+        } else if (sub.type === "text" && !sub.value) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
-            path: ["value"],
-          });
-        } else if (data.type === "checkbox" && !data.value) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please select an option",
-            path: ["value"],
+            path: ["subQuestion", subIndex, "value"],
           });
         }
-      })
-  ),
+      });
+    }
+  });
+
+const formSchema = z.object({
+  answers: z.array(answerSchema),
 });
 
 function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
@@ -64,21 +88,26 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
+  console.log("errors", errors);
+
   const formName = "Individual Abuse";
   const { data, isLoading, error } = useGetMyFormQuery({});
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
 
-  // Sort questions once and store in a memoized value
+  // Memoize sorted questions
   const sortedQuestions = React.useMemo(() => {
-    return [...(dataGet?.formQuestions || [])].sort(
-      (a: any, b: any) => a.arrangement - b.arrangement
+    if (!data?.data) return [];
+    const formData = data.data.find((item: any) => item?.title === formName);
+    return [...(formData?.formQuestions || [])].sort(
+      (a, b) => a.arrangement - b.arrangement
     );
-  }, [dataGet?.formQuestions]);
+  }, [data]);
 
-  // Initialize form data with sorted questions
+  console.log("sortedQuestions", sortedQuestions);
+
   React.useEffect(() => {
-    if (dataGet) {
-      const initialFormData = sortedQuestions.map((item: any) => {
+    if (sortedQuestions.length > 0) {
+      const initialAnswers = sortedQuestions.map((item: any) => {
         const subQuestions =
           item?.question?.SubQuestion?.map((sub: any) => ({
             id: sub.id,
@@ -90,21 +119,24 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
 
         return {
           questionId: item.id,
-          value: "",
+          value: item.question.type === "checkbox" ? "" : "",
           multipleValue: [],
           type: item.question.type,
           subQuestion: subQuestions,
         };
       });
 
-      setValue("answers", initialFormData);
+      setValue("answers", initialAnswers);
     }
-  }, [dataGet, setValue, sortedQuestions]);
+  }, [sortedQuestions, setValue]);
+
   const onSubmit = async (data: any) => {
     try {
       const payload = { formId: dataGet?.id, answers: data.answers };
-      console.log(payload, "handleSubmit");
-      handleNext();
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
+        handleNext();
+      }
     } catch (error) {
       console.error("Error:", error);
     }

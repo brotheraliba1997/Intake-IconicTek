@@ -41,7 +41,7 @@ function FormPage() {
                 currentStep={currentStep}
               /> */}
 
-              <POLICYORIENTATIONRECEIPT
+              <IndividualAbuse
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}

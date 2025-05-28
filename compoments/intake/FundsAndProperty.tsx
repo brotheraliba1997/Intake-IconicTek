@@ -95,6 +95,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
       console.error("Error:", error);
     }
   };
+
   const getComponent = ({
     type,
     items,

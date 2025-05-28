@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import TextInput from "./common/TextInput";
@@ -7,8 +7,89 @@ import HtmlRenderer from "./common/HtmlRenderer";
 import Textarea from "./common/Textarea";
 import CheckBox from "./common/CheckBox";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
+import * as z from "zod";
+import HospitalLogo from "./common/HospitalLogo";
+import StepperButtons from "../common/StepperButtons";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// export const formSchema = z.object({
+//   answers: z.array(
+//     z.object({
+//       questionId: z.any(),
+//       value: z.string(),
+//       multipleValue: z
+//         .array(z.any())
+//         .optional()
+//         .refine(
+//           (data) => {
+//             const filterValue =
+//             data?.filter((x) => x)?? []
+//             console.log(data,filterValue, "ddddddd")
+
+//             const hasMultipleValue = filterValue.length > 0;
+//             return hasMultipleValue;
+//           },
+//           { message: "atlest" }
+//         ),
+
+//       title: z.string().optional(),
+//     })
+//   ),
+// });
+
+export const formSchema = z.object({
+  answers: z.array(
+    z
+      .object({
+        questionId: z.any(),
+        // type: z.string(),
+        value: z.string().optional(), // optional here, we'll validate later
+        multipleValue: z
+          .array(z.any())
+          .optional()
+          .refine(
+            (data) => {
+              const filtered = data?.filter((x) => x) ?? [];
+              return filtered.length === 0 || filtered.length > 0;
+            },
+            { message: "Invalid array" }
+          ),
+        title: z.string().optional(),
+      })
+      .refine(
+        (data) => {
+          const hasValue = !!data.value?.trim();
+          const hasMultipleValue =
+            (data.multipleValue?.filter(Boolean).length ?? 0) > 0;
+          return hasValue || hasMultipleValue;
+        },
+        {
+          message: "Either value or multipleValue must be provided",
+          path: ["value"], // or use [] to apply message to the whole object
+        }
+      )
+  ),
+});
 
 function StandardRelease({ handleBack, handleNext, currentStep }: any) {
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { errors, isSubmitted, isDirty },
+    register,
+  } = useForm({
+    defaultValues: {
+      answers: [],
+    },
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
+
   const { data, isLoading, error } = useGetMyFormQuery({});
 
   const formName = "STANDARD RELEASE OF INFORMATION";
@@ -19,57 +100,135 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
   useEffect(() => {
-    if (dataGet)
-      setFormData(
-        dataGet?.formQuestions?.map((items: any) => ({
-          questionId: items?.id,
-          value: "",
-          multipleValue: [],
-          type: items?.question.type,
-        }))
-      );
-  }, [dataGet]);
+     if (dataGet) {
+       // First sort the main questions
+       const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
+         (a: any, b: any) => a.arrangement - b.arrangement
+       );
+ 
+       const initialFormData = sortedQuestions.map((items: any, idx: number) => {
+         // Sort subquestions if they exist
+         const sortedSubQuestions = items?.question?.SubQuestion
+           ? [...items.question.SubQuestion].sort(
+               (a: any, b: any) => a.arrangement - b.arrangement
+             )
+           : [];
+ 
+         return {
+           questionId: items?.id,
+           value: "",
+           multipleValue: [],
+           type: items?.question.type,
+           title: items?.question?.title,
+           subQuestion: sortedSubQuestions.map((sub: any) => ({
+             value: "",
+             multipleValue: [],
+             type: sub?.type,
+             id: sub?.id,
+           })),
+         };
+       });
+ 
+       setValue("answers", initialFormData);
+     }
+   }, [dataGet, setValue]);
 
   console.log(formData, "formData");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    questionId: string,
-    optionId: string | null,
-    isMultiple: boolean,
-    type: string
-  ) => {
-    console.log(isMultiple, "isMultiple");
-    const { value, checked } = e.target;
+  const handleFormChange = useCallback(
+    (
+      e: any,
+      config: {
+        questionId: any;
+        type: string;
+        subQuestionId?: any;
+        optionId?: any;
+        isMultiple?: boolean;
+      }
+    ) => {
+      const { questionId, type, subQuestionId, optionId, isMultiple } = config;
+      console.log(optionId, "config");
 
-    const arrayfound = formData?.map((quest: any) => {
-      if (quest?.questionId === questionId) {
-        if (isMultiple) {
-          let multipleValue = quest.multipleValue;
-          const optionFound = multipleValue?.find(
-            (option: any) => option === optionId
-          );
-          if (optionFound) {
-            multipleValue = multipleValue.filter(
-              (val: any) => val !== optionId
+      const value = e?.target?.value;
+
+      console.log(value, "chalrahahai");
+
+      if (subQuestionId) {
+        const answers = getValues("answers");
+
+        const questionIndex = answers.findIndex(
+          (q) => q.questionId === questionId
+        );
+        if (questionIndex !== -1) {
+          const subQuestionIndex = answers[
+            questionIndex
+          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          if (subQuestionIndex !== -1) {
+            setValue(
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              value,
+              {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              }
             );
-          } else {
-            multipleValue.push(optionId);
           }
-          return {
-            ...quest,
-            multipleValue,
-          };
-        } else {
-          return { ...quest, value };
         }
       } else {
-        return quest;
-      }
-    });
+        const answers = getValues("answers");
 
-    setFormData(arrayfound);
-  };
+        const questionIndex = answers.findIndex(
+          (q) => q.questionId === questionId
+        );
+
+        if (questionIndex !== -1) {
+          if (isMultiple) {
+            const currentValues = answers[questionIndex].multipleValue || [];
+
+            const newValues = currentValues.includes(optionId)
+              ? currentValues.filter((v) => v !== optionId)
+              : [...currentValues, optionId];
+
+            setValue(`answers.${questionIndex}.multipleValue`, newValues, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
+          } else {
+            setValue(
+              `answers.${questionIndex}.value`,
+              value || optionId || "",
+              {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              }
+            );
+          }
+        }
+      }
+    },
+    [setValue, getValues]
+  );
+
+  console.log(watch()?.answers, "getValues");
+
+  const multipleValueFilter = watch()?.answers?.map((multi) => {
+    if (multi?.multipleValue) {
+      return {
+        ...multi,
+        multipleValue: multi?.multipleValue?.filter(
+          (fil: any) => fil !== false
+        ),
+      };
+    }
+    return multi;
+  });
+
+  console.log(multipleValueFilter, "multipleValueFilter");
+
+  console.log(register("questionId") , "questionIdquestionId" )
 
   const [createAnswersMutation] = useCreateAnswersMutation();
 
@@ -79,119 +238,218 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
 
   console.log(question, "question");
 
-  const handleSubmit = async () => {
-    const payload = { formId: dataGet?.id, answers: formData };
+  const onSubmit = async (data: any) => {
+    console.log(data, "valueanswers");
 
-    console.log(payload, "handleSubmit");
+    const multipleValueFilter = watch()?.answers?.map((multi) => {
+      if (multi?.multipleValue) {
+        return {
+          ...multi,
+          multipleValue: multi?.multipleValue?.filter(
+            (fil: any) => fil !== false
+          ),
+        };
+      }
+      return multi;
+    });
+
+
+
+    try {
+      const payload = { formId: dataGet?.id, answers: multipleValueFilter };
+      const response = await createAnswersMutation(payload).unwrap();
+      if (response) {
         handleNext();
-    // try {
-    //   const response = await createAnswersMutation(payload).unwrap();
-    //   if (response) {
-    
-    //   }
-    //   console.log("Response:", response);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  console.log(watch("answers"), "watch");
+
+  const getComponent = ({
+    type,
+    items,
+    index,
+  }: {
+    type: string;
+    items: any;
+
+    index: number;
+  }) => {
+    switch (type) {
+      case "html":
+        return <>{type === "html" && <HtmlRenderer items={items} />}</>;
+
+      case "text":
+      case "date":
+        return (
+          <>
+           
+
+            {(type === "text" || type === "date") && (
+              <div className="col-lg-6 my-3">
+                <HtmlRenderer items={items} />
+                {type === "text" && (
+                  <Controller
+                    name={`answers.${index}.value`}
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <div>
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            errors?.answers?.[index]?.value ? "is-invalid" : ""
+                          }`}
+                          placeholder={`Enter ${
+                            items?.question?.title || "text"
+                          }...`}
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            handleFormChange(e, {
+                              questionId: items?.id,
+                              type: "text",
+                            });
+                          }}
+                        />
+                        {errors?.answers?.[index]?.value && (
+                          <div className="invalid-feedback d-block">
+                            {errors.answers[index].value.message}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  />
+                )}
+                {type === "date" && (
+                  <Controller
+                    name={`answers.${index}.value`}
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <div>
+                        <input
+                          type="date"
+                          className={`form-control ${
+                            errors?.answers?.[index]?.value ? "is-invalid" : ""
+                          }`}
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            handleFormChange(e, {
+                              questionId: items?.id,
+                              type: "date",
+                            });
+                          }}
+                        />
+                        {errors?.answers?.[index]?.value && (
+                          <div className="invalid-feedback d-block">
+                            {errors.answers[index].value.message}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        );
+
+      case "checkbox":
+        return (
+          <>
+           
+
+            {type == "checkbox" && (
+              <>
+                <div className="mb-2">
+                  <HtmlRenderer items={items} />
+                </div>
+                <div className="row">
+                  {items?.question?.options.map((option: any, i: number) => (
+                    <CheckBox
+                      key={i}
+                      option={option}
+                      optionIndex={i}
+                      index={index}
+                      handleChange={handleFormChange}
+                      items={items}
+                      control={control}
+                      errors={errors}
+                      // answers={watch("answers")[i]? watch("answers")[i].value : }
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        );
+
+      case "textarea":
+        return (
+          <>
+           
+            {type == "textarea" && (
+              <Textarea
+                items={items}
+                control={control}
+                errors={errors}
+                index={index}
+                onChange={(e) => {
+                  handleFormChange(e, {
+                    questionId: items?.id,
+                    type: "text",
+                  });
+                }}
+              />
+            )}
+          </>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
     <>
       <div className="card p-5">
-        <h3 className="card-title text-center">
-          {data?.data?.find((items: any) => items?.title === formName)?.title}
-        </h3>
-        <div className="row pt-3">
-          {question?.map((items: any, index: number) => {
-            if (
-              items?.question?.type === "text" ||
-              items?.question?.type === "date"
-            ) {
-              {
-                console.log(items?.id, "itemsitemsitems");
-              }
-              return (
-                <div key={index} className="col-lg-6">
-                  {items?.question?.type !== "html" && (
-                    <HtmlRenderer items={items} />
-                  )}
-                  <input
-                    type={items?.question?.type}
-                    className="form-control"
-                    placeholder="Enter..."
-                    onChange={(e: any) => handleChange(e, items?.id)}
-                  />
-                </div>
-              );
-            }
+        <HospitalLogo />
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-            return null;
-          })}
-        </div>
+        <form onSubmit={handleFormSubmit(onSubmit)}>
+          <div className="d-flex flex-column gap-5">
+            <div className="row pt-3 ">
+              {question
+                ?.slice()
+                ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+                ?.map((items: any, index: any) => (
+                  <React.Fragment key={items.id}>
+                    {getComponent({
+                      type: items?.question?.type,
+                      items,
 
-        {question?.map((items: any, index: any) => (
-          <>
-            <div
-              key={index}
-              className="d-flex justify-content-between w-100 align-items-center mb-2"
-            >
-              <div className="d-flex flex-column gap-2  w-100 my-2">
-                {items.question?.type === "textarea" && (
-                  <Textarea items={items} handleChange={handleChange} />
-                )}
-
-                {items.question?.type === "checkbox" &&
-                  items?.question?.options?.length > 0 && (
-                    <>
-                      <div className="mb-2">
-                        <HtmlRenderer items={items} />
-                      </div>
-                      <div className="row">
-                        {items?.question?.options.map(
-                          (option: any, i: number) => (
-                            <CheckBox
-                              key={i}
-                              option={option}
-                              optionIndex={i}
-                              index={index}
-                              handleChange={handleChange}
-                              items={items}
-                            />
-                          )
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                {items?.question?.type === "html" && (
-                  <HtmlRenderer items={items} />
-                )}
-              </div>
+                      index,
+                    })}
+                  </React.Fragment>
+                ))}
             </div>
-          </>
-        ))}
+          </div>
 
-        <div className="d-flex justify-content-between mt-4 pb-5">
-          <button
-            className="btn btn-secondary"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
-            Back
-          </button>
-          {currentStep <= 8 ? (
-            <button className="btn btn-primary" onClick={handleSubmit}>
-              Next
-            </button>
-          ) : (
-            <button
-              className="btn btn-success"
-              onClick={() => alert("Form Submitted!")}
-            >
-              Submit
-            </button>
-          )}
-        </div>
+          <StepperButtons
+            currentStep={currentStep}
+            totalSteps={8}
+            onNavigate={(direction) => {
+              if (direction === "back") handleBack();
+              else if (direction === "next") return;
+              else if (direction === "submit") handleFormSubmit(onSubmit)();
+            }}
+          />
+        </form>
       </div>
     </>
   );

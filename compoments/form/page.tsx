@@ -34,18 +34,18 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              {/* <StandardRelease
+              <StandardRelease
               // rehta hai hamza
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
-              /> */}
+              />
 
-              <POLICYORIENTATIONRECEIPT
+              {/* <SELFMANAGEMENT
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
-              />
+              /> */}
             </div>
           )}
 

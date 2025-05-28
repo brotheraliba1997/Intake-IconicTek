@@ -195,7 +195,7 @@ function POLICYORIENTATIONRECEIPT({
           totalSteps={8}
           onNavigate={(direction) => {
             if (direction === "back") handleBack();
-            else if (direction === "next") handleSubmit();
+            else if (direction === "next") return;
             else if (direction === "submit") alert("Form Submitted!");
           }}
         />

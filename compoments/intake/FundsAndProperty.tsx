@@ -118,7 +118,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {type === "text" && (
-              <div className="col-lg-12 mt-5">
+              <div className="col-lg-6 mt-5">
                 <HtmlRenderer items={items} />
                 <Controller
                   name={`answers.${index}.value`}

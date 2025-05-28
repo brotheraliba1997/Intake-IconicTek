@@ -131,7 +131,8 @@ function POLICYORIENTATIONRECEIPT({
             key={index}
             className="d-flex justify-content-between w-100 align-items-center"
           >
-            <div className="d-flex flex-column gap-2 my-2 w-100">
+            <div className="d-flex flex-column gap-1 my-1 w-100">
+              {/* <div className="d-flex flex-column gap-2 my-2 w-100"> */}
               {items?.question?.type !== "html" &&
                 items?.question?.type !== "text" &&
                 items?.question?.type !== "date" && (
@@ -153,11 +154,21 @@ function POLICYORIENTATIONRECEIPT({
                   items?.question?.options?.length > 0 && (
                     <>
                       <div className="mb-2">
-                        <HtmlRenderer items={items} />
+                        {/* <HtmlRenderer items={items} /> */}
                       </div>
                       <div className="row">
-                        {items?.question?.options.map(
-                          (option: any, i: number) => (
+                        {[...items?.question?.options]
+                          .sort((a, b) => {
+                            const order = ["Yes", "No"];
+                            const aIndex = order.indexOf(a.title);
+                            const bIndex = order.indexOf(b.title);
+
+                            if (aIndex === -1 && bIndex === -1) return 0;
+                            if (aIndex === -1) return 1;
+                            if (bIndex === -1) return -1;
+                            return aIndex - bIndex;
+                          })
+                          .map((option: any, i: number) => (
                             <CheckBox
                               key={i}
                               option={option}
@@ -166,8 +177,7 @@ function POLICYORIENTATIONRECEIPT({
                               handleChange={handleChange}
                               items={items}
                             />
-                          )
-                        )}
+                          ))}
                       </div>
                     </>
                   )}

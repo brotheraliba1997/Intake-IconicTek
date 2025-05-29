@@ -1,6 +1,21 @@
+"use client";
+import { useGetMyProfileQuery } from "@/redux/services/users";
 import React from "react";
 
+// function DynamicTable() {
+//   const {
+//     data: profile,
+//     isLoading,
+//     isFetching,
+//     isError,
+//   } = useGetMyProfileQuery({});
+//   const userProfile = profile?.data?.[0];
 function DynamicTable() {
+  const { data: profile, isLoading, isError } = useGetMyProfileQuery({});
+  const userProfile = profile?.data?.[0];
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading profile</p>;
   return (
     <div className="row">
       <div className="col-md-12 col-sm-12">
@@ -18,7 +33,12 @@ function DynamicTable() {
                 <thead className="thead-light">
                   <tr>
                     <th>#</th>
-                    <th>Company Name</th>
+                    {userProfile?.role === "super_admin" ? (
+                      <th>Company Name</th>
+                    ) : (
+                      <th>Name</th>
+                    )}
+
                     <th>Client Name</th>
                     <th>Date Joined</th>
                     <th>Plan Type</th>

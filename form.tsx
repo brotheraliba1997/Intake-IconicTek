@@ -2382,7 +2382,7 @@ const FormList = {
 
       {
         title:
-          "<p>Once signed and completed:</p><ul><li>The person and legal representative must receive a copy.</li><li>The provider/landlord must maintain a copy in the person’s record.</li></ul>",
+          "<p>Once signed and completed:</p>  <ul><li>The person and legal representative must receive a copy  </li> <li>The provider/landlord must maintain a copy in the person’s record. </li></ul>",
         type: "html",
       },
 

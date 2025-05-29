@@ -36,7 +36,7 @@ function SignatureCompoment({
           <div
             className="py-4 d-flex flex-column "
             style={{
-              width: "430px",
+              width: "410px",
               height: "150px",
               cursor: "pointer",
               borderBottom: "1px dashed black",
@@ -78,7 +78,7 @@ function SignatureCompoment({
             border: "2px dashed #17635C40",
             backgroundColor: "#ffffff",
             borderRadius: "8px",
-            width: window.innerWidth < 430 ? window.innerWidth - 40 : 430,
+            width: window.innerWidth < 410 ? window.innerWidth - 40 : 410,
             height: 120,
             cursor: "pointer",
             transition: "all 0.2s ease",

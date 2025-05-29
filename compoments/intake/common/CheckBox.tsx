@@ -9,45 +9,50 @@ function CheckBox({
   handleChange,
   errors,
 }: any) {
-  console.log(errors?.answers?.[index].value, "ssss");
+  console.log(errors?.answers, "ssss");
 
   return (
     <div className="col-lg-6" key={optionIndex}>
       <Controller
-        name={`answers.${index}.multipleValue.${optionIndex}`} // adjust this if you're storing IDs instead
-        control={control}
-        defaultValue={false}
-        render={({ field }) => (
-          <>
-            {console.log(field.value, "field")}
-            <div className="form-check mb-2">
-              <input
-                type="checkbox"
-                value={option.id}
-                checked={
-                  Array.isArray(field.value) && field.value.includes(option.id)
-                }
-                onChange={(e) => {
-                  const isChecked = e.target.checked;
-                  const optionId = option.id;
+                  key={option.id}
+                  name={`answers.${index}.multipleValue`}
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => {
+                    const checked = field.value.includes(option.id);
+                    return (
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className={`form-check-input ${
+                            errors.answers?.[index]?.multipleValue ? "is-invalid" : ""
+                          }`}
+                          id={`option-${index}-${optionIndex}`}
+                          value={option.id}
+                          checked={checked}
+                          onChange={(e) => {
+                            const newValue = e.target.checked
+                              ? [...field.value, option.id]
+                              : field.value.filter((val) => val !== option.id);
+                            field.onChange(newValue);
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`option-${index}-${optionIndex}`}
+                        >
+                          {option.title}
+                        </label>
+                      </div>
+                    );
+                  }}
+                />
 
-                  if (isChecked) {
-                    field.onChange([...(field.value || []), optionId]);
-                  } else {
-                    field.onChange(field.value.filter((v) => v !== optionId));
-                  }
-                }}
-              />
-              <label
-                className="form-check-label"
-                htmlFor={`option-${index}-${optionIndex}`}
-              >
-                {option.title}
-              </label>
-            </div>
-          </>
-        )}
-      />
+                 {errors.answers?.[index]?.multipleValue && (
+                <p className="invalid-feedback">
+                  {errors.answers[index].multipleValue.message}
+                </p>
+              )}
     </div>
   );
 }

@@ -13,29 +13,48 @@ import StepperButtons from "../common/StepperButtons";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const optionalTypes = ["html", "checkbox"];
+const optionalTypes = ["html"];
 const formSchema = z.object({
   answers: z.array(
     z
       .object({
         questionId: z.any(),
         value: z.string().optional(),
+        multipleValue: z
+          .array(z.string())
+
+          .optional(),
         type: z.string(),
         title: z.string().optional(),
       })
-      .refine(
-        (data) => {
-          // ✅ If type is html or checkbox → skip validation
-          if (optionalTypes.includes(data.type)) return true;
-
-          // ✅ Otherwise, value must be non-empty string
-          return typeof data.value === "string" && data.value.trim().length > 0;
-        },
-        {
-          message: "Value is required",
-          path: ["value"],
+      .superRefine((data, ctx) => {
+        if (data.type === "checkbox") {
+          if (
+            !(
+              Array.isArray(data.multipleValue) &&
+              data.multipleValue.filter(Boolean).length > 0
+            )
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "At least one checkbox option must be selected",
+              path: ["multipleValue"],
+            });
+          }
+        } else if (data.type === "html") {
+          // No validation needed
+        } else {
+          if (
+            !(typeof data.value === "string" && data.value.trim().length > 0)
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Value is required",
+              path: ["value"],
+            });
+          }
         }
-      )
+      })
   ),
 });
 
@@ -347,33 +366,33 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      // case "checkbox":
-      //   return (
-      //     <>
-      //       {type == "checkbox" && (
-      //         <>
-      //           <div className="mb-2">
-      //             <HtmlRenderer items={items} />
-      //           </div>
-      //           <div className="row">
-      //             {items?.question?.options.map((option: any, i: number) => (
-      //               <CheckBox
-      //                 key={i}
-      //                 option={option}
-      //                 optionIndex={i}
-      //                 index={index}
-      //                 handleChange={handleFormChange}
-      //                 items={items}
-      //                 control={control}
-      //                 errors={errors}
-      //                 // answers={watch("answers")[i]? watch("answers")[i].value : }
-      //               />
-      //             ))}
-      //           </div>
-      //         </>
-      //       )}
-      //     </>
-      //   );
+      case "checkbox":
+        return (
+          <>
+            {type == "checkbox" && (
+              <>
+                <div className="mb-2">
+                  <HtmlRenderer items={items} />
+                </div>
+                <div className="row">
+                  {items?.question?.options.map((option: any, i: number) => (
+                    <CheckBox
+                      key={i}
+                      option={option}
+                      optionIndex={i}
+                      index={index}
+                      handleChange={handleFormChange}
+                      items={items}
+                      control={control}
+                      errors={errors}
+                      // answers={watch("answers")[i]? watch("answers")[i].value : }
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        );
 
       case "textarea":
         return (

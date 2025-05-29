@@ -230,7 +230,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         );
         if (subIndex !== -1) {
           const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {...updatedSubQuestions[subIndex],
+          updatedSubQuestions[subIndex] = {
+            ...updatedSubQuestions[subIndex],
             signatureLink: val,
             value: " ", // Set a space to satisfy non-empty validation
           };
@@ -256,8 +257,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           url: item?.signatureLink || null,
         })) || []
   );
-
- 
 
   const getComponent = ({
     type,

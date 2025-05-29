@@ -2,6 +2,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 
 function Textarea({ items, control, errors, index, onChange }: any) {
+  console.log(errors?.answers?.[index]?.value , "textArea")
   return (
     <Controller
       name={`answers.${index}.value`}
@@ -14,6 +15,7 @@ function Textarea({ items, control, errors, index, onChange }: any) {
           </div>
           <div>
             <textarea
+            
               className={`form-control mb-2 ${
                 errors?.answers?.[index]?.value ? "is-invalid" : ""
               }`}

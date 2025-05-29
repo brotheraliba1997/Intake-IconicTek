@@ -13,64 +13,62 @@ import StepperButtons from "../common/StepperButtons";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// export const formSchema = z.object({
-//   answers: z.array(
-//     z.object({
-//       questionId: z.any(),
-//       value: z.string(),
-//       multipleValue: z
-//         .array(z.any())
-//         .optional()
-//         .refine(
-//           (data) => {
-//             const filterValue =
-//             data?.filter((x) => x)?? []
-//             console.log(data,filterValue, "ddddddd")
-
-//             const hasMultipleValue = filterValue.length > 0;
-//             return hasMultipleValue;
-//           },
-//           { message: "atlest" }
-//         ),
-
-//       title: z.string().optional(),
-//     })
-//   ),
-// });
-
-export const formSchema = z.object({
+const optionalTypes = ["html", "checkbox"];
+const formSchema = z.object({
   answers: z.array(
     z
       .object({
         questionId: z.any(),
-        // type: z.string(),
-        value: z.string().optional(), // optional here, we'll validate later
-        multipleValue: z
-          .array(z.any())
-          .optional()
-          .refine(
-            (data) => {
-              const filtered = data?.filter((x) => x) ?? [];
-              return filtered.length === 0 || filtered.length > 0;
-            },
-            { message: "Invalid array" }
-          ),
+        value: z.string().optional(),
+        type: z.string(),
         title: z.string().optional(),
       })
       .refine(
         (data) => {
-          const hasValue = !!data.value?.trim();
-          const hasMultipleValue =
-            (data.multipleValue?.filter(Boolean).length ?? 0) > 0;
-          return hasValue || hasMultipleValue;
+          // ✅ If type is html or checkbox → skip validation
+          if (optionalTypes.includes(data.type)) return true;
+
+          // ✅ Otherwise, value must be non-empty string
+          return typeof data.value === "string" && data.value.trim().length > 0;
         },
         {
-          message: "Either value or multipleValue must be provided",
-          path: ["value"], // or use [] to apply message to the whole object
+          message: "Value is required",
+          path: ["value"],
         }
       )
   ),
 });
+
+// export const formSchema = z.object({
+//   answers: z.array(
+//     z
+//       .object({
+//         questionId: z.any(),
+//         type: z.string(),
+//         value: z.string().optional(), // optional here, we'll validate later
+//         // multipleValue: z
+//         //   .array(z.any())
+//         //   .optional()
+//         //   .refine((data) => !data || data.filter(Boolean).length > 0, {
+//         //     message: "At least one option must be selected",
+//         //   }),
+
+//         title: z.string().optional(),
+//       })
+//       .refine(
+//         (data) => {
+//           const hasValue = !!data.value?.trim();
+//           // const hasMultipleValue =
+//           //   (data.multipleValue?.filter(Boolean).length ?? 0) > 0;
+//           return hasValue ;
+//         },
+//         {
+//           message: "Either value or multipleValue must be provided",
+//           path: ["value"],
+//         }
+//       )
+//   ),
+// });
 
 function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const {
@@ -100,38 +98,38 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const [formData, setFormData] = useState();
 
   useEffect(() => {
-     if (dataGet) {
-       // First sort the main questions
-       const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
-         (a: any, b: any) => a.arrangement - b.arrangement
-       );
- 
-       const initialFormData = sortedQuestions.map((items: any, idx: number) => {
-         // Sort subquestions if they exist
-         const sortedSubQuestions = items?.question?.SubQuestion
-           ? [...items.question.SubQuestion].sort(
-               (a: any, b: any) => a.arrangement - b.arrangement
-             )
-           : [];
- 
-         return {
-           questionId: items?.id,
-           value: "",
-           multipleValue: [],
-           type: items?.question.type,
-           title: items?.question?.title,
-           subQuestion: sortedSubQuestions.map((sub: any) => ({
-             value: "",
-             multipleValue: [],
-             type: sub?.type,
-             id: sub?.id,
-           })),
-         };
-       });
- 
-       setValue("answers", initialFormData);
-     }
-   }, [dataGet, setValue]);
+    if (dataGet) {
+      // First sort the main questions
+      const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
+        (a: any, b: any) => a.arrangement - b.arrangement
+      );
+
+      const initialFormData = sortedQuestions.map((items: any, idx: number) => {
+        // Sort subquestions if they exist
+        const sortedSubQuestions = items?.question?.SubQuestion
+          ? [...items.question.SubQuestion].sort(
+              (a: any, b: any) => a.arrangement - b.arrangement
+            )
+          : [];
+
+        return {
+          questionId: items?.id,
+          value: "",
+          multipleValue: [],
+          type: items?.question.type,
+          title: items?.question?.title,
+          subQuestion: sortedSubQuestions.map((sub: any) => ({
+            value: "",
+            multipleValue: [],
+            type: sub?.type,
+            id: sub?.id,
+          })),
+        };
+      });
+
+      setValue("answers", initialFormData);
+    }
+  }, [dataGet, setValue]);
 
   console.log(formData, "formData");
 
@@ -150,8 +148,6 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
       console.log(optionId, "config");
 
       const value = e?.target?.value;
-
-      console.log(value, "chalrahahai");
 
       if (subQuestionId) {
         const answers = getValues("answers");
@@ -214,21 +210,17 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
 
   console.log(watch()?.answers, "getValues");
 
-  const multipleValueFilter = watch()?.answers?.map((multi) => {
-    if (multi?.multipleValue) {
-      return {
-        ...multi,
-        multipleValue: multi?.multipleValue?.filter(
-          (fil: any) => fil !== false
-        ),
-      };
-    }
-    return multi;
-  });
-
-  console.log(multipleValueFilter, "multipleValueFilter");
-
-  console.log(register("questionId") , "questionIdquestionId" )
+  // const multipleValueFilter = watch()?.answers?.map((multi) => {
+  //   if (multi?.multipleValue) {
+  //     return {
+  //       ...multi,
+  //       multipleValue: multi?.multipleValue?.filter(
+  //         (fil: any) => fil !== false
+  //       ),
+  //     };
+  //   }
+  //   return multi;
+  // });
 
   const [createAnswersMutation] = useCreateAnswersMutation();
 
@@ -241,22 +233,20 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
 
-    const multipleValueFilter = watch()?.answers?.map((multi) => {
-      if (multi?.multipleValue) {
-        return {
-          ...multi,
-          multipleValue: multi?.multipleValue?.filter(
-            (fil: any) => fil !== false
-          ),
-        };
-      }
-      return multi;
-    });
-
-
+    // const multipleValueFilter = watch()?.answers?.map((multi) => {
+    //   if (multi?.multipleValue) {
+    //     return {
+    //       ...multi,
+    //       multipleValue: multi?.multipleValue?.filter(
+    //         (fil: any) => fil !== false
+    //       ),
+    //     };
+    //   }
+    //   return multi;
+    // });
 
     try {
-      const payload = { formId: dataGet?.id, answers: multipleValueFilter };
+      const payload = { formId: dataGet?.id, answers: data?.answers };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
         handleNext();
@@ -286,8 +276,6 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
       case "date":
         return (
           <>
-           
-
             {(type === "text" || type === "date") && (
               <div className="col-lg-6 my-3">
                 <HtmlRenderer items={items} />
@@ -359,40 +347,37 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      case "checkbox":
-        return (
-          <>
-           
-
-            {type == "checkbox" && (
-              <>
-                <div className="mb-2">
-                  <HtmlRenderer items={items} />
-                </div>
-                <div className="row">
-                  {items?.question?.options.map((option: any, i: number) => (
-                    <CheckBox
-                      key={i}
-                      option={option}
-                      optionIndex={i}
-                      index={index}
-                      handleChange={handleFormChange}
-                      items={items}
-                      control={control}
-                      errors={errors}
-                      // answers={watch("answers")[i]? watch("answers")[i].value : }
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        );
+      // case "checkbox":
+      //   return (
+      //     <>
+      //       {type == "checkbox" && (
+      //         <>
+      //           <div className="mb-2">
+      //             <HtmlRenderer items={items} />
+      //           </div>
+      //           <div className="row">
+      //             {items?.question?.options.map((option: any, i: number) => (
+      //               <CheckBox
+      //                 key={i}
+      //                 option={option}
+      //                 optionIndex={i}
+      //                 index={index}
+      //                 handleChange={handleFormChange}
+      //                 items={items}
+      //                 control={control}
+      //                 errors={errors}
+      //                 // answers={watch("answers")[i]? watch("answers")[i].value : }
+      //               />
+      //             ))}
+      //           </div>
+      //         </>
+      //       )}
+      //     </>
+      //   );
 
       case "textarea":
         return (
           <>
-           
             {type == "textarea" && (
               <Textarea
                 items={items}
@@ -402,7 +387,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
                 onChange={(e) => {
                   handleFormChange(e, {
                     questionId: items?.id,
-                    type: "text",
+                    type: "textarea",
                   });
                 }}
               />

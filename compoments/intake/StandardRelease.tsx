@@ -19,14 +19,17 @@ const formSchema = z.object({
       .object({
         questionId: z.any(),
         value: z.string().optional(),
-        multipleValue: z
-          .array(z.string()).optional(),
+        multipleValue: z.array(z.string()).optional(),
         type: z.string(),
         title: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         if (data.type === "checkbox") {
-          if (!(Array.isArray(data.multipleValue) && data.multipleValue.filter(Boolean).length > 0)
+          if (
+            !(
+              Array.isArray(data.multipleValue) &&
+              data.multipleValue.filter(Boolean).length > 0
+            )
           ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
@@ -37,7 +40,9 @@ const formSchema = z.object({
         } else if (data.type === "html") {
           // No validation needed
         } else {
-          if (!(typeof data.value === "string" && data.value.trim().length > 0)) {
+          if (
+            !(typeof data.value === "string" && data.value.trim().length > 0)
+          ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: "Value is required",
@@ -48,8 +53,6 @@ const formSchema = z.object({
       })
   ),
 });
-
-
 
 function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const {
@@ -258,7 +261,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {(type === "text" || type === "date") && (
-              <div className="col-lg-6 my-3">
+              <div className="col-lg-6 my-3 mb-4">
                 <HtmlRenderer items={items} />
                 {type === "text" && (
                   <Controller
@@ -333,10 +336,10 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           <>
             {type == "checkbox" && (
               <>
-                <div className="mb-2">
+                <div className="mb-3">
                   <HtmlRenderer items={items} />
                 </div>
-                <div className="row">
+                <div className="row mb-4">
                   {items?.question?.options.map((option: any, i: number) => (
                     <CheckBox
                       key={i}
@@ -360,18 +363,20 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {type == "textarea" && (
-              <Textarea
-                items={items}
-                control={control}
-                errors={errors}
-                index={index}
-                onChange={(e) => {
-                  handleFormChange(e, {
-                    questionId: items?.id,
-                    type: "textarea",
-                  });
-                }}
-              />
+              <div className="mb-4">
+                <Textarea
+                  items={items}
+                  control={control}
+                  errors={errors}
+                  index={index}
+                  onChange={(e) => {
+                    handleFormChange(e, {
+                      questionId: items?.id,
+                      type: "textarea",
+                    });
+                  }}
+                />
+              </div>
             )}
           </>
         );

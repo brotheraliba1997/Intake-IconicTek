@@ -154,39 +154,57 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
           items.question.options.length > 0 && (
             <div className="row">
               <HtmlRenderer items={items} />
-              {items.question.options.map((option: Option, i: number) => (
-                <div className="col-lg-6" key={i}>
-                  <div className="form-check mb-2">
-                    <Controller
-                      name={`answers.${index}.value`}
-                      control={control}
-                      rules={{ required: "Please select an option" }}
-                      render={({ field }) => (
-                        <>
-                          <input
-                            type="radio"
-                            className={`form-check-input ${
-                              errors?.answers?.[index]?.value
-                                ? "is-invalid"
-                                : ""
-                            }`}
-                            name={`option-${items.id}`}
-                            id={`option-${index}-${i}`}
-                            checked={field.value === option.id}
-                            onChange={() => field.onChange(option.id)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`option-${index}-${i}`}
-                          >
-                            {option.title}
-                          </label>
-                        </>
-                      )}
-                    />
+              {items.question.options.map((option: Option, i: number) => {
+                const isOther = option.title.toLowerCase().includes("other");
+                return (
+                  <div className="col-lg-6" key={i}>
+                    <div className="form-check mb-2">
+                      <Controller
+                        name={`answers.${index}.value`}
+                        control={control}
+                        rules={{ required: "Please select an option" }}
+                        render={({ field }) => (
+                          <>
+                            <input
+                              type="radio"
+                              className={`form-check-input ${
+                                errors?.answers?.[index]?.value
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              name={`option-${items.id}`}
+                              id={`option-${index}-${i}`}
+                              checked={field.value === option.id}
+                              onChange={() => field.onChange(option.id)}
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor={`option-${index}-${i}`}
+                            >
+                              {option.title}
+                            </label>
+                            {/* Show input if 'Other' is selected */}
+                            {isOther && field.value === option.id && (
+                              <Controller
+                                name={`answers.${index}.otherValue`}
+                                control={control}
+                                render={({ field: otherField }) => (
+                                  <input
+                                    type="text"
+                                    className="form-control mt-2"
+                                    placeholder="Please specify..."
+                                    {...otherField}
+                                  />
+                                )}
+                              />
+                            )}
+                          </>
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )
         );

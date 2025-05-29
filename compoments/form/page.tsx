@@ -34,7 +34,7 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              <AuthorizationForMedication
+              <StandardRelease
               // rehta hai hamza
                 handleNext={handleNext}
                 handleBack={handleBack}
@@ -51,7 +51,7 @@ function FormPage() {
 
           {currentStep === 1 && (
             <AuthorizationForMedication
-              // rehta hai hamza
+              // done ui shezad
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -67,7 +67,7 @@ function FormPage() {
           )}
           {currentStep === 3 && (
             <FUNDSANDPROPERTY
-              // rehta hai hammad
+              // rehta hai hammad other working rehti hai 
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -75,7 +75,7 @@ function FormPage() {
           )}
           {currentStep === 4 && (
             <ADMISSIONFORM
-              // rehta hai hamza
+              // done hai hamza 
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -83,7 +83,7 @@ function FormPage() {
           )}
           {currentStep === 5 && (
             <IndividualAbuse
-              // rehta hai hamza
+              // rehta hai hammad
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

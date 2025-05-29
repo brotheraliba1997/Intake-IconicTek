@@ -14,45 +14,45 @@ function CheckBox({
   return (
     <div className="col-lg-6" key={optionIndex}>
       <Controller
-                  key={option.id}
-                  name={`answers.${index}.multipleValue`}
-                  control={control}
-                  defaultValue={[]}
-                  render={({ field }) => {
-                    const checked = field.value.includes(option.id);
-                    return (
-                      <div className="form-check">
-                        <input
-                          type="checkbox"
-                          className={`form-check-input ${
-                            errors.answers?.[index]?.multipleValue ? "is-invalid" : ""
-                          }`}
-                          id={`option-${index}-${optionIndex}`}
-                          value={option.id}
-                          checked={checked}
-                          onChange={(e) => {
-                            const newValue = e.target.checked
-                              ? [...field.value, option.id]
-                              : field.value.filter((val) => val !== option.id);
-                            field.onChange(newValue);
-                          }}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`option-${index}-${optionIndex}`}
-                        >
-                          {option.title}
-                        </label>
-                      </div>
-                    );
-                  }}
-                />
+        key={option.id}
+        name={`answers.${index}.multipleValue`}
+        control={control}
+        defaultValue={[]}
+        render={({ field }) => {
+          const checked = field.value.includes(option.id);
+          return (
+            <div className="form-check">
+              <input
+                type="checkbox"
+                className={`form-check-input ${
+                  errors.answers?.[index]?.multipleValue ? "is-invalid" : ""
+                }`}
+                id={`option-${index}-${optionIndex}`}
+                value={option.id}
+                checked={checked}
+                onChange={(e) => {
+                  const newValue = e.target.checked
+                    ? [...field.value, option.id]
+                    : field.value.filter((val: any) => val !== option.id);
+                  field.onChange(newValue);
+                }}
+              />
+              <label
+                className="form-check-label"
+                htmlFor={`option-${index}-${optionIndex}`}
+              >
+                {option.title}
+              </label>
+            </div>
+          );
+        }}
+      />
 
-                 {errors.answers?.[index]?.multipleValue && (
-                <p className="invalid-feedback">
-                  {errors.answers[index].multipleValue.message}
-                </p>
-              )}
+      {errors.answers?.[index]?.multipleValue && (
+        <p className="invalid-feedback">
+          {errors.answers[index].multipleValue.message}
+        </p>
+      )}
     </div>
   );
 }

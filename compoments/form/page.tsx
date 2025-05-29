@@ -34,7 +34,7 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              <StandardRelease
+              <AuthorizationForMedication
               // rehta hai hamza
                 handleNext={handleNext}
                 handleBack={handleBack}

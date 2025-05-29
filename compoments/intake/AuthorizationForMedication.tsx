@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
@@ -8,6 +9,51 @@ import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
 import SubquestionChecbox from "./common/Subquestion-Checbox";
 import handleChange from "../utlity/handleFormChange";
+import * as z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CheckBox from "./common/CheckBox";
+
+const formSchema = z.object({
+  answers: z.array(
+    z
+      .object({
+        questionId: z.any(),
+        value: z.string().optional(),
+        multipleValue: z.array(z.string()).optional(),
+        type: z.string(),
+        title: z.string().optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.type === "checkbox") {
+          if (
+            !(
+              Array.isArray(data.multipleValue) &&
+              data.multipleValue.filter(Boolean).length > 0
+            )
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "At least one checkbox option must be selected",
+              path: ["multipleValue"],
+            });
+          }
+        } else if (data.type === "html") {
+          // No validation needed
+        } else {
+          if (
+            !(typeof data.value === "string" && data.value.trim().length > 0)
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Value is required",
+              path: ["value"],
+            });
+          }
+        }
+      })
+  ),
+});
 
 interface AuthorizationForMedicationProps {
   handleBack: () => void;
@@ -20,6 +66,22 @@ function AuthorizationForMedication({
   handleNext,
   currentStep,
 }: AuthorizationForMedicationProps) {
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    getValues,
+    formState: { errors, isSubmitted, isDirty },
+    register,
+  } = useForm({
+    defaultValues: {
+      answers: [],
+    },
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
   const { data, isLoading, error } = useGetMyFormQuery({});
 
   const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
@@ -28,23 +90,126 @@ function AuthorizationForMedication({
   const question = dataGet?.formQuestions
     ?.slice()
     ?.sort((a: any, b: any) => a.arrangement - b.arrangement);
-
   const [formData, setFormData] = useState();
 
   useEffect(() => {
-    if (dataGet)
-      setFormData(
-        dataGet?.formQuestions?.map((items: any) => ({
+    if (dataGet) {
+      const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
+        (a: any, b: any) => a.arrangement - b.arrangement
+      );
+
+      const initialFormData = sortedQuestions.map((items: any, idx: number) => {
+        // Sort subquestions if they exist
+        const sortedSubQuestions = items?.question?.SubQuestion
+          ? [...items.question.SubQuestion].sort(
+              (a: any, b: any) => a.arrangement - b.arrangement
+            )
+          : [];
+
+        return {
           questionId: items?.id,
           value: "",
           multipleValue: [],
           type: items?.question.type,
-          title: items?.question.title,
-        }))
-      );
-  }, [dataGet]);
+          title: items?.question?.title,
+          subQuestion: sortedSubQuestions.map((sub: any) => ({
+            value: "",
+            multipleValue: [],
+            type: sub?.type,
+            id: sub?.id,
+          })),
+        };
+      });
 
-  const getComponent = ({ type, items, handleChange, signatureValue }: any) => {
+      setValue("answers", initialFormData);
+    }
+  }, [dataGet, setValue]);
+
+  const handleFormChange = useCallback(
+    (
+      e: any,
+      config: {
+        questionId: any;
+        type: string;
+        subQuestionId?: any;
+        optionId?: any;
+        isMultiple?: boolean;
+      }
+    ) => {
+      const { questionId, type, subQuestionId, optionId, isMultiple } = config;
+      console.log(optionId, "config");
+
+      const value = e?.target?.value;
+
+      if (subQuestionId) {
+        const answers = getValues("answers");
+
+        const questionIndex = answers.findIndex(
+          (q) => q.questionId === questionId
+        );
+        if (questionIndex !== -1) {
+          const subQuestionIndex = answers[
+            questionIndex
+          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          if (subQuestionIndex !== -1) {
+            setValue(
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              value,
+              {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              }
+            );
+          }
+        }
+      } else {
+        const answers = getValues("answers");
+
+        const questionIndex = answers.findIndex(
+          (q) => q.questionId === questionId
+        );
+
+        if (questionIndex !== -1) {
+          if (isMultiple) {
+            const currentValues = answers[questionIndex].multipleValue || [];
+
+            const newValues = currentValues.includes(optionId)
+              ? currentValues.filter((v) => v !== optionId)
+              : [...currentValues, optionId];
+
+            setValue(`answers.${questionIndex}.multipleValue`, newValues, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
+          } else {
+            setValue(
+              `answers.${questionIndex}.value`,
+              value || optionId || "",
+              {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              }
+            );
+          }
+        }
+      }
+    },
+    [setValue, getValues]
+  );
+
+  const getComponent = ({
+    type,
+    items,
+    index,
+  }: {
+    type: string;
+    items: any;
+
+    index: number;
+  }) => {
     switch (type) {
       case "html":
         return <>{type === "html" && <HtmlRenderer items={items} />}</>;
@@ -54,32 +219,69 @@ function AuthorizationForMedication({
         return (
           <>
             {(type === "text" || type === "date") && (
-              <div className="col-lg-6 mb-4">
+              <div className="col-lg-6 my-3">
                 <HtmlRenderer items={items} />
                 {type === "text" && (
-                  <input
-                    type="text"
-                    className="form-control"
-                    required
-                    placeholder="Enter text..."
-                    required={true}
-                    onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {
-                        questionId: items?.id,
-                      })
-                    }
+                  <Controller
+                    name={`answers.${index}.value`}
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <div>
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            errors?.answers?.[index]?.value ? "is-invalid" : ""
+                          }`}
+                          placeholder={`Enter ${
+                            items?.question?.title || "text"
+                          }...`}
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            handleFormChange(e, {
+                              questionId: items?.id,
+                              type: "text",
+                            });
+                          }}
+                        />
+                        {errors?.answers?.[index]?.value && (
+                          <div className="invalid-feedback d-block">
+                            {errors.answers[index].value.message}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   />
                 )}
                 {type === "date" && (
-                  <input
-                    type="date"
-                    className="form-control"
-                    required
-                    onChange={(e: any) =>
-                      handleChange(e, formData, setFormData, {
-                        questionId: items?.id,
-                      })
-                    }
+                  <Controller
+                    name={`answers.${index}.value`}
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <div>
+                        <input
+                          type="date"
+                          className={`form-control ${
+                            errors?.answers?.[index]?.value ? "is-invalid" : ""
+                          }`}
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            handleFormChange(e, {
+                              questionId: items?.id,
+                              type: "date",
+                            });
+                          }}
+                        />
+                        {errors?.answers?.[index]?.value && (
+                          <div className="invalid-feedback d-block">
+                            {errors.answers[index].value.message}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   />
                 )}
               </div>
@@ -90,38 +292,46 @@ function AuthorizationForMedication({
       case "checkbox":
         return (
           <>
-            {items?.question?.type === "checkbox" && (
+            {type == "checkbox" && (
               <>
-                {items?.question?.options &&
-                  items?.question?.options.length > 0 && (
-                    <div className="row mb-4">
-                      {items?.question.options.map((option: any, i: any) => (
-                        <div className="col-lg-6" key={i}>
-                          <div className="form-check mb-2">
-                            <input
-                              required
-                              type={option.type}
-                              className="form-check-input"
-                              onChange={(e) =>
-                                handleChange(e, formData, setFormData, {
-                                  questionId: items?.id,
-                                  optionId: option.id,
-                                  isMultiple: option.isMultiple,
-                                })
-                              }
-                            />
-                            <label
-                              className="form-check-label"
-                              // htmlFor={`option-${index}-${i}`}
-                            >
-                              {option.title}
-                            </label>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                <div className="mb-2">
+                  <HtmlRenderer items={items} />
+                </div>
+                <div className="row">
+                  {items?.question?.options.map((option: any, i: number) => (
+                    <CheckBox
+                      key={i}
+                      option={option}
+                      optionIndex={i}
+                      index={index}
+                      handleChange={handleFormChange}
+                      items={items}
+                      control={control}
+                      errors={errors}
+                    />
+                  ))}
+                </div>
               </>
+            )}
+          </>
+        );
+
+      case "textarea":
+        return (
+          <>
+            {type == "textarea" && (
+              <Textarea
+                items={items}
+                control={control}
+                errors={errors}
+                index={index}
+                onChange={(e) => {
+                  handleFormChange(e, {
+                    questionId: items?.id,
+                    type: "textarea",
+                  });
+                }}
+              />
             )}
           </>
         );
@@ -132,22 +342,27 @@ function AuthorizationForMedication({
   };
 
   const [createAnswersMutation] = useCreateAnswersMutation();
-  const handleSubmit = async (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    e.preventDefault();
-    const payload = { formId: dataGet?.id, answers: formData };
+  const onSubmit = async (data: any) => {
+    console.log(data, "valueanswers");
 
-    console.log(payload, "handleSubmit");
+    const multipleValueFilter = watch()?.answers?.map((multi) => {
+      if (multi?.multipleValue) {
+        return {
+          ...multi,
+          multipleValue: multi?.multipleValue?.filter(
+            (fil: any) => fil !== false
+          ),
+        };
+      }
+      return multi;
+    });
 
     try {
+      const payload = { formId: dataGet?.id, answers: data?.answers };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
         handleNext();
       }
-      console.log("Response:", response);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -157,24 +372,24 @@ function AuthorizationForMedication({
     <>
       <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
-        <h3 className="card-title text-center">
-          {data?.data?.find((items: any) => items?.title === formName)?.title}
-        </h3>
+        <h3 className="card-title text-center">{dataGet?.title}</h3>
 
-        <form onSubmit={handleSubmit}>
-          <div className="row  my-5  ">
-            {question
-              ?.slice()
-              ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-              ?.map((items: any, index: any) => (
-                <>
-                  {getComponent({
-                    type: items?.question?.type,
-                    items,
-                    handleChange,
-                  })}
-                </>
-              ))}
+        <form onSubmit={handleFormSubmit(onSubmit)}>
+          <div className="d-flex flex-column gap-5">
+            <div className="row pt-3 ">
+              {question
+                ?.slice()
+                ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
+                ?.map((items: any, index: any) => (
+                  <React.Fragment key={items.id}>
+                    {getComponent({
+                      type: items?.question?.type,
+                      items,
+                      index,
+                    })}
+                  </React.Fragment>
+                ))}
+            </div>
           </div>
 
           <StepperButtons
@@ -183,7 +398,7 @@ function AuthorizationForMedication({
             onNavigate={(direction) => {
               if (direction === "back") handleBack();
               else if (direction === "next") return;
-              else if (direction === "submit") alert("Form Submitted!");
+              else if (direction === "submit") handleFormSubmit(onSubmit)();
             }}
           />
         </form>

@@ -13,7 +13,6 @@ import StepperButtons from "../common/StepperButtons";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const optionalTypes = ["html"];
 const formSchema = z.object({
   answers: z.array(
     z
@@ -21,19 +20,13 @@ const formSchema = z.object({
         questionId: z.any(),
         value: z.string().optional(),
         multipleValue: z
-          .array(z.string())
-
-          .optional(),
+          .array(z.string()).optional(),
         type: z.string(),
         title: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         if (data.type === "checkbox") {
-          if (
-            !(
-              Array.isArray(data.multipleValue) &&
-              data.multipleValue.filter(Boolean).length > 0
-            )
+          if (!(Array.isArray(data.multipleValue) && data.multipleValue.filter(Boolean).length > 0)
           ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
@@ -44,9 +37,7 @@ const formSchema = z.object({
         } else if (data.type === "html") {
           // No validation needed
         } else {
-          if (
-            !(typeof data.value === "string" && data.value.trim().length > 0)
-          ) {
+          if (!(typeof data.value === "string" && data.value.trim().length > 0)) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: "Value is required",
@@ -58,36 +49,7 @@ const formSchema = z.object({
   ),
 });
 
-// export const formSchema = z.object({
-//   answers: z.array(
-//     z
-//       .object({
-//         questionId: z.any(),
-//         type: z.string(),
-//         value: z.string().optional(), // optional here, we'll validate later
-//         // multipleValue: z
-//         //   .array(z.any())
-//         //   .optional()
-//         //   .refine((data) => !data || data.filter(Boolean).length > 0, {
-//         //     message: "At least one option must be selected",
-//         //   }),
 
-//         title: z.string().optional(),
-//       })
-//       .refine(
-//         (data) => {
-//           const hasValue = !!data.value?.trim();
-//           // const hasMultipleValue =
-//           //   (data.multipleValue?.filter(Boolean).length ?? 0) > 0;
-//           return hasValue ;
-//         },
-//         {
-//           message: "Either value or multipleValue must be provided",
-//           path: ["value"],
-//         }
-//       )
-//   ),
-// });
 
 function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const {

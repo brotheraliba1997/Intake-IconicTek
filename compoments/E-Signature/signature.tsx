@@ -19,7 +19,7 @@ function SignatureCompoment({
 
   console.log(items, "itemsitemsitems");
   const signatureValueRepeat = formData?.find(
-    (item: any) => item?.title === "Name"
+    (item: any) => item?.title === "Name" || item?.title === "Persons Name:"
   );
 
   const [show, setShow] = useState<any>();
@@ -27,7 +27,7 @@ function SignatureCompoment({
   const handleClose = () => setShow(signatureValueRepeat.value ? true : false);
   const handleShow = () => setShow(true);
 
-  // <Image src={signatureData?.url} layout="fill" objectFit="contain" />
+  
 
   return (
     <>

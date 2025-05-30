@@ -113,7 +113,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       );
 
       const initialFormData = sortedQuestions.map((items: any, idx: number) => {
-        // Sort subquestions if they exist
+        
         const sortedSubQuestions = items?.question?.SubQuestion
           ? [...items.question.SubQuestion].sort(
               (a: any, b: any) => a.arrangement - b.arrangement

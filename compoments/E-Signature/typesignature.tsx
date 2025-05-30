@@ -12,13 +12,17 @@ export default function TypeSignature({
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
 
+  console.log(formData,"formData")
+
   const signatureValueRepeat = formData?.find(
-    (item: any) => item?.title === "Name"
+    (item: any) => item?.title === "Name" || item?.title === "Persons Name:"
   );
+
+
 
   const [text, setText] = useState(signatureValueRepeat?.value);
 
-  console.log(text, "text")
+  console.log(signatureValueRepeat?.value, "text")
 
   const canvasRef = useRef<any>(null);
 
@@ -33,11 +37,13 @@ export default function TypeSignature({
     ctx.font = "24px Arial";
     ctx.fillText(text, 10, 50);
     const dataUrl = canvas.toDataURL();
-    if (text !== "") {
+    if (text !== undefined) {
       toast.success("Signature save successfully");
       setBase64Image(dataUrl);
       signatureValue(dataUrl, items);
+      
       setShow(false);
+      
     } else {
       toast.error("Signature value Missing");
     }
@@ -102,7 +108,7 @@ export default function TypeSignature({
             </div>
           </div>
 
-          <p onClick={generateImage} className=" text-secondary">
+          <p onClick={generateImage} className=" text-secondary " style={{ cursor: "pointer" }}>
             Save
           </p>
         </div>

@@ -8,26 +8,22 @@
 @import url("../style/fontawesome/css/fontawesome.min.css");
 @import url("../style/css/datatables/datatables.min.css");
 
+.StepMain-8-2-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
 
-.StepMain-8-2-3{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .StepperContainer-8-2-1{
-    display: flex;
-    justify-content: space-around;
-  }
+.StepperContainer-8-2-1 {
+  display: flex;
+  justify-content: space-around;
+}
 
-
-
-  .sidebar-menu li a.subdrop .menu-arrow {
-    -transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-  }
-  
+.sidebar-menu li a.subdrop .menu-arrow {
+  -transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}

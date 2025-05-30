@@ -25,7 +25,7 @@ function SubquestionChecbox({
         <label className="fw-bold" style={{ minWidth: "600px" }}>
           {subquestion.title}
         </label>{" "}
-        <div className="d-flex flex-wrap gap-3">
+        {/* <div className="d-flex flex-wrap gap-3">
           {subquestion?.options?.map((option: any, j: any) => (
             <div className="form-check" key={j}>
               <input
@@ -48,6 +48,40 @@ function SubquestionChecbox({
               </label>
             </div>
           ))}
+        </div> */}
+        <div className="d-flex flex-wrap gap-3">
+          {[...(subquestion?.options || [])]
+            .sort((a, b) => {
+              const titleA = a.title.trim();
+              const titleB = b.title.trim();
+              if (titleA === "Yes") return -1;
+              if (titleB === "Yes") return 1;
+              if (titleA === "No") return -1;
+              if (titleB === "No") return 1;
+              return 0;
+            })
+            .map((option: any, j: any) => (
+              <div className="form-check" key={j}>
+                <input
+                  className={`form-check-input ${
+                    errors?.answers?.[index]?.value ? "is-invalid" : ""
+                  }`}
+                  type="radio"
+                  name={`subquestion-${subquestion.id}`}
+                  value={option.id}
+                  id={`option-${index}-${j}`}
+                  onChange={(e) => {
+                    onChange(e, option.id, option.isMultiple);
+                  }}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`option-${index}-${j}`}
+                >
+                  {option.title}
+                </label>
+              </div>
+            ))}
         </div>
       </div>
     </div>

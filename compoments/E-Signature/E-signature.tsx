@@ -37,7 +37,7 @@ function ESignature({ signatureValue, items, setShow }: any) {
               penColor={penColor}
               canvasProps={{
                 className: "signature-canvas",
-                width: window.innerWidth < 430 ? window.innerWidth - 40 : 430,
+                width: window.innerWidth < 410 ? window.innerWidth - 40 : 410,
                 height: 180,
               }}
             />
@@ -83,10 +83,17 @@ function ESignature({ signatureValue, items, setShow }: any) {
           </div>
 
           <div className="d-flex gap-4">
-            <p onClick={handleClear} className=" text-secondary">
+            <p
+              onClick={handleClear}
+              className=" text-secondary"
+              style={{ cursor: "pointer" }}
+            >
               Clear
             </p>
-            <p onClick={handleSave} style={{ color: "#17635C" }}>
+            <p
+              onClick={handleSave}
+              style={{ color: "#17635C", cursor: "pointer" }}
+            >
               Save
             </p>
           </div>

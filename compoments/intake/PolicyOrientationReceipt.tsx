@@ -68,6 +68,9 @@ function POLICYORIENTATIONRECEIPT({
     [dataGet]
   );
 
+
+  console.log(question, "Date")
+
   const {
     control,
     handleSubmit: handleFormSubmit,

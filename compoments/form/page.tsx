@@ -10,20 +10,31 @@ import IndividualAbuse from "../intake/IndividualAbuse";
 import POLICYORIENTATIONRECEIPT from "../intake/PolicyOrientationReceipt";
 import ResidencyAgreement from "../intake/ResidencyAgreement";
 import ServicesPlan from "../intake/ServicesPlan";
-import { useCreateAnswersMutation } from "@/redux/services/answer";
-import Formlist from "@/form";
 import { stepLabels } from "@/constants/stepLabels";
 import { Stepper } from "../Stepper/Stepper";
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
+  // On mount, load currentStep from localStorage if available
+  React.useEffect(() => {
+    const savedStep = localStorage.getItem("currentStep");
+    if (savedStep !== null) {
+      setCurrentStep(parseInt(savedStep, 10));
+    }
+  }, []);
+
+  // Whenever currentStep changes, save to localStorage
+  React.useEffect(() => {
+    localStorage.setItem("currentStep", currentStep.toString());
+  }, [currentStep]);
+
   const handleNext = () => {
     if (currentStep <= 8) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(-1);
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
   return (
@@ -39,12 +50,6 @@ function FormPage() {
                 handleBack={handleBack}
                 currentStep={currentStep}
               />
-
-              {/* <SELFMANAGEMENT
-                handleNext={handleNext}
-                handleBack={handleBack}
-                currentStep={currentStep}
-              /> */}
             </div>
           )}
 

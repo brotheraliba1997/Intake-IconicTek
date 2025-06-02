@@ -212,7 +212,31 @@ function AuthorizationForMedication({
   }) => {
     switch (type) {
       case "html":
-        return <>{type === "html" && <HtmlRenderer items={items} />}</>;
+        return (
+          <>
+            <style>
+              {`
+      ul li {
+        margin-bottom: 1rem;
+      }
+    `}
+            </style>
+            {/* {type === "html" && <HtmlRenderer items={items} />} */}
+            {type === "html" && (
+              <div
+                style={{
+                  marginTop: items?.question?.title?.includes(
+                    "I understand the following:"
+                  )
+                    ? "2rem"
+                    : "0",
+                }}
+              >
+                <HtmlRenderer items={items} />
+              </div>
+            )}
+          </>
+        );
 
       case "text":
       case "date":

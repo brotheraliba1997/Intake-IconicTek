@@ -233,7 +233,41 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   }) => {
     switch (type) {
       case "html":
-        return <>{type === "html" && <HtmlRenderer items={items} />}</>;
+        return (
+          <>
+            <style>
+              {`
+      ul li {
+        margin-bottom: 1rem;
+      }
+    `}
+            </style>
+            {type === "html" && (
+              <div
+                style={{
+                  marginTop:
+                    items?.question?.title?.includes(
+                      "When you end a residency agreement"
+                    ) ||
+                    items?.question?.title?.includes(
+                      "When your landlord/provider ends a residency agreement"
+                    ) ||
+                    items?.question?.title?.includes(
+                      "The landlord/provider will notify you"
+                    ) ||
+                    items?.question?.title?.includes(
+                      "Place an X in the blank space if applicable"
+                    )
+                      ? "2rem"
+                      : "0",
+                }}
+              >
+                <HtmlRenderer items={items} />
+              </div>
+            )}
+          </>
+        );
+      // }
 
       case "text":
 
@@ -241,7 +275,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {(type === "text" || type === "date") && (
-              <div className="col-lg-5 my-4">
+              <div className="col-lg-6 my-4">
                 <HtmlRenderer items={items} />
                 {type === "text" && (
                   <Controller
@@ -343,7 +377,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   return (
     <div className="card px-5 pb-5 pt-3">
       <HospitalLogo />
-      <h3 className="card-title text-center">
+      <h3 className="col-sm-12 card-title text-center">
         {data?.data?.find((items: any) => items?.title === formName)?.title}
       </h3>
       <form onSubmit={handleFormSubmit(onSubmit, handleFormError)}>

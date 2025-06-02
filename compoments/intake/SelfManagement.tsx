@@ -48,7 +48,11 @@ const formSchema = z.object({
                     message: "Date is required",
                     path: ["value"],
                   });
-                } else if (data.type !== "Signature" && !data.value) {
+                } else if (
+                  data.type !== "Signature" &&
+                  data.type !== "checkbox" &&
+                  !data.value
+                ) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "This field is required",
@@ -72,12 +76,18 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "table" && !data.value) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please select an option",
-            path: ["value"],
-          });
+        } else if (data.type === "table") {
+          // For table, require at least one subQuestion to be checked (value is truthy)
+          const hasChecked = Array.isArray(data.subQuestion)
+            ? data.subQuestion.some((sq) => sq.value && sq.value !== "")
+            : false;
+          if (!hasChecked) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Please select an option",
+              path: ["value"],
+            });
+          }
         } else if (data.type === "html" && !data.value) {
           return;
         }
@@ -113,7 +123,6 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
       );
 
       const initialFormData = sortedQuestions.map((items: any, idx: number) => {
-        
         const sortedSubQuestions = items?.question?.SubQuestion
           ? [...items.question.SubQuestion].sort(
               (a: any, b: any) => a.arrangement - b.arrangement

@@ -45,8 +45,8 @@ function FormPage() {
         <div className="mt-4">
           {currentStep === 0 && (
             <div>
-              <POLICYORIENTATIONRECEIPT
-                // rehta hai hamza
+              <StandardRelease
+               
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
@@ -56,7 +56,7 @@ function FormPage() {
 
           {currentStep === 1 && (
             <AuthorizationForMedication
-              // done ui shezad
+            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -64,7 +64,7 @@ function FormPage() {
           )}
           {currentStep === 2 && (
             <SELFMANAGEMENT
-              // done hai
+             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -72,7 +72,7 @@ function FormPage() {
           )}
           {currentStep === 3 && (
             <FUNDSANDPROPERTY
-              // rehta hai hammad other working rehti hai
+            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -80,15 +80,15 @@ function FormPage() {
           )}
           {currentStep === 4 && (
             <ADMISSIONFORM
-              // done hai hamza
+             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
             />
           )}
           {currentStep === 5 && (
-            <IndividualAbuse
-              // rehta hai hammad
+            <ResidencyAgreement
+            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -96,7 +96,7 @@ function FormPage() {
           )}
           {currentStep === 6 && (
             <POLICYORIENTATIONRECEIPT
-              // rehta hai hammad
+             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -104,7 +104,7 @@ function FormPage() {
           )}
           {currentStep === 7 && (
             <ResidencyAgreement
-              // done hai ui rehti hai Shezad
+             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

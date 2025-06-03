@@ -37,8 +37,8 @@ function ESignature({ signatureValue, items, setShow }: any) {
               penColor={penColor}
               canvasProps={{
                 className: "signature-canvas",
-                width: window.innerWidth < 410 ? window.innerWidth - 40 : 410,
-                height: 180,
+                width: 400,
+                height: 120,
               }}
             />
           </div>

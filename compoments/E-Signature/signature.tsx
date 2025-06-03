@@ -7,6 +7,8 @@ import ESignature from "@/compoments/E-Signature/E-signature";
 import Image from "next/image";
 import Signature from "@/public/img/signature/signature.jpeg";
 import TypeSignature from "./typesignature";
+import Card from "react-bootstrap/Card";
+import { MdCancel } from "react-icons/md";
 
 function SignatureCompoment({
   signatureValue,
@@ -26,8 +28,6 @@ function SignatureCompoment({
 
   const handleClose = () => setShow(signatureValueRepeat.value ? true : false);
   const handleShow = () => setShow(true);
-
-  
 
   return (
     <>
@@ -78,7 +78,7 @@ function SignatureCompoment({
             border: "2px dashed #17635C40",
             backgroundColor: "#ffffff",
             borderRadius: "8px",
-            width: window.innerWidth < 410 ? window.innerWidth - 40 : 410,
+            width: "420px",
             height: 120,
             cursor: "pointer",
             transition: "all 0.2s ease",
@@ -116,62 +116,75 @@ function SignatureCompoment({
         </div>
       )}
 
-      {/* <Image
-          src={Signature}
-          width={80}
-          height={80}
-          alt="signature"
-          objectFit="contain"
-        /> */}
-      <Modal show={show}>
-        <Modal.Header closeButton>
-          <Modal.Title style={{ fontSize: "20px" }}> {label} </Modal.Title>
-        </Modal.Header>
-        <div className="d-flex justify-content-center align-items-center py-4">
-          <div
-            onClick={() => setToggly(false)}
+      {show && (
+        <div className="position-relative">
+          <Card
+          className="shadow-lg "
             style={{
-              border: "1px solid blue",
-              background: toggle ? " blue " : "white",
-              padding: "5px 20px",
-              color: toggle ? "white" : " blue",
-              borderRadius: "5px 0px 0px 5px",
-              cursor: "pointer",
+              position: "absolute",
+              top: 10,
+              left: 0,
+              zIndex: 10,
+              width: "400px",
+              border: "1px solid #B9BBD1"
             }}
           >
-            Type
-          </div>
+            <div
+              className="d-flex justify-content-end px-2 py-1"
+              onClick={() => setShow(false)}
+            >
+              {" "}
+              <MdCancel style={{ fontSize: "24px" }} />
+            </div>
 
-          <div
-            onClick={() => setToggly(true)}
-            style={{
-              border: " 1px solid blue",
-              background: toggle ? "white" : "blue",
-              padding: "5px 20px",
-              color: toggle ? "blue" : "white",
-              borderRadius: "0px 5px 5px 0px",
-              cursor: "pointer",
-            }}
-          >
-            Draw
-          </div>
+            <p className="px-4 py-0">Case manager*</p>
+            <div className="d-flex justify-content-center align-items-center ">
+              <div
+                onClick={() => setToggly(false)}
+                style={{
+                  border: "1px solid #346CFC",
+                  background: toggle ? "white  " : "#346CFC",
+                  padding: "3px 12px",
+                  color: toggle ? "#346CFC" : " white",
+                  borderRadius: "5px 0px 0px 5px",
+                  cursor: "pointer",
+                }}
+              >
+                Type
+              </div>
+
+              <div
+                onClick={() => setToggly(true)}
+                style={{
+                  border: " 1px solid #346CFC",
+                  background: toggle ? " #346CFC" : "white",
+                padding: "3px 12px",
+                  color: toggle ? "white" : "#346CFC",
+                  borderRadius: "0px 5px 5px 0px",
+                  cursor: "pointer",
+                }}
+              >
+                Draw
+              </div>
+            </div>
+
+            {toggle ? (
+              <ESignature
+                signatureValue={signatureValue}
+                items={items}
+                setShow={setShow}
+              />
+            ) : (
+              <TypeSignature
+                signatureValue={signatureValue}
+                items={items}
+                formData={formData}
+                setShow={setShow}
+              />
+            )}
+          </Card>
         </div>
-
-        {toggle ? (
-          <ESignature
-            signatureValue={signatureValue}
-            items={items}
-            setShow={setShow}
-          />
-        ) : (
-          <TypeSignature
-            signatureValue={signatureValue}
-            items={items}
-            formData={formData}
-            setShow={setShow}
-          />
-        )}
-      </Modal>
+      )}
     </>
   );
 }

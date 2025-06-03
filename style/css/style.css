@@ -172,14 +172,14 @@ p {
 }
 
 p:last-child {
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 
 dl,
 ol,
 ul {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 
 input,
@@ -264,7 +264,7 @@ ul li {
 }
 
 p:last-child {
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 
 .table {

@@ -22,7 +22,7 @@ export default function TypeSignature({
 
   const [text, setText] = useState(signatureValueRepeat?.value);
 
-  console.log(signatureValueRepeat?.value, "text")
+  console.log(text, "useState")
 
   const canvasRef = useRef<any>(null);
 
@@ -37,7 +37,7 @@ export default function TypeSignature({
     ctx.font = "24px Arial";
     ctx.fillText(text, 10, 50);
     const dataUrl = canvas.toDataURL();
-    if (text !== undefined) {
+    if (text !== undefined && text !== "" ) {
       toast.success("Signature save successfully");
       setBase64Image(dataUrl);
       signatureValue(dataUrl, items);

@@ -68,8 +68,7 @@ function POLICYORIENTATIONRECEIPT({
     [dataGet]
   );
 
-
-  console.log(question, "Date")
+  console.log(question, "Date");
 
   const {
     control,
@@ -139,16 +138,18 @@ function POLICYORIENTATIONRECEIPT({
       return (
         <div className="col-lg-6 mb-4">
           <HtmlRenderer items={items} />
-          <SignatureCompoment
-            signatureValue={(val: string) => signatureValue(val, items?.id)}
-            items={items?.id}
-            label={items?.question?.title}
-            formData={watch("answers")}
-            signatureData={{
-              id: items?.id,
-              url: watch(`answers.${index}.signatureLink`) || null,
-            }}
-          />
+          <div className="my-4">
+            <SignatureCompoment
+              signatureValue={(val: string) => signatureValue(val, items?.id)}
+              items={items?.id}
+              label={items?.question?.title}
+              formData={watch("answers")}
+              signatureData={{
+                id: items?.id,
+                url: watch(`answers.${index}.signatureLink`) || null,
+              }}
+            />
+          </div>
           {errors?.answers?.[index]?.signatureLink && (
             <span className="text-danger">
               {errors.answers[index].signatureLink.message}

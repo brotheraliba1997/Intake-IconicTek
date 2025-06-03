@@ -33,7 +33,7 @@ const formSchema = z.object({
                 ctx.addIssue({
                   code: z.ZodIssueCode.custom,
                   message: "value is Required",
-                  path: [index, "value"], 
+                  path: [index, "value"],
                 });
               }
             });
@@ -150,7 +150,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
 
-   const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
@@ -187,7 +187,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
               <HtmlRenderer items={items} />
             </div>
 
-            <div className="row mt-3">
+            <div className="row mt-3 mb-4">
               {items?.question?.SubQuestion?.map(
                 (subQ: any, subIndex: number) => (
                   <div className="col-md-6 mb-3" key={subQ.id}>
@@ -295,7 +295,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
               ))}
           </div>
 
-         <StepperButtons
+          <StepperButtons
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

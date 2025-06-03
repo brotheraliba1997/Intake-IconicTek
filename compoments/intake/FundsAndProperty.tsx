@@ -73,7 +73,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         questionId: question?.id,
         value: "",
         multipleValue: [],
-        type: question?.question? question?.question.type: "",
+        type: question?.question ? question?.question.type : "",
       }));
 
       setValue("answers", initialFormData);
@@ -81,7 +81,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   }, [dataGet, setValue, sortedQuestions]);
 
   const question = sortedQuestions;
-  console.log(question, "question")
+  console.log(question, "question");
 
   const [createAnswersMutation] = useCreateAnswersMutation();
 
@@ -120,7 +120,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         return (
           <>
             {type === "text" && (
-              <div className="col-lg-6 mt-5">
+              <div className="col-lg-12 mt-5">
                 <HtmlRenderer items={items} />
                 <Controller
                   name={`answers.${index}.value`}

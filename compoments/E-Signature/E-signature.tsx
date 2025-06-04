@@ -3,6 +3,9 @@ import SignatureCanvas from "react-signature-canvas";
 import Signature from "@/public/img/signature/signature.jpeg";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
+import Button from "react-bootstrap/esm/Button";
+import { FaAngleRight } from "react-icons/fa";
+import signatureImage from "@/public/img/signature/test.jpeg";
 
 function ESignature({ signatureValue, items, setShow }: any) {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
@@ -16,7 +19,7 @@ function ESignature({ signatureValue, items, setShow }: any) {
       signatureValue(dataUrl, items);
       setShow(false);
     } else {
-      toast.error("Signature canvas is empty");
+      toast.error("Signature is empty");
     }
   };
 
@@ -24,33 +27,46 @@ function ESignature({ signatureValue, items, setShow }: any) {
     sigCanvasRef.current?.clear();
   };
 
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <>
-      <div className="p-4 d-flex justify-content-between flex-column gap-2">
+      <div className=" d-flex justify-content-between flex-column">
         <div>
-          <div
-            style={{ borderBottom: "3px solid #B1C5DD", borderRadius: "5px" }}
-          >
-            <SignatureCanvas
-              ref={sigCanvasRef}
-              // onEnd={() => handleSave()}
-              penColor={penColor}
-              canvasProps={{
-                className: "signature-canvas",
-                width: 400,
-                height: 120,
-              }}
-            />
+          <div className="px-4" style={{ borderBottom: "1px solid #B1C5DD" }}>
+            {!isEditing ? (
+              <div
+                className="position-relative"
+                onClick={() => setIsEditing(true)}
+                style={{ cursor: "pointer", height: 131, width: "100%" }}
+              >
+                <Image
+                  src={signatureImage}
+                  layout="fill"
+                  style={{ objectFit: "contain" }}
+                  alt="signature type"
+                />
+              </div>
+            ) : (
+              <SignatureCanvas
+                ref={sigCanvasRef}
+                // onEnd={() => handleSave()}
+                penColor={penColor}
+                canvasProps={{
+                  className: "signature-canvas",
+                  width: 400,
+                  height: 120,
+                }}
+              />
+            )}
           </div>
         </div>
 
-        <div className="d-flex gap-4"></div>
-
-        <div className="d-flex justify-content-between">
-          <div className="d-flex gap-4">
+        <div className="d-flex justify-content-between px-2 pt-3 pb-1">
+          <div className="d-flex gap-4 ">
             <label>Select Color:</label>
 
-            <div
+            {/* <div
               style={{
                 height: 24,
                 width: 24,
@@ -79,24 +95,63 @@ function ESignature({ signatureValue, items, setShow }: any) {
                   cursor: "pointer",
                 }}
               />
-            </div>
+            </div> */}
+
+
+             {[...Array(3)].map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  height: 13,
+                  width: 13,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <input
+                  type="color"
+                value={penColor}
+                onChange={(e) => setPenColor(e.target.value)}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    border: "none",
+                    borderRadius: "50%",
+                    appearance: "none",
+                    WebkitAppearance: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    margin: 0,
+                  }}
+                />
+              </div>
+            ))}
           </div>
 
-          <div className="d-flex gap-4">
-            <p
-              onClick={handleClear}
-              className=" text-secondary"
-              style={{ cursor: "pointer" }}
-            >
-              Clear
-            </p>
-            <p
-              onClick={handleSave}
-              style={{ color: "#17635C", cursor: "pointer" }}
-            >
-              Save
-            </p>
-          </div>
+          <p
+            onClick={() => {
+              handleClear();
+              setIsEditing(false);
+            }}
+            className="p-0 m-0 text-secondary"
+            style={{ cursor: "pointer" }}
+          >
+            Clear
+          </p>
+        </div>
+
+        <div className="border-top d-flex justify-content-end py-2 px-2">
+          <Button
+            onClick={() => {
+              handleSave();
+            }}
+            style={{ backgroundColor: "#17635C" }}
+          >
+            Next <FaAngleRight />
+          </Button>
         </div>
       </div>
     </>

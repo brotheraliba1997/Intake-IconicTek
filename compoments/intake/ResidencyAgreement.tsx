@@ -202,6 +202,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         value: "",
         multipleValue: [],
         type: q?.question.type,
+        title: q?.question.title,
       }));
       setValue("answers", initialFormData);
     }

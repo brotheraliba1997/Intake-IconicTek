@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback, useEffect, useState } from "react";
 import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
@@ -18,29 +19,41 @@ const formSchema = z.object({
     z
       .object({
         questionId: z.any(),
-        value: z.string().min(1, { message: "This field is required" }),
-        multipleValue: z.array(z.any()),
+        value: z.string().optional(),
+        multipleValue: z.array(z.any()).optional(),
         type: z.string(),
         title: z.string().optional(),
-        subQuestion: z
-          .array(
-            z.object({
-              value: z.string().min(1, { message: "This field is required" }),
-              multipleValue: z.array(z.any()).optional(),
-              type: z.string(),
-              id: z.any(),
-              signatureLink: z.string().optional(),
-            })
-          )
-          .optional(),
+        signatureLink: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        if (data.type === "text" && !data.value) {
+        if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
             path: ["value"],
           });
+        }
+
+        // DATE validation
+        if (data.type === "date" && (!data.value || data.value.trim() === "")) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Date is required",
+            path: ["value"],
+          });
+        }
+
+        if (data.type === "Signature" && !data.signatureLink) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Signature is required",
+            path: ["signatureLink"],
+          });
+        }
+
+        // HTML (no validation required)
+        if (data.type === "html") {
+          return;
         }
       })
   ),
@@ -59,8 +72,8 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       answers: [],
     },
     resolver: zodResolver(formSchema),
-    mode: "onTouched", // Only validate on blur
-    reValidateMode: "onBlur", // Only revalidate on blur
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const { data, isLoading, error } = useGetMyFormQuery({});
@@ -71,53 +84,23 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   console.log(dataGet, "NEwDAta");
 
-  useEffect(() => {
-    if (dataGet) {
-      const initialFormData = dataGet?.formQuestions?.map(
-        (items: any, idx: number) => ({
-          questionId: items?.id,
-          value: "",
-          multipleValue: [],
-          type: items?.question.type,
-          title: items?.question?.title,
-          subQuestion: items?.question?.SubQuestion?.map(
-            (sub: any, subIdx: number) => ({
-              value: "",
-              multipleValue: [],
-              type: sub?.type,
-              id: sub?.id,
-            })
-          ),
-        })
-      );
-      setValue("answers", initialFormData);
+  const signatureValue = (url: string, questionId: string) => {
+  const updatedAnswers = getValues("answers").map((answer) => {
+    if (answer.questionId === questionId) {
+      return {
+        ...answer,
+        signatureLink: url,
+      };
     }
-  }, [dataGet, setValue]);
+    return answer;
+  });
 
-  const signatureValue = (val, items) => {
-    const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (quest.questionId) {
-        if (quest.questionId === items) {
-          return { ...quest, signatureLink: val };
-        }
-        return quest;
-      }
+  setValue("answers", updatedAnswers, {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
+};
 
-      if (Array.isArray(quest.subQuestion)) {
-        const updateQuestion = quest?.subQuestion?.map((subquest: any) => {
-          if (subquest?.id === items) {
-            return { ...subquest, signatureLink: val };
-          }
-          return subquest;
-        });
-        return { ...quest, subQuestion: updateQuestion };
-      }
-      return quest;
-    });
-
-    setValue("answers", updatedAnswers);
-  };
 
   const handleFormChange = useCallback(
     (
@@ -204,7 +187,25 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     console.error("Form validation errors:", errors);
   };
 
-  const question = dataGet?.formQuestions;
+  const question = React.useMemo(
+    () =>
+      dataGet?.formQuestions
+        ?.slice()
+        ?.sort((a: any, b: any) => a.arrangement - b.arrangement),
+    [dataGet]
+  );
+
+  React.useEffect(() => {
+    if (dataGet && question) {
+      const initialFormData = question.map((q: any) => ({
+        questionId: q?.id,
+        value: "",
+        multipleValue: [],
+        type: q?.question.type,
+      }));
+      setValue("answers", initialFormData);
+    }
+  }, [dataGet, setValue, question]);
 
   const [createAnswersMutation] = useCreateAnswersMutation();
 
@@ -220,6 +221,8 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     }
   };
 
+  console.log(errors.answers, "errormilrahahai");
+
   const getComponent = ({
     type,
     items,
@@ -231,46 +234,12 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     signatureValue: any;
     index: number;
   }) => {
+    console.log(items, "milrahahai");
+
     switch (type) {
       case "html":
-        return (
-          <>
-            <style>
-              {`
-      ul li {
-        margin-bottom: 1rem;
-      }
-    `}
-            </style>
-            {type === "html" && (
-              <div
-                style={{
-                  marginTop:
-                    items?.question?.title?.includes(
-                      "When you end a residency agreement"
-                    ) ||
-                    items?.question?.title?.includes(
-                      "When your landlord/provider ends a residency agreement"
-                    ) ||
-                    items?.question?.title?.includes(
-                      "The landlord/provider will notify you"
-                    ) ||
-                    items?.question?.title?.includes(
-                      "Place an X in the blank space if applicable"
-                    )
-                      ? "2rem"
-                      : "0",
-                }}
-              >
-                <HtmlRenderer items={items} />
-              </div>
-            )}
-          </>
-        );
-      // }
-
+        return <HtmlRenderer items={items} />;
       case "text":
-
       case "date":
         return (
           <>
@@ -281,7 +250,6 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                   <Controller
                     name={`answers.${index}.value`}
                     control={control}
-                    rules={{ required: "This field is required" }}
                     render={({ field }) => (
                       <div>
                         <input
@@ -301,7 +269,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                             });
                           }}
                         />
-                        {errors?.answers?.[index]?.value && (
+                        {errors?.answers?.[index]?.value?.message && (
                           <div className="invalid-feedback d-block">
                             {errors.answers[index].value.message}
                           </div>
@@ -310,11 +278,11 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                     )}
                   />
                 )}
+
                 {type === "date" && (
                   <Controller
                     name={`answers.${index}.value`}
                     control={control}
-                    rules={{ required: "This field is required" }}
                     render={({ field }) => (
                       <div>
                         <input
@@ -331,7 +299,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                             });
                           }}
                         />
-                        {errors?.answers?.[index]?.value && (
+                        {errors?.answers?.[index]?.value?.message && (
                           <div className="invalid-feedback d-block">
                             {errors.answers[index].value.message}
                           </div>
@@ -348,24 +316,27 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       case "Signature":
         return (
           <>
-            <div className="row"></div>
-            <div className="col-md-6 my-3">
-              <h5>{items?.question?.title}</h5>
-              {items?.question?.type === "Signature" && (
-                <>
-                  <SignatureCompoment
-                    signatureValue={signatureValue}
-                    items={items.id}
-                    label={items?.title}
-                    formData={watch("answers")}
-                    signatureData={signatureUrlFind?.find(
-                      (signData) => signData?.id === items?.id
-                    )}
-                  />
-                </>
+            <div className="col-lg-6 mb-4">
+              <HtmlRenderer items={items} />
+              <div className="my-4">
+                <SignatureCompoment
+                  signatureValue={signatureValue}
+                  items={items.id}
+                  label={items?.title}
+                  formData={watch("answers")}
+                  signatureData={signatureUrlFind?.find(
+                    (signData) => signData?.id === items?.id
+                  )}
+                />
+
+                 {errors?.answers?.[index]?.signatureLink && (
+                <span className="text-danger">
+                  {errors.answers[index].signatureLink.message}
+                </span>
               )}
+              </div>
+             
             </div>
-            {/* </div> */}
           </>
         );
 
@@ -380,7 +351,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
       <h3 className="col-sm-12 card-title text-center">
         {data?.data?.find((items: any) => items?.title === formName)?.title}
       </h3>
-      <form onSubmit={handleFormSubmit(onSubmit, handleFormError)}>
+      <form onSubmit={handleFormSubmit(onSubmit)}>
         <div className="row pt-3 ">
           {question
             ?.slice()

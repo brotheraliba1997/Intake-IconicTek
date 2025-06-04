@@ -36,7 +36,7 @@ const formSchema = z.object({
                 signatureLink: z.string().optional(),
               })
               .superRefine((data, ctx) => {
-                console.log(data, "data");
+                console.log(data, data.type, !data.value, "data");
                 if (data.type === "Signature" && !data.signatureLink) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -50,12 +50,16 @@ const formSchema = z.object({
                     path: ["value"],
                   });
                 } else if (data.type === "radio" && !data.value) {
+                  console.log(data, data.type, !data.value, "data3");
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "Please select an option",
                     path: ["value"],
                   });
-                } else if (data.type === "text" && !data.value) {
+                } else if (
+                  data.type === "text" &&
+                  (!data.value || data.value.trim() === "")
+                ) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "Field is required",
@@ -74,8 +78,8 @@ const formSchema = z.object({
           .optional(),
       })
       .superRefine((data, ctx) => {
-        console.log(data, "data2");
-        if (data.type === "text" && !data.value) {
+        console.log(data, data.type, !data.value, "data2");
+        if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
@@ -94,7 +98,13 @@ const formSchema = z.object({
             path: ["value"],
           });
         } else if (data.type === "html" && !data.value) {
-          return;
+          // if (data.title) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["value"],
+          });
+          // } else return;
         }
       })
   ),
@@ -132,12 +142,11 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
               (a: any, b: any) => a.arrangement - b.arrangement
             )
           : [];
-
         return {
           questionId: items?.id,
           value: "",
           multipleValue: [],
-          type: "html", // ✅ Add this
+          type: "html", //
           title: items?.question?.title ? items?.question?.title : " ",
           // subQuestion: [],
           subQuestion:

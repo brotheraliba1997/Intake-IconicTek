@@ -46,7 +46,6 @@ function FormPage() {
           {currentStep === 0 && (
             <div>
               <StandardRelease
-               
                 handleNext={handleNext}
                 handleBack={handleBack}
                 currentStep={currentStep}
@@ -56,7 +55,6 @@ function FormPage() {
 
           {currentStep === 1 && (
             <AuthorizationForMedication
-            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -64,7 +62,6 @@ function FormPage() {
           )}
           {currentStep === 2 && (
             <SELFMANAGEMENT
-             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -72,7 +69,6 @@ function FormPage() {
           )}
           {currentStep === 3 && (
             <FUNDSANDPROPERTY
-            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -80,7 +76,6 @@ function FormPage() {
           )}
           {currentStep === 4 && (
             <ADMISSIONFORM
-             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -88,7 +83,6 @@ function FormPage() {
           )}
           {currentStep === 5 && (
             <ResidencyAgreement
-            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -96,7 +90,6 @@ function FormPage() {
           )}
           {currentStep === 6 && (
             <POLICYORIENTATIONRECEIPT
-             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -104,7 +97,6 @@ function FormPage() {
           )}
           {currentStep === 7 && (
             <ResidencyAgreement
-             
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

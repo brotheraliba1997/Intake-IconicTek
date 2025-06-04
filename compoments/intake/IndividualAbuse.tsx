@@ -36,7 +36,6 @@ const formSchema = z.object({
                 signatureLink: z.string().optional(),
               })
               .superRefine((data, ctx) => {
-                console.log(data, data.type, !data.value, "data");
                 if (data.type === "Signature" && !data.signatureLink) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -50,22 +49,22 @@ const formSchema = z.object({
                     path: ["value"],
                   });
                 } else if (data.type === "radio" && !data.value) {
-                  console.log(data, data.type, !data.value, "data3");
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: "Please select an option",
                     path: ["value"],
                   });
-                } else if (
-                  data.type === "text" &&
-                  (!data.value || data.value.trim() === "")
-                ) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Field is required",
-                    path: ["value"],
-                  });
                 }
+                //  else if (
+                //   data.type === "text" &&
+                //   (!data.value || data.value.trim() === "")
+                // ) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "Field is required",
+                //     path: ["value"],
+                //   });
+                // }
                 // else if (data.type !== "Signature" && !data.value) {
                 //   ctx.addIssue({
                 //     code: z.ZodIssueCode.custom,
@@ -78,7 +77,7 @@ const formSchema = z.object({
           .optional(),
       })
       .superRefine((data, ctx) => {
-        console.log(data, data.type, !data.value, "data2");
+        console.log(data, "data2");
         if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -91,20 +90,26 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "radio" && !data.value) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please select an option",
-            path: ["value"],
-          });
-        } else if (data.type === "html" && !data.value) {
-          // if (data.title) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "This field is required",
-            path: ["value"],
-          });
-          // } else return;
+        }
+        // else if (data.type === "radio" && !data.value) {
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: "Please select an option",
+        //     path: ["value"],
+        //   });
+        // }
+        else if (data.type === "html" && !data.value) {
+          if (
+            data.title === "Persons Name:" ||
+            data.title === "Program:" ||
+            data.title === "question"
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "This field is required",
+              path: ["value"],
+            });
+          } else return;
         }
       })
   ),
@@ -126,6 +131,8 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     mode: "onChange",
     reValidateMode: "onChange",
   });
+  console.log("error==>", errors);
+
   const { data, isLoading, error } = useGetMyFormQuery({});
   const formName = "Individual Abuse";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
@@ -147,7 +154,11 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           value: "",
           multipleValue: [],
           type: "html", //
-          title: items?.question?.title ? items?.question?.title : " ",
+          title: items?.question?.title
+            ? items?.question?.title
+            : sortedSubQuestions?.length > 0
+            ? "question"
+            : " ",
           // subQuestion: [],
           subQuestion:
             sortedSubQuestions?.length > 0

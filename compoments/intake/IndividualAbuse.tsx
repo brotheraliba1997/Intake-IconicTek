@@ -408,7 +408,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                         <h5>{sub?.title}</h5>
 
                         <Controller
-                          name={`answers.${index}.value`}
+                          name={`answers.${index}.subQuestion.${subIndex}.value`}
                           control={control}
                           rules={{ required: "This field is required" }}
                           render={({ field }) => (

@@ -22,78 +22,125 @@ const formSchema = z.object({
       .object({
         questionId: z.any(),
         value: z.string().optional(),
-        multipleValue: z.array(z.any()),
-        type: z.string().optional(),
+        multipleValue: z.array(z.any()).default([]),
+        type: z.string().default(""),
         title: z.string().optional(),
+        signatureLink: z.string().optional(),
         subQuestion: z
           .array(
-            z
-              .object({
-                value: z.string().default(""),
-                multipleValue: z.array(z.any()).optional().default([]),
-                type: z.string().default(""),
-                id: z.any().default(""),
-                signatureLink: z.string().optional(),
-              })
-              .superRefine((data, ctx) => {
-                console.log(data, "data");
-                if (data.type === "Signature" && !data.signatureLink) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Signature is required",
-                    path: ["signatureLink"],
-                  });
-                } else if (data.type === "date" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Date is required",
-                    path: ["value"],
-                  });
-                } else if (data.type === "radio" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Please select an option",
-                    path: ["value"],
-                  });
-                } else if (data.type === "text" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Field is required",
-                    path: ["value"],
-                  });
-                }
-                // else if (data.type !== "Signature" && !data.value) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "This field is required",
-                //     path: ["value"],
-                //   });
-                // }
-              })
+            z.object({
+              value: z.string().default(""),
+              multipleValue: z.array(z.any()).default([]),
+              type: z.string().default(""),
+              id: z.any().optional(),
+              signatureLink: z.string().optional(),
+            })
           )
           .optional(),
       })
       .superRefine((data, ctx) => {
-        console.log(data, "data2");
-        if (data.type === "text" && !data.value) {
+        // Skip validation for empty or undefined types
+        if (!data.type) return;
+
+        // Text input validation
+        if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
             path: ["value"],
           });
-        } else if (data.type === "date" && !data.value) {
+        }
+
+        // Date input validation
+        if (data.type === "date" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "radio" && !data.value) {
+        }
+
+        // Signature validation
+        if (data.type === "Signature" && !data.signatureLink) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Signature is required",
+            path: ["signatureLink"],
+          });
+        }
+
+        // Checkbox validation
+        if (
+          data.type === "checkbox" &&
+          (!data.multipleValue || data.multipleValue.length === 0)
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select at least one option",
+            path: ["multipleValue"],
+          });
+        }
+
+        // Radio button validation
+        if (data.type === "radio" && !data.value) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Please select an option",
             path: ["value"],
           });
-        } else if (data.type === "html" && !data.value) {
+        }
+
+        // Handle subquestion validations
+        if (data.subQuestion && Array.isArray(data.subQuestion)) {
+          data.subQuestion.forEach((subQ, index) => {
+            if (subQ.type === "Signature" && !subQ.signatureLink) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Signature is required",
+                path: ["subQuestion", index, "signatureLink"],
+              });
+            } else if (
+              subQ.type === "date" &&
+              (!subQ.value || subQ.value.trim() === "")
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Date is required",
+                path: ["subQuestion", index, "value"],
+              });
+            } else if (
+              subQ.type === "text" &&
+              (!subQ.value || subQ.value.trim() === "")
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "This field is required",
+                path: ["subQuestion", index, "value"],
+              });
+            } else if (
+              subQ.type === "radio" &&
+              (!subQ.value || subQ.value.trim() === "")
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Please select an option",
+                path: ["subQuestion", index, "value"],
+              });
+            } else if (
+              subQ.type === "checkbox" &&
+              (!subQ.multipleValue || subQ.multipleValue.length === 0)
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Please select at least one option",
+                path: ["subQuestion", index, "multipleValue"],
+              });
+            }
+          });
+        }
+
+        // HTML (no validation required)
+        if (data.type === "html") {
           return;
         }
       })
@@ -125,7 +172,6 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
       const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
         (a: any, b: any) => a.arrangement - b.arrangement
       );
-
       const initialFormData = sortedQuestions.map((items: any, idx: number) => {
         const sortedSubQuestions = items?.question?.SubQuestion
           ? [...items.question.SubQuestion].sort(
@@ -133,23 +179,37 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
             )
           : [];
 
-        return {
+        const questionData = {
           questionId: items?.id,
           value: "",
           multipleValue: [],
-          type: "html", // ✅ Add this
-          title: items?.question?.title ? items?.question?.title : " ",
-          // subQuestion: [],
-          subQuestion:
-            sortedSubQuestions?.length > 0
-              ? sortedSubQuestions.map((sub: any) => ({
-                  value: "",
-                  multipleValue: [],
-                  type: sub?.type,
-                  id: sub?.id,
-                }))
-              : [],
+          type: items?.question?.type || "",
+          title: items?.question?.title || "",
+          signatureLink: items?.question?.type === "Signature" ? "" : undefined,
+          subQuestion: [],
         };
+
+        // Handle subquestions if they exist
+        if (sortedSubQuestions.length > 0) {
+          questionData.subQuestion = sortedSubQuestions.map((sub: any) => ({
+            id: sub?.id,
+            value: "",
+            multipleValue: [],
+            type: sub?.type || "",
+            title: sub?.title || "",
+            signatureLink: sub?.type === "Signature" ? "" : undefined,
+          }));
+        }
+
+        // For checkbox and radio types, ensure multipleValue is initialized
+        if (
+          items?.question?.type === "checkbox" ||
+          items?.question?.type === "radio"
+        ) {
+          questionData.multipleValue = [];
+        }
+
+        return questionData;
         // {
         //   questionId: items?.id,
         //   value: "",
@@ -170,12 +230,15 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   }, [dataGet, setValue]);
 
   const question = dataGet?.formQuestions;
+  console.log("question", question);
   // console.log(question, "questionquestion");
   const [createAnswersMutation] = useCreateAnswersMutation();
-
   const onSubmit = async (data: any) => {
     try {
-      const payload = { formId: dataGet?.id, answers: data.answers };
+      const payload = {
+        formId: dataGet?.id,
+        answers: data.answers,
+      };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
         handleNext();
@@ -264,15 +327,16 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           updatedSubQuestions[subIndex] = {
             ...updatedSubQuestions[subIndex],
             signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
+            value: val ? " " : "", // Only set a space if we have a signature
           };
-          for (let i = 0; i < updatedSubQuestions.length; i++) {
-            if (!updatedSubQuestions[i].value?.trim()) {
-              updatedSubQuestions[i].value = " ";
-            }
-          }
           return { ...quest, subQuestion: updatedSubQuestions };
         }
+      } else if (quest.type === "Signature" && quest.questionId === items) {
+        return {
+          ...quest,
+          signatureLink: val,
+          value: val ? " " : "", // Only set a space if we have a signature
+        };
       }
       return quest;
     });
@@ -293,6 +357,8 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           url: item?.signatureLink || null,
         })) || []
   );
+
+  console.log("errors", errors);
 
   const getComponent = ({
     type,
@@ -338,8 +404,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                           </span>
                         )}
                       </>
-                    )}
-
+                    )}{" "}
                     {sub?.type === "date" && (
                       <>
                         <h5>{sub?.title}</h5>
@@ -347,16 +412,13 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                           name={`answers.${index}.subQuestion.${subIndex}.value`}
                           control={control}
                           rules={{ required: "This field is required" }}
-                          render={({ field }) => (
+                          render={({ field, fieldState: { error } }) => (
                             <div>
+                              {" "}
                               <input
                                 type="date"
                                 className={`form-control ${
-                                  errors?.answers?.[index]?.subQuestion?.[
-                                    subIndex
-                                  ]?.value
-                                    ? "is-invalid"
-                                    : ""
+                                  error ? "is-invalid" : ""
                                 }`}
                                 {...field}
                                 onChange={(e) => {
@@ -368,53 +430,45 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                                   });
                                 }}
                               />
-                              {errors?.answers?.[index]?.subQuestion?.[subIndex]
-                                ?.value && (
+                              {error && (
                                 <div className="invalid-feedback d-block">
-                                  {
-                                    errors.answers[index].subQuestion[subIndex]
-                                      .value.message
-                                  }
+                                  {error.message}
                                 </div>
                               )}
                             </div>
                           )}
                         />
                       </>
-                    )}
-
+                    )}{" "}
                     {sub?.type === "text" && (
                       <>
                         <h5>{sub?.title}</h5>
 
                         <Controller
-                          name={`answers.${index}.value`}
+                          name={`answers.${index}.subQuestion.${subIndex}.value`}
                           control={control}
                           rules={{ required: "This field is required" }}
-                          render={({ field }) => (
+                          render={({ field, fieldState: { error } }) => (
                             <div>
                               <input
                                 type="text"
                                 className={`form-control ${
-                                  errors?.answers?.[index]?.value
-                                    ? "is-invalid"
-                                    : ""
+                                  error ? "is-invalid" : ""
                                 }`}
-                                placeholder={`Enter ${
-                                  items?.question?.title || "text"
-                                }...`}
+                                placeholder={`Enter ${sub?.title || "text"}...`}
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
                                   handleFormChange(e, {
                                     questionId: items?.id,
+                                    subQuestionId: sub?.id,
                                     type: "text",
                                   });
                                 }}
                               />
-                              {errors?.answers?.[index]?.value && (
+                              {error && (
                                 <div className="invalid-feedback d-block">
-                                  {errors.answers[index].value.message}
+                                  {error.message}
                                 </div>
                               )}
                             </div>
@@ -434,13 +488,13 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           <>
             {(type === "text" || type === "date") && (
               <div className="col-lg-6 my-3">
-                <HtmlRenderer items={items} />
+                <HtmlRenderer items={items} />{" "}
                 {type === "text" && (
                   <Controller
                     name={`answers.${index}.value`}
                     control={control}
                     rules={{ required: "This field is required" }}
-                    render={({ field }) => (
+                    render={({ field, fieldState: { error } }) => (
                       <div>
                         <input
                           type="text"
@@ -467,13 +521,13 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                       </div>
                     )}
                   />
-                )}
+                )}{" "}
                 {type === "date" && (
                   <Controller
                     name={`answers.${index}.value`}
                     control={control}
                     rules={{ required: "This field is required" }}
-                    render={({ field }) => (
+                    render={({ field, fieldState: { error } }) => (
                       <div>
                         <input
                           type="date"
@@ -548,9 +602,9 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
 
   return (
     <>
+      {" "}
       <div className="card px-5 pb-5 pt-3">
         <HospitalLogo />
-
         <h3 className="card-title text-center">{dataGet?.title}</h3>
         <form onSubmit={handleFormSubmit(onSubmit)}>
           <div className="row pt-3 ">

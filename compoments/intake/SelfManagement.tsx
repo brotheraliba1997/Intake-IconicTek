@@ -37,36 +37,36 @@ const formSchema = z.object({
               })
               .superRefine((data, ctx) => {
                 console.log(data, "ccccdata");
-                if (data.value == "")
+                if (data.type === "radio" && data.value == "")
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: `${data?.id}`,
                     path: ["value"],
                   });
 
-                // if (data.type === "Signature" && !data.signatureLink) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "Signature is required",
-                //     path: ["signatureLink"],
-                //   });
-                // } else if (data.type === "date" && !data.value) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "Date is required",
-                //     path: ["value"],
-                //   });
-                // } else if (
-                //   data.type !== "Signature" &&
-                //   data.type !== "checkbox" &&
-                //   !data.value
-                // ) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "This field is required",
-                //     path: ["value"],
-                //   });
-                // }
+                if (data.type === "Signature" && !data.signatureLink) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Signature is required",
+                    path: ["signatureLink"],
+                  });
+                } else if (data.type === "date" && !data.value) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Date is required",
+                    path: ["value"],
+                  });
+                } else if (
+                  data.type !== "Signature" &&
+                  data.type !== "checkbox" &&
+                  !data.value
+                ) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "This field is required",
+                    path: ["value"],
+                  });
+                }
               })
           )
           .optional(),

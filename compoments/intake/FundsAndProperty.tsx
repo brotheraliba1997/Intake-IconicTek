@@ -53,7 +53,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
   const formName = "FUNDS AND PROPERTY AUTHORIZATION";
   const dataGet: FormData = data?.data?.find(
     (items: any) => items?.title === formName
@@ -83,7 +83,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const question = sortedQuestions;
   console.log(question, "question");
 
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -235,6 +235,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
             ))}
           </div>
           <StepperButtons
+          isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

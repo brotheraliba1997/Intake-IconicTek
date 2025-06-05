@@ -32,7 +32,17 @@ function ServicesPlan({ handleBack, handleNext, currentStep }: any) {
             </div>
           ))}
 
-          <ESignature />
+          {/* <ESignature /> */}
+
+          <div className="d-flex justify-content-end pt-2">
+            <button
+              className="btn "
+              // onClick={() => onNavigate("submit")}
+              style={{ backgroundColor: "#00A5A8", color: "white" }}
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </>

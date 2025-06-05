@@ -67,7 +67,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
 
   const [formData, setFormData] = useState<AnswerData[]>([]);
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
 
   const formName = "ADMISSION FORM AND DATA SHEET";
 
@@ -150,7 +150,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
 
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
@@ -296,6 +296,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+          isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

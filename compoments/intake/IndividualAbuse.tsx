@@ -91,13 +91,7 @@ const formSchema = z.object({
             path: ["value"],
           });
         }
-        // else if (data.type === "radio" && !data.value) {
-        //   ctx.addIssue({
-        //     code: z.ZodIssueCode.custom,
-        //     message: "Please select an option",
-        //     path: ["value"],
-        //   });
-        // }
+       
         else if (data.type === "html" && !data.value) {
           if (
             data.title === "Persons Name:" ||
@@ -133,7 +127,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   });
   console.log("error==>", errors);
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
   const formName = "Individual Abuse";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   useEffect(() => {
@@ -191,7 +185,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
 
   const question = dataGet?.formQuestions;
   // console.log(question, "questionquestion");
-  const [createAnswersMutation] = useCreateAnswersMutation();
+ const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -590,6 +584,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+          isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

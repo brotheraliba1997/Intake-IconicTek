@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import { toast } from "react-hot-toast";
 import signatureImage from "@/public/img/signature/test.jpeg";
 import { FaAngleRight } from "react-icons/fa";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function TypeSignature({
   signatureValue,
@@ -14,14 +15,15 @@ export default function TypeSignature({
   setShow,
   text,
   setText,
+  loading,
+  setLoading,
 }: any) {
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
   const [selectedFont, setSelectedFont] = useState("");
+  const [loading2, setLoading2] = useState(false);
 
-  console.log(formData, "formData");
-
-  console.log(selectedFont, "selectedFont");
+  console.log(loading2, "setSelectedFont");
 
   const fonts = [
     { label: "Shadows Into Light", className: "font-shadows" },
@@ -36,52 +38,47 @@ export default function TypeSignature({
 
   const canvasRef = useRef<any>(null);
 
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     if (text !== undefined && text !== "") {
-  //     generateImage(); // trigger actual logic after delay
-  //     // toast.success("Signature save successfully");
-  //     }
-  //   }, 500); // 500ms delay
+  // const generateImage = async () => {
+  //   // setLoading(true);
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+  //   await document.fonts.load;
+  //   const scale = 10;
+  //   const fontSize = 10;
+  //   const paddingY = 5;
+  //   const paddingX = 0;
+  //   ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
+  //   const textMetrics = ctx.measureText(text);
+  //   const textWidth = textMetrics.width;
+  //   const textHeight =
+  //     textMetrics.actualBoundingBoxAscent +
+  //     textMetrics.actualBoundingBoxDescent;
+  //   canvas.width = (textWidth + paddingX * 2) * scale;
+  //   canvas.height = (textHeight + paddingY * 2) * scale;
+  //   ctx.scale(scale, scale);
+  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //   ctx.fillStyle = color;
+  //   ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
 
-  //   return () => {
-  //     clearTimeout(handler); // clear previous timeout if input changes before 500ms
-  //   };
-  // }, [text]);
+  //   ctx.fillText(
+  //     text,
+  //     paddingX,
+  //     paddingY + textMetrics.actualBoundingBoxAscent
+  //   );
 
-  const generateImage = async () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const scale = 10;
-    const fontSize = 10;
-    const paddingY = 5;
-    const paddingX = 0;
-    await document.fonts.load;
-    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
-    const textMetrics = ctx.measureText(text);
-    const textWidth = textMetrics.width;
-    const textHeight =
-      textMetrics.actualBoundingBoxAscent +
-      textMetrics.actualBoundingBoxDescent;
-    canvas.width = (textWidth + paddingX * 2) * scale;
-    canvas.height = (textHeight + paddingY * 2) * scale;
-    ctx.scale(scale, scale);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = color;
-    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
+  //   const dataUrl = canvas.toDataURL();
 
-    ctx.fillText(
-      text,
-      paddingX,
-      paddingY + textMetrics.actualBoundingBoxAscent
-    );
-
-    const dataUrl = canvas.toDataURL();
-    setBase64Image(dataUrl);
-    signatureValue(dataUrl, items);
-  };
+  //   console.log(dataUrl, "SignatureCompoment");
+  //   setBase64Image(dataUrl);
+  //   signatureValue(dataUrl, items);
+  //   // setLoading(false);
+  // };
 
   console.log(base64Image, "base64Image");
+
+  const runWithDelay = (fn: any, delayMs: any) => {
+    setTimeout(fn, delayMs);
+  };
 
   return (
     <>
@@ -192,21 +189,23 @@ export default function TypeSignature({
 
       <div className="border-top d-flex justify-content-end py-2 px-2">
         <Button
-          onClick={() => {
+          onClick={async () => {
             if (text === "") {
-              // setBase64Image(dataUrl);
               signatureValue("", items);
               setShow(false);
-
               return;
             }
-            generateImage();
-            setShow(false);
-            toast.success("Signature save successfully");
+            setLoading2(true);
+            await runWithDelay(() => {
+              setLoading2(false);
+
+              setShow(false);
+              toast.success("Signature save successfully");
+            }, 5000);
           }}
           style={{ backgroundColor: "#17635C" }}
         >
-          Next <FaAngleRight />
+          {loading2 ? "Loadinmgsgashdadjajsad" : "Next"} <FaAngleRight />
         </Button>
       </div>
 

@@ -72,7 +72,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
 
   const formName = "STANDARD RELEASE OF INFORMATION";
 
@@ -194,19 +194,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
 
   console.log(watch()?.answers, "getValues");
 
-  // const multipleValueFilter = watch()?.answers?.map((multi) => {
-  //   if (multi?.multipleValue) {
-  //     return {
-  //       ...multi,
-  //       multipleValue: multi?.multipleValue?.filter(
-  //         (fil: any) => fil !== false
-  //       ),
-  //     };
-  //   }
-  //   return multi;
-  // });
-
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const question = dataGet?.formQuestions
     ?.slice()
@@ -412,6 +400,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

@@ -60,6 +60,10 @@ function SignatureCompoment({
   }, [signatureValueRepeat?.value]);
 
   console.log(signatureValueRepeat?.value, "signatureValueRepeat?.value");
+
+  const [loading, setLoading] = useState(false);
+
+  console.log(loading, "generateImage");
   return (
     <>
       <div ref={wrapperRef} style={{ position: "relative" }}>
@@ -91,6 +95,7 @@ function SignatureCompoment({
                   style={{ width: "100%", height: "80px" }}
                 >
                   <Image
+                    // onLoad={() => setLoading(false)}
                     src={signatureData.url}
                     alt="Signature Preview"
                     layout="fill"
@@ -134,17 +139,23 @@ function SignatureCompoment({
             >
               <AiOutlineSignature size={22} />
 
-              <span
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 400,
-                }}
-              >
-                Add your signature
-              </span>
+              {loading ? (
+                "loading"
+              ) : (
+                <span
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Add your signature
+                </span>
+              )}
             </div>
           </div>
         )}
+
+       
 
         {show && (
           <div className="position-relative">
@@ -212,6 +223,8 @@ function SignatureCompoment({
                   setShow={setShow}
                   text={text}
                   setText={setText}
+                  loading={loading}
+                  setLoading={setLoading}
                 />
               )}
             </Card>

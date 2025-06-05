@@ -82,7 +82,7 @@ function AuthorizationForMedication({
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
 
   const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
 
@@ -365,7 +365,7 @@ function AuthorizationForMedication({
     }
   };
 
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
 
@@ -417,6 +417,7 @@ function AuthorizationForMedication({
           </div>
 
           <StepperButtons
+          isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

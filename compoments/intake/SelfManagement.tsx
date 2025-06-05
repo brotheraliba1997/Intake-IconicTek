@@ -36,29 +36,37 @@ const formSchema = z.object({
                 signatureLink: z.string().optional(),
               })
               .superRefine((data, ctx) => {
-                if (data.type === "Signature" && !data.signatureLink) {
+                console.log(data, "ccccdata");
+                if (data.value == "")
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "Signature is required",
-                    path: ["signatureLink"],
-                  });
-                } else if (data.type === "date" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Date is required",
+                    message: `${data?.id}`,
                     path: ["value"],
                   });
-                } else if (
-                  data.type !== "Signature" &&
-                  data.type !== "checkbox" &&
-                  !data.value
-                ) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "This field is required",
-                    path: ["value"],
-                  });
-                }
+
+                // if (data.type === "Signature" && !data.signatureLink) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "Signature is required",
+                //     path: ["signatureLink"],
+                //   });
+                // } else if (data.type === "date" && !data.value) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "Date is required",
+                //     path: ["value"],
+                //   });
+                // } else if (
+                //   data.type !== "Signature" &&
+                //   data.type !== "checkbox" &&
+                //   !data.value
+                // ) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "This field is required",
+                //     path: ["value"],
+                //   });
+                // }
               })
           )
           .optional(),
@@ -76,8 +84,7 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "table") {
-          // For table, require at least one subQuestion to be checked (value is truthy)
+        } else if (data.type === "radio") {
           const hasChecked = Array.isArray(data.subQuestion)
             ? data.subQuestion.some((sq) => sq.value && sq.value !== "")
             : false;
@@ -112,13 +119,13 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
- 
+
+  console.log(watch(), errors, "asssas");
+
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
- 
- 
- 
+
   useEffect(() => {
     if (dataGet) {
       // First sort the main questions
@@ -153,7 +160,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   }, [dataGet, setValue]);
 
   const question = dataGet?.formQuestions;
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -241,6 +248,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
         const subIndex = quest.subQuestion.findIndex(
           (sq: any) => sq.id === items
         );
+
+        console.log(subIndex, "findIndex");
         if (subIndex !== -1) {
           const updatedSubQuestions = [...quest.subQuestion];
           updatedSubQuestions[subIndex] = {
@@ -440,10 +449,10 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      case "table":
+      case "radio":
         return (
           <>
-            {items?.question?.type === "table" && (
+            {items?.question?.type === "radio" && (
               <div className="my-5">
                 {items?.question?.title && (
                   <p className="text-left">{items?.question?.title}</p>
@@ -456,6 +465,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         subquestion={subquestion}
                         index={index} // This is the index from the main questions map
                         errors={errors}
+                        subIndex={subIndex}
                         onChange={(e, optionId, isMultiple) => {
                           handleFormChange(e, {
                             questionId: items?.id,
@@ -507,6 +517,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

@@ -1,33 +1,39 @@
 "use client";
 import React from "react";
-
-
-
-import Image from "next/image";
-import UserProfile from "@/public/img/profiles/avatar-01.jpg";
 import { useGetUsersQuery } from "@/redux/services/users";
 import Table from "@/compoments/table";
 import TableRowAction from "../table/tableRowAction";
+import { useSession } from "next-auth/react";
 
 function UsersTable() {
+  const { data, update } = useSession();
+  const { user }: any = data;
+
   const {
     data: usersList,
     isLoading,
     isFetching,
-  } = useGetUsersQuery({
-    role: "admin",
-    page: 1,
-    limit: 100,
-  });
+  } = useGetUsersQuery(
+    user.role == "super_admin"
+      ? {
+          role: "admin",
+          page: 1,
+          limit: 100,
+        }
+      : {
+          page: 1,
+          limit: 100,
+        }
+  );
 
-  console.log(usersList, "usersList")
+  console.log(usersList, "usersList");
 
   const columns = [
     {
       displayName: "User Name",
       displayField: (e: any) => (
         <div className="text-capitalize">
-          <span className="user-Image mr-2">
+          {/* <span className="user-Image mr-2">
             <Image
               src={UserProfile}
               alt=""
@@ -40,7 +46,7 @@ function UsersTable() {
               }}
             />
             <span className="status online"></span>
-          </span>
+          </span> */}
           <span className="px-2">
             {e?.firstName} {e?.lastName}
           </span>
@@ -141,15 +147,13 @@ function UsersTable() {
   ];
 
   return (
-   
-        <Table
-          title={"Users"}
-          columns={columns}
-          dataSource={usersList?.data}
-          isLoading={isLoading || isFetching}
-          hidePagination={true}
-        />
-     
+    <Table
+      title={"Users"}
+      columns={columns}
+      dataSource={usersList?.data}
+      isLoading={isLoading || isFetching}
+      hidePagination={true}
+    />
   );
 }
 

@@ -1,17 +1,17 @@
 import React from "react";
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from "react-bootstrap/Spinner";
 interface StepperButtonsProps {
   currentStep: number;
   totalSteps: number;
   onNavigate: (direction: "back" | "next" | "submit") => void;
-  isLoading: boolean
+  isLoading: boolean;
 }
 
 const StepperButtons: React.FC<StepperButtonsProps> = ({
   currentStep,
   totalSteps,
   onNavigate,
-  isLoading
+  isLoading,
 }) => {
   const isLastStep = currentStep === totalSteps;
 
@@ -26,8 +26,6 @@ const StepperButtons: React.FC<StepperButtonsProps> = ({
         Back
       </button> */}
       {!isLastStep ? (
-
-        
         <button
           className="btn px-3 py-2"
           type="submit"

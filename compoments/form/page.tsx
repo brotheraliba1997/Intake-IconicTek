@@ -57,7 +57,7 @@ function FormPage() {
               //   handleBack={handleBack}
               //   currentStep={currentStep}
               // />
-              <ResidencyAgreement
+              <IndividualAbuse
                
                 handleNext={handleNext}
                 handleBack={handleBack}

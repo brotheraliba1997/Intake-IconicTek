@@ -266,8 +266,8 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
 
     setValue("answers", updatedAnswers, {
       shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
+      // shouldDirty: true,
+      // shouldTouch: true,
     });
   };
 

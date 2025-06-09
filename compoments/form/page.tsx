@@ -32,7 +32,7 @@ function FormPage() {
   }, [currentStep]);
 
   const handleNext = () => {
-    if (currentStep <= 8) setCurrentStep(currentStep + 1);
+    if (currentStep <= 11) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
@@ -46,7 +46,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            <SELFMANAGEMENT
+            <StandardRelease
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

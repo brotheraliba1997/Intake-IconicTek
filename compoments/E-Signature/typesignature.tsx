@@ -186,7 +186,8 @@ export default function TypeSignature({
       </div>
 
       <div className="border-top d-flex justify-content-end py-2 px-2">
-        <Button
+        <div
+        // type="button"
           onClick={async () => {
             if (text === "") {
               signatureValue("", items);
@@ -201,7 +202,7 @@ export default function TypeSignature({
           style={{ backgroundColor: "#17635C" }}
         >
            Next <FaAngleRight />
-        </Button>
+        </div>
       </div>
 
       <canvas

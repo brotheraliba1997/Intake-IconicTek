@@ -145,6 +145,7 @@ function ESignature({ signatureValue, items, setShow }: any) {
 
         <div className="border-top d-flex justify-content-end py-2 px-2">
           <Button
+          type="button"
             onClick={() => {
               handleSave();
             }}

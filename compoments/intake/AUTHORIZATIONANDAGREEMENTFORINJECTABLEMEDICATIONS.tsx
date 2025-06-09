@@ -42,6 +42,7 @@ const formSchema = z.object({
           }
         } else if (data.type === "html") {
           // No validation needed
+          return;
         }
 
         // if (data.type === "radio" && data.value == "")
@@ -78,7 +79,7 @@ interface AuthorizationForMedicationProps {
   currentStep: number;
 }
 
-function AUTHORIZATIONTOACTINANEMERGENCY({
+function AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS({
   handleBack,
   handleNext,
   currentStep,
@@ -101,7 +102,7 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
   });
   const { data, error } = useGetMyFormQuery({});
 
-  const formName = "AUTHORIZATION TO ACT IN AN EMERGENCY";
+  const formName = "AUTHORIZATION AND AGREEMENT FOR INJECTABLE MEDICATIONS";
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   const question = dataGet?.formQuestions
@@ -142,6 +143,7 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
     }
   }, [dataGet, setValue]);
 
+  console.log("errors=>", errors);
   const handleFormChange = useCallback(
     (
       e: any,
@@ -217,44 +219,31 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
     [setValue, getValues]
   );
 
-  const signatureValue = (val: any, items: any) => {
-    const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
-
-        console.log(subIndex, "findIndex");
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
+  const signatureValue = (url: string, questionId: string) => {
+    const updatedAnswers = getValues("answers").map((answer) => {
+      if (answer.questionId === questionId) {
+        return {
+          ...answer,
+          signatureLink: url,
+          value: url,
+        };
       }
-      return quest;
+      return answer;
     });
 
     setValue("answers", updatedAnswers, {
       shouldValidate: true,
       shouldDirty: true,
-      shouldTouch: true,
     });
   };
 
-  const signatureUrlFind = watch()?.answers?.flatMap(
-    (ques: any) =>
-      ques?.subQuestion
-        ?.filter((sub: any) => sub?.type === "Signature")
-        .map((item: any) => ({
-          id: item?.id,
-          url: item?.signatureLink || null,
-        })) || []
-  );
+  const signatureUrlFind =
+    watch("answers")
+      ?.filter((item: any) => item?.type === "Signature")
+      ?.map((item: any) => ({
+        id: item?.questionId,
+        url: item?.signatureLink || null,
+      })) || [];
 
   const getComponent = ({
     type,
@@ -475,7 +464,6 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
             <div className="mb-2">
               <HtmlRenderer items={items} />
             </div>
-
             <SignatureCompoment
               signatureValue={signatureValue}
               items={items.id}
@@ -568,4 +556,4 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
   );
 }
 
-export default AUTHORIZATIONTOACTINANEMERGENCY;
+export default AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS;

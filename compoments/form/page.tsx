@@ -13,6 +13,7 @@ import { Stepper } from "../Stepper/Stepper";
 import AUTHORIZATIONTOACTINANEMERGENCY from "../intake/AUTHORIZATIONTOACTNANEMERGENCY";
 import PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES from "../intake/PERSON-CENTEREDANDPOSITIVESUPPORTSTRATEGIES";
 import RIGHTSOFPERSONSSERVED from "../intake/RIGHTSOFPERSONSSERVED";
+import StandardRelease from "../intake/StandardRelease";
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -21,7 +22,7 @@ function FormPage() {
   React.useEffect(() => {
     const savedStep = localStorage.getItem("currentStep");
     if (savedStep !== null) {
-      setCurrentStep(parseInt(savedStep, 10));
+      setCurrentStep(parseInt(savedStep, 11));
     }
   }, []);
 
@@ -45,7 +46,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            <AUTHORIZATIONTOACTINANEMERGENCY
+            <StandardRelease
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -119,6 +120,14 @@ function FormPage() {
           )}
 
           {currentStep === 10 && (
+            <AUTHORIZATIONTOACTINANEMERGENCY
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+
+          {currentStep === 11 && (
             <ServicesPlan
               handleNext={handleNext}
               handleBack={handleBack}

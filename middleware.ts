@@ -14,7 +14,23 @@ export async function middleware(req: any) {
     }
   }
 
-  if (token && pathname === "/login") {
+  // if (token && pathname === "/login") {
+  //   const url = req.nextUrl.clone();
+  //   url.pathname = "/dashboard";
+  //   return NextResponse.redirect(url);
+  // }
+
+  // if (pathname.startsWith("/dashboard")) {
+  //   if (!token) {
+  //     const url = req.nextUrl.clone();
+  //     url.pathname = "/login";
+  //     return NextResponse.redirect(url);
+        
+  //   }
+  // } login ka kaam karna hai hamza
+
+
+   if (token && pathname === "/") {
     const url = req.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
@@ -23,7 +39,7 @@ export async function middleware(req: any) {
   if (pathname.startsWith("/dashboard")) {
     if (!token) {
       const url = req.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/";
       return NextResponse.redirect(url);
     }
   }
@@ -31,5 +47,5 @@ export async function middleware(req: any) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"], // Apply middleware to these routes
+  matcher: ["/dashboard/:path*", "/"], // Apply middleware to these routes pending hamza
 };

@@ -17,7 +17,7 @@ const AddUserForm: React.FC = () => {
     try {
       await createUser(data).unwrap();
       toast.success("User created successfully");
-      // router.push("/dashboard/users");
+      router.push("/dashboard/users");
     } catch (error: any) {
       console.log("err=>", error);
       toast.error(error?.data?.message || "Error creating form");

@@ -1,8 +1,8 @@
 export interface CompanyData {
-  id?: string;
-  companyemail: string;
+  // id?: string hamza ;
+  // companyemail: string;
   email: string;
-  clientname: string;
+  // clientname: string;
   name: string;
   phone: string;
   address: string;
@@ -10,5 +10,5 @@ export interface CompanyData {
   state: string;
   zipCode: string;
   description: string;
-  profilePic: string;
+  profilePic: string | undefined;
 }

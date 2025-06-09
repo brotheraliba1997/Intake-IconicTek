@@ -13,7 +13,7 @@ import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CheckBox from "./common/CheckBox";
-import Textarea from "./common/Textarea";
+import SignatureCompoment from "../E-Signature/signature";
 
 const formSchema = z.object({
   answers: z.array(
@@ -24,6 +24,7 @@ const formSchema = z.object({
         multipleValue: z.array(z.string()).optional(),
         type: z.string(),
         title: z.string().optional(),
+        signatureLink: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         if (data.type === "checkbox") {
@@ -41,6 +42,21 @@ const formSchema = z.object({
           }
         } else if (data.type === "html") {
           // No validation needed
+        }
+
+        // if (data.type === "radio" && data.value == "")
+        //   ctx.addIssue({
+        //     code: z.ZodIssueCode.custom,
+        //     message: `${data?.id}`,
+        //     path: ["value"],
+        //   });
+
+        if (data.type === "Signature" && !data.signatureLink) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Signature is required",
+            path: ["signatureLink"],
+          });
         } else {
           if (
             !(typeof data.value === "string" && data.value.trim().length > 0)
@@ -62,7 +78,7 @@ interface AuthorizationForMedicationProps {
   currentStep: number;
 }
 
-function AuthorizationForMedication({
+function RIGHTSOFPERSONSSERVED({
   handleBack,
   handleNext,
   currentStep,
@@ -85,7 +101,7 @@ function AuthorizationForMedication({
   });
   const { data, error } = useGetMyFormQuery({});
 
-  const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
+  const formName = "RIGHTS OF PERSONS SERVED";
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   const question = dataGet?.formQuestions
@@ -143,15 +159,15 @@ function AuthorizationForMedication({
       const value = e?.target?.value;
 
       if (subQuestionId) {
-        const answers:any = getValues("answers");
+        const answers = getValues("answers");
 
         const questionIndex = answers.findIndex(
-          (q:any) => q.questionId === questionId
+          (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
-            questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          const subQuestionIndex = (
+            answers[questionIndex] as any
+          ).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
               `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
@@ -201,15 +217,55 @@ function AuthorizationForMedication({
     [setValue, getValues]
   );
 
+  const signatureValue = (val: any, items: any) => {
+    const answers = watch("answers");
+    const updatedAnswers = answers.map((quest: any) => {
+      if (Array.isArray(quest.subQuestion)) {
+        const subIndex = quest.subQuestion.findIndex(
+          (sq: any) => sq.id === items
+        );
+
+        console.log(subIndex, "findIndex");
+        if (subIndex !== -1) {
+          const updatedSubQuestions = [...quest.subQuestion];
+          updatedSubQuestions[subIndex] = {
+            ...updatedSubQuestions[subIndex],
+            signatureLink: val,
+            value: " ", // Set a space to satisfy non-empty validation
+          };
+          return { ...quest, subQuestion: updatedSubQuestions };
+        }
+      }
+      return quest;
+    });
+
+    setValue("answers", updatedAnswers, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
+
+  const signatureUrlFind = watch()?.answers?.flatMap(
+    (ques: any) =>
+      ques?.subQuestion
+        ?.filter((sub: any) => sub?.type === "Signature")
+        .map((item: any) => ({
+          id: item?.id,
+          url: item?.signatureLink || null,
+        })) || []
+  );
+
   const getComponent = ({
     type,
     items,
     index,
+    signatureValue,
   }: {
     type: string;
     items: any;
-
     index: number;
+    signatureValue: any;
   }) => {
     switch (type) {
       case "html":
@@ -323,40 +379,103 @@ function AuthorizationForMedication({
                   <HtmlRenderer items={items} />
                 </div>
                 <div className="row">
-                  {items?.question?.options.map((option: any, i: number) => (
-                    <CheckBox
-                      key={i}
-                      option={option}
-                      optionIndex={i}
-                      index={index}
-                      handleChange={handleFormChange}
-                      items={items}
-                      control={control}
-                      errors={errors}
-                    />
-                  ))}
+                  {items?.question?.SubQuestion?.map((sub: any, i: number) => {
+                    if (sub?.type === "checkbox") {
+                      return (
+                        <div key={sub.id}>
+                          <div className="mb-2 font-semibold">{sub.title}</div>
+                          <div className="row">
+                            {sub.options?.map(
+                              (option: any, optionIndex: number) => (
+                                <CheckBox
+                                  key={option.id}
+                                  option={option}
+                                  optionIndex={optionIndex}
+                                  index={index}
+                                  handleChange={handleFormChange}
+                                  items={items}
+                                  control={control}
+                                  errors={errors}
+                                />
+                              )
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               </>
             )}
           </>
         );
 
-      case "textarea":
+      case "radio":
         return (
           <>
-            {type == "textarea" && (
-              <Textarea
-                items={items}
-                control={control}
-                errors={errors}
-                index={index}
-                onChange={(e:any) => {
-                  handleFormChange(e, {
-                    questionId: items?.id,
-                    type: "textarea",
-                  });
-                }}
-              />
+            {type == "radio" && (
+              <>
+                <div className="mb-2">
+                  <HtmlRenderer items={items} />
+                </div>
+                <div className="row">
+                  {items?.question?.options.map(
+                    (option: any, index: number) => (
+                      <div className="form-check" key={index}>
+                        <input
+                          className={`form-check-input ${
+                            (errors?.answers?.[index] as any)?.question?.find(
+                              (items: any) =>
+                                items?.value?.message === option?.id
+                            )
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          type="radio"
+                          name={`subquestion-${option.id}`}
+                          value={option.id}
+                          id={`option-${index}`}
+                          // onChange={(e) => {
+                          //   onChange(e, option.id, option.isMultiple);
+                          // }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`option-${index}`}
+                        >
+                          {option.title}
+                        </label>
+                      </div>
+                    )
+                  )}
+                </div>
+              </>
+            )}
+          </>
+        );
+
+      case "Signature":
+        return (
+          <>
+            <div className="mb-2">
+              <HtmlRenderer items={items} />
+            </div>
+
+            <SignatureCompoment
+              signatureValue={signatureValue}
+              items={items.id}
+              label={items?.title}
+              formData={watch("answers")}
+              signatureData={signatureUrlFind?.find(
+                (signData) => signData?.id === items?.id
+              )}
+            />
+
+            {errors?.answers?.[index]?.signatureLink && (
+              <span className="text-danger">
+                {errors.answers[index].signatureLink.message}
+              </span>
             )}
           </>
         );
@@ -366,7 +485,7 @@ function AuthorizationForMedication({
     }
   };
 
-  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
 
@@ -411,6 +530,7 @@ function AuthorizationForMedication({
                       type: items?.question?.type,
                       items,
                       index,
+                      signatureValue,
                     })}
                   </React.Fragment>
                 ))}
@@ -418,7 +538,7 @@ function AuthorizationForMedication({
           </div>
 
           <StepperButtons
-          isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {
@@ -433,4 +553,4 @@ function AuthorizationForMedication({
   );
 }
 
-export default AuthorizationForMedication;
+export default RIGHTSOFPERSONSSERVED;

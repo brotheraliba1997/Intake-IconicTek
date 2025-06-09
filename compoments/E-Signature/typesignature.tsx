@@ -1,56 +1,82 @@
 "use client";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
 import { toast } from "react-hot-toast";
 import signatureImage from "@/public/img/signature/test.jpeg";
+import { FaAngleRight } from "react-icons/fa";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function TypeSignature({
   signatureValue,
   items,
   formData,
   setShow,
+  text,
+  setText,
+  loading,
+  setLoading,
 }: any) {
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
+  const [selectedFont, setSelectedFont] = useState("");
+  const [loading2, setLoading2] = useState(false);
 
-  console.log(formData, "formData");
+  console.log(loading2, "setSelectedFont");
 
-  const signatureValueRepeat = formData?.find(
-    (item: any) => item?.title === "Name" || item?.title === "Persons Name:"
-  );
+  const fonts = [
+    { label: "Shadows Into Light", className: "font-shadows" },
+    { label: "Yellowtail", className: "font-yellowtail" },
+    { label: "Dancing Script", className: "font-dancing" },
+    { label: "Great Vibes", className: "font-greatvibes" },
+  ];
 
-  const [text, setText] = useState(signatureValueRepeat?.value);
   const [isEditing, setIsEditing] = useState(false);
 
   console.log(text, "useState");
 
   const canvasRef = useRef<any>(null);
 
-  const generateImage = () => {
+  const generateImage = async () => {
+    // setLoading(true);
     const canvas = canvasRef.current;
-    const scale = 2;
-    canvas.width = 150 * scale;
-    canvas.height = 30 * scale;
     const ctx = canvas.getContext("2d");
+    await document.fonts.load;
+    const scale = 10;
+    const fontSize = 10;
+    const paddingY = 5;
+    const paddingX = 0;
+    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
+    const textMetrics = ctx.measureText(text);
+    const textWidth = textMetrics.width;
+    const textHeight =
+      textMetrics.actualBoundingBoxAscent +
+      textMetrics.actualBoundingBoxDescent;
+    canvas.width = (textWidth + paddingX * 2) * scale;
+    canvas.height = (textHeight + paddingY * 2) * scale;
+    ctx.scale(scale, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = color;
-    ctx.font = "24px Arial";
-    ctx.fillText(text, 10, 50);
-    const dataUrl = canvas.toDataURL();
-    if (text !== undefined && text !== "") {
-      toast.success("Signature save successfully");
-      setBase64Image(dataUrl);
-      signatureValue(dataUrl, items);
+    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
 
-      setShow(false);
-    } else {
-      toast.error("Signature value Missing");
-    }
+    ctx.fillText(
+      text,
+      paddingX,
+      paddingY + textMetrics.actualBoundingBoxAscent
+    );
+
+    const dataUrl = canvas.toDataURL();
+
+    console.log(dataUrl, "SignatureCompoment");
+    setBase64Image(dataUrl);
+    signatureValue(dataUrl, items);
+    // setLoading(false);
   };
 
-  console.log(signatureValue, "signatureValue");
+  console.log(base64Image, "base64Image");
+
+  
 
   return (
     <>
@@ -58,16 +84,12 @@ export default function TypeSignature({
         className="px-2  d-flex  flex-column justify-content-end"
         style={{ minHeight: "220px" }}
       >
-        <div
-          className="d-flex justify-content-center align-items-center text-center"
-          
-        >
+        <div className="d-flex justify-content-center align-items-center text-center">
           {text === "" && !isEditing ? (
             <div
               className="position-relative"
-              
               onClick={() => setIsEditing(true)}
-              style={{ cursor: "pointer" , height: 150, width: 300 }}
+              style={{ cursor: "pointer", height: 150, width: 300 }}
             >
               <Image
                 src={signatureImage}
@@ -95,6 +117,7 @@ export default function TypeSignature({
                 background: "transparent",
                 padding: "10px 20px 40px 0px",
                 textAlign: "center",
+                fontFamily: selectedFont,
               }}
             />
           )}
@@ -140,28 +163,44 @@ export default function TypeSignature({
             ))}
           </div>
 
-          {/* Right Column: Dropdown */}
           <div className="col-lg-5">
             <Form.Select
               style={{ fontSize: "14px", backgroundColor: "#ECECEC" }}
-              className="py-2"
-              aria-label="Default select example"
+              className={`py-2 ${selectedFont}`}
+              aria-label="Font selector"
+              onChange={(e) => setSelectedFont(e.target.value)}
             >
-              <option style={{ fontSize: "14px" }}>Change Style</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="">Change Style</option>
+              {fonts.map((font, index) => (
+                <option
+                  key={index}
+                  value={font.label}
+                  style={{ fontFamily: font.label }}
+                >
+                  {font.label}
+                </option>
+              ))}
             </Form.Select>
           </div>
         </div>
       </div>
 
       <div className="border-top d-flex justify-content-end py-2 px-2">
-        {/* <p  className=" text-secondary " style={{ cursor: "pointer" }}>
+        <Button
+          onClick={async () => {
+            if (text === "") {
+              signatureValue("", items);
+              setShow(false);
+              return;
+            }
             
-          </p> */}
-        <Button onClick={generateImage} style={{ backgroundColor: "#17635C" }}>
-          Sign & Complete{" "}
+            generateImage()
+              setShow(false);
+
+          }}
+          style={{ backgroundColor: "#17635C" }}
+        >
+           Next <FaAngleRight />
         </Button>
       </div>
 
@@ -171,18 +210,6 @@ export default function TypeSignature({
         height={100}
         style={{ display: "none" }}
       />
-
-      {/* {base64Image && (
-        <div>
-          <h4>Generated Signature:</h4>
-          <Image
-            width={200}
-            height={200}
-            src={base64Image}
-            alt="Typed Signature"
-          />
-        </div>
-      )} */}
     </>
   );
 }

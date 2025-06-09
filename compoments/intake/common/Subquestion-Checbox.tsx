@@ -3,6 +3,7 @@ import React from "react";
 interface SubquestionCheckboxProps {
   subquestion: any;
   index: number;
+  subIndex: number;
   errors: any;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -14,9 +15,11 @@ interface SubquestionCheckboxProps {
 function SubquestionChecbox({
   subquestion,
   index,
+  subIndex,
   errors,
   onChange,
 }: SubquestionCheckboxProps) {
+  console.log(errors,subIndex, errors?.answers?.[index]?.subQuestion?.[subIndex], "errorsmil raha hai");
   return (
     <div className="col-12 mb-3" key={index}>
       {" "}
@@ -25,7 +28,6 @@ function SubquestionChecbox({
         <label className="fw-bold" style={{ minWidth: "600px" }}>
           {subquestion.title}
         </label>{" "}
-        
         <div className="d-flex flex-wrap gap-3">
           {[...(subquestion?.options || [])]
             .sort((a, b) => {
@@ -41,7 +43,9 @@ function SubquestionChecbox({
               <div className="form-check" key={j}>
                 <input
                   className={`form-check-input ${
-                    errors?.answers?.[index]?.value ? "is-invalid" : ""
+                    errors?.answers?.[index]?.subQuestion?.find((items :any) => items?.value?.message === subquestion?.id)
+                      ? "is-invalid"
+                      : ""
                   }`}
                   type="radio"
                   name={`subquestion-${subquestion.id}`}

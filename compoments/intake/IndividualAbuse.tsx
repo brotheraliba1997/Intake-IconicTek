@@ -28,21 +28,58 @@ const formSchema = z.object({
         signatureLink: z.string().optional(),
         subQuestion: z
           .array(
-            z.object({
-              value: z.string().default(""),
-              multipleValue: z.array(z.any()).default([]),
-              type: z.string().default(""),
-              id: z.any().optional(),
-              signatureLink: z.string().optional(),
-            })
+            z
+              .object({
+                value: z.string().default(""),
+                multipleValue: z.array(z.any()).optional().default([]),
+                type: z.string().default(""),
+                id: z.any().default(""),
+                signatureLink: z.string().optional(),
+              })
+              .superRefine((data, ctx) => {
+                if (data.type === "Signature" && !data.signatureLink) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Signature is required",
+                    path: ["signatureLink"],
+                  });
+                } else if (data.type === "date" && !data.value) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Date is required",
+                    path: ["value"],
+                  });
+                } else if (data.type === "radio" && !data.value) {
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `${data?.id}`,
+
+                    path: ["value"],
+                  });
+                }
+                //  else if (
+                //   data.type === "text" &&
+                //   (!data.value || data.value.trim() === "")
+                // ) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "Field is required",
+                //     path: ["value"],
+                //   });
+                // }
+                // else if (data.type !== "Signature" && !data.value) {
+                //   ctx.addIssue({
+                //     code: z.ZodIssueCode.custom,
+                //     message: "This field is required",
+                //     path: ["value"],
+                //   });
+                // }
+              })
           )
           .optional(),
       })
       .superRefine((data, ctx) => {
-        // Skip validation for empty or undefined types
-        if (!data.type) return;
-
-        // Text input validation
+        console.log(data, "data2");
         if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -58,90 +95,18 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        }
-
-        // Signature validation
-        if (data.type === "Signature" && !data.signatureLink) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Signature is required",
-            path: ["signatureLink"],
-          });
-        }
-
-        // Checkbox validation
-        if (
-          data.type === "checkbox" &&
-          (!data.multipleValue || data.multipleValue.length === 0)
-        ) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please select at least one option",
-            path: ["multipleValue"],
-          });
-        }
-
-        // Radio button validation
-        if (data.type === "radio" && !data.value) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Please select an option",
-            path: ["value"],
-          });
-        }
-
-        // Handle subquestion validations
-        if (data.subQuestion && Array.isArray(data.subQuestion)) {
-          data.subQuestion.forEach((subQ, index) => {
-            if (subQ.type === "Signature" && !subQ.signatureLink) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Signature is required",
-                path: ["subQuestion", index, "signatureLink"],
-              });
-            } else if (
-              subQ.type === "date" &&
-              (!subQ.value || subQ.value.trim() === "")
-            ) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Date is required",
-                path: ["subQuestion", index, "value"],
-              });
-            } else if (
-              subQ.type === "text" &&
-              (!subQ.value || subQ.value.trim() === "")
-            ) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "This field is required",
-                path: ["subQuestion", index, "value"],
-              });
-            } else if (
-              subQ.type === "radio" &&
-              (!subQ.value || subQ.value.trim() === "")
-            ) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please select an option",
-                path: ["subQuestion", index, "value"],
-              });
-            } else if (
-              subQ.type === "checkbox" &&
-              (!subQ.multipleValue || subQ.multipleValue.length === 0)
-            ) {
-              ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please select at least one option",
-                path: ["subQuestion", index, "multipleValue"],
-              });
-            }
-          });
-        }
-
-        // HTML (no validation required)
-        if (data.type === "html") {
-          return;
+        } else if (data.type === "html" && !data.value) {
+          if (
+            data.title === "Persons Name:" ||
+            data.title === "Program:" ||
+            data.title === "question"
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "This field is required",
+              path: ["value"],
+            });
+          } else return;
         }
       })
   ),
@@ -163,7 +128,9 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     mode: "onChange",
     reValidateMode: "onChange",
   });
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  console.log("error==>", errors);
+
+  const { data, error } = useGetMyFormQuery({});
   const formName = "Individual Abuse";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   useEffect(() => {
@@ -178,15 +145,26 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
               (a: any, b: any) => a.arrangement - b.arrangement
             )
           : [];
-
-        const questionData = {
+        return {
           questionId: items?.id,
           value: "",
           multipleValue: [],
-          type: items?.question?.type || "",
-          title: items?.question?.title || "",
-          signatureLink: items?.question?.type === "Signature" ? "" : undefined,
-          subQuestion: [],
+          type: "html", //
+          title: items?.question?.title
+            ? items?.question?.title
+            : sortedSubQuestions?.length > 0
+            ? "question"
+            : " ",
+          // subQuestion: [],
+          subQuestion:
+            sortedSubQuestions?.length > 0
+              ? sortedSubQuestions.map((sub: any) => ({
+                  value: "",
+                  multipleValue: [],
+                  type: sub?.type,
+                  id: sub?.id,
+                }))
+              : [],
         };
 
         // Handle subquestions if they exist
@@ -232,7 +210,8 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   const question = dataGet?.formQuestions;
   console.log("question", question);
   // console.log(question, "questionquestion");
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
+
   const onSubmit = async (data: any) => {
     try {
       const payload = {
@@ -268,12 +247,12 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
-            questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          const subQuestionIndex = (
+            answers[questionIndex] as any
+          ).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -315,7 +294,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val, items) => {
+  const signatureValue = (val: any, items: any) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {
@@ -573,6 +552,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                         subquestion={subquestion}
                         index={index}
                         errors={errors}
+                        subIndex={subIndex}
                         onChange={(e, optionId, isMultiple) => {
                           handleFormChange(e, {
                             questionId: items?.id,
@@ -624,6 +604,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

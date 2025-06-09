@@ -36,6 +36,14 @@ const formSchema = z.object({
                 signatureLink: z.string().optional(),
               })
               .superRefine((data, ctx) => {
+                console.log(data, "ccccdata");
+                if (data.type === "radio" && data.value == "")
+                  ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `${data?.id}`,
+                    path: ["value"],
+                  });
+
                 if (data.type === "Signature" && !data.signatureLink) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -76,8 +84,7 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "table") {
-          // For table, require at least one subQuestion to be checked (value is truthy)
+        } else if (data.type === "radio") {
           const hasChecked = Array.isArray(data.subQuestion)
             ? data.subQuestion.some((sq) => sq.value && sq.value !== "")
             : false;
@@ -112,13 +119,13 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
   const formName = "SELF-MANAGEMENT ASSESSMENT";
- 
+
+  console.log(watch(), errors, "asssas");
+
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
- 
- 
- 
+
   useEffect(() => {
     if (dataGet) {
       // First sort the main questions
@@ -153,7 +160,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
   }, [dataGet, setValue]);
 
   const question = dataGet?.formQuestions;
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -187,12 +194,12 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -234,13 +241,15 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val, items) => {
+  const signatureValue = (val:any, items:any) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {
         const subIndex = quest.subQuestion.findIndex(
           (sq: any) => sq.id === items
         );
+
+        console.log(subIndex, "findIndex");
         if (subIndex !== -1) {
           const updatedSubQuestions = [...quest.subQuestion];
           updatedSubQuestions[subIndex] = {
@@ -440,10 +449,10 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      case "table":
+      case "radio":
         return (
           <>
-            {items?.question?.type === "table" && (
+            {items?.question?.type === "radio" && (
               <div className="my-5">
                 {items?.question?.title && (
                   <p className="text-left">{items?.question?.title}</p>
@@ -456,6 +465,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                         subquestion={subquestion}
                         index={index} // This is the index from the main questions map
                         errors={errors}
+                        subIndex={subIndex}
                         onChange={(e, optionId, isMultiple) => {
                           handleFormChange(e, {
                             questionId: items?.id,
@@ -507,6 +517,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

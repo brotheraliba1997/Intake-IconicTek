@@ -19,8 +19,7 @@ function SignatureCompoment({
 }: any) {
   const [toggle, setToggly] = useState(false);
 
-  
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<any>(null);
 
   console.log(items, "itemsitemsitems");
   const signatureValueRepeat = formData?.find(
@@ -29,13 +28,19 @@ function SignatureCompoment({
 
   const [show, setShow] = useState<any>();
 
-  const handleClose = () => setShow(signatureValueRepeat.value ? true : false);
+  // const handleClose = () => setShow(signatureValueRepeat.value ? true : false);
+  const [text, setText] = useState(signatureValueRepeat?.value ?? "");
   const handleShow = () => setShow(true);
 
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setShow(false);
+
+        if (text === "") {
+          // setBase64Image(dataUrl);
+          signatureValue("", items);
+        }
       }
     }
 
@@ -46,48 +51,58 @@ function SignatureCompoment({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [show]);
+  }, [show, text]);
 
+  useEffect(() => {
+    if (signatureValueRepeat?.value) {
+      setText(signatureValueRepeat?.value);
+    }
+  }, [signatureValueRepeat?.value]);
+
+  console.log(signatureValueRepeat?.value, "signatureValueRepeat?.value");
+
+  const [loading, setLoading] = useState(false);
+
+  console.log(loading, "generateImage");
   return (
     <>
       <div ref={wrapperRef} style={{ position: "relative" }}>
         {signatureData?.url ? (
           <>
             <div
-              className="py-4 d-flex flex-column "
               style={{
-                width: "410px",
-                height: "150px",
-                cursor: "pointer",
-                borderBottom: "1px dashed black",
-                transition: "box-shadow 0.3s ease",
+                backgroundColor: "	rgb(219, 240, 236)",
+                width: "400px",
+                border: "1px solid rgb(49, 155, 146) ",
+                opacity: 1,
+                height: 120,
+                borderRadius: "5px",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "none";
-              }}
+              onClick={handleShow}
             >
-              <div className="position-relative w-100 h-100  rounded p-2 bg-white">
-                <Image
-                  src={signatureData.url}
-                  alt="Signature Preview"
-                  // className="img-fluid h-50 w-50 object-fit-contain"
-                  layout="fill"
-                  style={{ objectFit: "contain" }}
-                />
-              </div>
-            </div>
-            <div className="mt-2">
-              <button
-                type="button"
-                className="btn border-0 text-white px-3 py-2 rounded"
-                style={{ backgroundColor: "#17635C" }}
-                onClick={handleShow}
+              <div
+                className="d-flex justify-content-end"
+                style={{ fontSize: "22px", color: "red" }}
               >
-                Edit
-              </button>
+                {" "}
+                *
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", height: "50%" }}
+              >
+                <div
+                  className="position-relative "
+                  style={{ width: "100%", height: "80px" }}
+                >
+                  <Image
+                    // onLoad={() => setLoading(false)}
+                    src={signatureData.url}
+                    alt="Signature Preview"
+                    layout="fill"
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+              </div>
             </div>
           </>
         ) : (
@@ -124,23 +139,28 @@ function SignatureCompoment({
             >
               <AiOutlineSignature size={22} />
 
-              <span
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 400,
-                }}
-              >
-                Add your signature
-              </span>
+              {loading ? (
+                "loading"
+              ) : (
+                <span
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Add your signature
+                </span>
+              )}
             </div>
           </div>
         )}
+
+       
 
         {show && (
           <div className="position-relative">
             <Card
               className="shadow-lg "
-            
               style={{
                 position: "absolute",
                 top: 10,
@@ -158,7 +178,7 @@ function SignatureCompoment({
                 <MdCancel style={{ fontSize: "24px" }} />
               </div>
 
-              <p className="px-4 py-0">Case manager*</p>
+              {/* <p className="px-4 py-0">Case manager*</p> */}
               <div className="d-flex justify-content-center align-items-center ">
                 <div
                   onClick={() => setToggly(false)}
@@ -201,6 +221,10 @@ function SignatureCompoment({
                   items={items}
                   formData={formData}
                   setShow={setShow}
+                  text={text}
+                  setText={setText}
+                  loading={loading}
+                  setLoading={setLoading}
                 />
               )}
             </Card>

@@ -57,7 +57,7 @@ function POLICYORIENTATIONRECEIPT({
   handleNext,
   currentStep,
 }: any) {
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
   const formName = "Policy Orientation Receipt";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   const question = React.useMemo(
@@ -96,7 +96,7 @@ function POLICYORIENTATIONRECEIPT({
       setValue("answers", initialFormData);
     }
   }, [dataGet, setValue, question]);
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -264,6 +264,7 @@ function POLICYORIENTATIONRECEIPT({
             ))}
           </div>
           <StepperButtons
+           isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

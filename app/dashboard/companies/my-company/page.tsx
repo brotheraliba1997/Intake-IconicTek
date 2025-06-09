@@ -1,8 +1,7 @@
-import Link from "next/link";
+
 import React from "react";
 
-import AddCompanyForm from "@/compoments/compaines/AddCompanyForm";
-import EditCompanyForm from "@/compoments/compaines/EditCompanyForm";
+
 import MyCompanyForm from "@/compoments/compaines/MyCompanyForm";
 
 function AddCompanies() {

@@ -99,7 +99,7 @@ const UserForm = ({
     formState: { errors },
     watch,
     setValue,
-  } = useForm<UserFormDataType>({
+  } = useForm<any>({
     resolver: yupResolver(validationSchema),
     context: { isAdd },
     defaultValues: initialValues ?? {
@@ -115,6 +115,8 @@ const UserForm = ({
     },
   });
   console.log("errors=?", errors);
+
+  const founderrors: any = errors;
   // const handleZipCodeChange = async (zipCode: string) => {
   //   if (zipCode.length !== 5) return; // Validate zip code length
   //   setLoadingZip(true);
@@ -204,12 +206,16 @@ const UserForm = ({
           <input
             type="text"
             id="user-name"
-            className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.firstName ? "is-invalid" : ""
+            }`}
             placeholder="Enter Last Name"
             {...register("firstName")}
           />
-          {errors.firstName && (
-            <div className="invalid-feedback">{errors.firstName?.message}</div>
+          {founderrors.firstName && (
+            <div className="invalid-feedback">
+              {founderrors.firstName?.message}
+            </div>
           )}
         </div>
       </div>
@@ -221,12 +227,16 @@ const UserForm = ({
           <input
             type="text"
             id="user-name"
-            className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.lastName ? "is-invalid" : ""
+            }`}
             placeholder="Enter Last Name"
             {...register("lastName")}
           />
-          {errors.lastName && (
-            <div className="invalid-feedback">{errors.lastName?.message}</div>
+          {founderrors.lastName && (
+            <div className="invalid-feedback">
+              {founderrors.lastName?.message}
+            </div>
           )}
         </div>
       </div>
@@ -261,12 +271,12 @@ const UserForm = ({
           <input
             type="email"
             id="email"
-            className={`form-control ${errors.email ? "is-invalid" : ""}`}
+            className={`form-control ${founderrors.email ? "is-invalid" : ""}`}
             placeholder="Enter Your Email Address"
             {...register("email")}
           />
-          {errors.email && (
-            <div className="invalid-feedback">{errors.email?.message}</div>
+          {founderrors.email && (
+            <div className="invalid-feedback">{founderrors.email?.message}</div>
           )}
         </div>
       </div>
@@ -280,11 +290,13 @@ const UserForm = ({
             id="address"
             type="number"
             placeholder="Phone"
-            className={`form-control ${errors.address ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.address ? "is-invalid" : ""
+            }`}
             {...register("phone")}
           />
-          {errors.phone && (
-            <div className="invalid-feedback">{errors.phone.message}</div>
+          {founderrors.phone && (
+            <div className="invalid-feedback">{founderrors.phone.message}</div>
           )}
         </div>
       </div>
@@ -298,12 +310,16 @@ const UserForm = ({
             <input
               type="password"
               id="password"
-              className={`form-control ${errors.password ? "is-invalid" : ""}`}
+              className={`form-control ${
+                founderrors.password ? "is-invalid" : ""
+              }`}
               placeholder="Enter Password"
               {...register("password")}
             />
-            {errors.password && (
-              <div className="invalid-feedback">{errors.password?.message}</div>
+            {founderrors.password && (
+              <div className="invalid-feedback">
+                {founderrors.password?.message}
+              </div>
             )}
           </div>
         </div>
@@ -319,14 +335,14 @@ const UserForm = ({
               type="password"
               id="password"
               className={`form-control ${
-                errors.confirmPassword ? "is-invalid" : ""
+                founderrors.confirmPassword ? "is-invalid" : ""
               }`}
               placeholder="Confirm Password"
               {...register("confirmPassword")}
             />
-            {errors.confirmPassword && (
+            {founderrors.confirmPassword && (
               <div className="invalid-feedback">
-                {errors.confirmPassword?.message}
+                {founderrors.confirmPassword?.message}
               </div>
             )}
           </div>
@@ -342,11 +358,15 @@ const UserForm = ({
             id="address"
             type="text"
             placeholder="Enter Address"
-            className={`form-control ${errors.address ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.address ? "is-invalid" : ""
+            }`}
             {...register("address")}
           />
-          {errors.address && (
-            <div className="invalid-feedback">{errors.address.message}</div>
+          {founderrors.address && (
+            <div className="invalid-feedback">
+              {founderrors.address.message}
+            </div>
           )}
         </div>
       </div>
@@ -358,7 +378,7 @@ const UserForm = ({
             isMulti={false}
             control={control}
             options={
-              companiesList?.data?.map((x: CompanyData) => ({
+              companiesList?.data?.map((x: any) => ({
                 label: x.name,
                 value: x.id,
               })) ?? []
@@ -377,11 +397,15 @@ const UserForm = ({
             id="zipCode"
             type="text"
             placeholder="Enter Zipcode"
-            className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.zipCode ? "is-invalid" : ""
+            }`}
             {...register("zipCode")}
           />
-          {errors.zipCode && (
-            <div className="invalid-feedback">{errors.zipCode.message}</div>
+          {founderrors.zipCode && (
+            <div className="invalid-feedback">
+              {founderrors.zipCode.message}
+            </div>
           )}
         </div>
       </div>
@@ -401,11 +425,11 @@ const UserForm = ({
           id="zipCode"
           type="text"
           placeholder="state"
-          className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+          className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
           {...register("state")}
         />
-        {errors.state && (
-          <div className="invalid-feedback">{errors.state.message}</div>
+        {founderrors.state && (
+          <div className="invalid-feedback">{founderrors.state.message}</div>
         )}
       </div>
       <div className="col-md-4">
@@ -417,11 +441,11 @@ const UserForm = ({
           id="zipCode"
           type="text"
           placeholder="city"
-          className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+          className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
           {...register("city")}
         />
-        {errors.city && (
-          <div className="invalid-feedback">{errors.city.message}</div>
+        {founderrors.city && (
+          <div className="invalid-feedback">{founderrors.city.message}</div>
         )}
       </div>
       <div className="col-md-12">
@@ -438,9 +462,9 @@ const UserForm = ({
                 defaultValue={""}
                 {...register("description")}
               />
-              {errors.description && (
+              {founderrors.description && (
                 <div className="invalid-feedback">
-                  {errors.description.message}
+                  {founderrors.description.message}
                 </div>
               )}
             </div>

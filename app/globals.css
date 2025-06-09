@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&family=Yellowtail&family=Dancing+Script&family=Great+Vibes&display=swap');
+
 @import url("../style/css/bootstrap-datetimepicker.min.css");
 @import url("../style/css/bootstrap.min.css");
 
@@ -27,3 +29,22 @@
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
 }
+
+
+
+.font-shadows {
+  font-family: 'Shadows Into Light', cursive;
+}
+
+.font-yellowtail {
+  font-family: 'Yellowtail', cursive;
+}
+
+.font-dancing {
+  font-family: 'Dancing Script', cursive;
+}
+
+.font-greatvibes {
+  font-family: 'Great Vibes', cursive;
+}
+

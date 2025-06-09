@@ -72,7 +72,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
 
   const formName = "STANDARD RELEASE OF INFORMATION";
 
@@ -140,12 +140,12 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -194,19 +194,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
 
   console.log(watch()?.answers, "getValues");
 
-  // const multipleValueFilter = watch()?.answers?.map((multi) => {
-  //   if (multi?.multipleValue) {
-  //     return {
-  //       ...multi,
-  //       multipleValue: multi?.multipleValue?.filter(
-  //         (fil: any) => fil !== false
-  //       ),
-  //     };
-  //   }
-  //   return multi;
-  // });
-
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const question = dataGet?.formQuestions
     ?.slice()
@@ -369,7 +357,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
                   control={control}
                   errors={errors}
                   index={index}
-                  onChange={(e) => {
+                  onChange={(e:any) => {
                     handleFormChange(e, {
                       questionId: items?.id,
                       type: "textarea",
@@ -403,7 +391,6 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
                     {getComponent({
                       type: items?.question?.type,
                       items,
-
                       index,
                     })}
                   </React.Fragment>
@@ -412,6 +399,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

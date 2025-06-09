@@ -27,6 +27,7 @@ const EditCompanyForm: React.FC = () => {
   }, []);
 
   console.log(company, "company");
+  const UserList = null
 
   const [updateCompany, { isLoading: isSubmitLoading }] =
     useUpdateCompanyMutation();
@@ -70,6 +71,7 @@ const EditCompanyForm: React.FC = () => {
       initialValues={initialValues}
       submitHandler={submitHandler}
       isSubmitLoading={isSubmitLoading}
+      UserList={UserList}
     />
   );
 };

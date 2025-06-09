@@ -51,7 +51,8 @@ const CompanyForm = ({
     state: Yup.string().required("State is required"),
     zipCode: Yup.string().required("Zip Code is required"),
     // profilePic: Yup.string(),
-    profilePic: Yup.string().nullable().notRequired(),
+    // profilePic: Yup.string().nullable().notRequired(),
+    // profilePic: Yup.string().optional(),
   });
 
   const {
@@ -61,7 +62,7 @@ const CompanyForm = ({
     formState: { errors },
     watch,
     setValue,
-  } = useForm<CompanyData>({
+  } = useForm<any>({
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues ?? {
       // companyemail: "",
@@ -79,6 +80,7 @@ const CompanyForm = ({
   });
 
   console.log("error==>", errors);
+  const founderrors:any = errors
 
   console.log(watch(), "watch");
   // const [selectedImage, setSelectedImage] = useState(defaultimg);
@@ -163,8 +165,8 @@ const CompanyForm = ({
               {...register("email")}
             />
 
-            {errors.email && (
-              <div className="invalid-feedback">{errors?.email?.message}</div>
+            {founderrors.email && (
+              <div className="invalid-feedback">{founderrors?.email?.message}</div>
             )}
           </div>
         </div>
@@ -198,8 +200,8 @@ const CompanyForm = ({
               </select>
             )} */}
 
-            {errors.name && (
-              <div className="invalid-feedback">{errors.name.message}</div>
+            {founderrors.name && (
+              <div className="invalid-feedback">{founderrors.name.message}</div>
             )}
           </div>
         </div>
@@ -212,11 +214,11 @@ const CompanyForm = ({
               id="address"
               type="text"
               placeholder="Enter Address"
-              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+              className={`form-control ${founderrors.address ? "is-invalid" : ""}`}
               {...register("address")}
             />
-            {errors.address && (
-              <div className="invalid-feedback">{errors.address.message}</div>
+            {founderrors.address && (
+              <div className="invalid-feedback">{founderrors.address.message}</div>
             )}
           </div>
         </div>
@@ -230,11 +232,11 @@ const CompanyForm = ({
               id="address"
               type="text"
               placeholder="Phone"
-              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+              className={`form-control ${founderrors.address ? "is-invalid" : ""}`}
               {...register("phone")}
             />
-            {errors.phone && (
-              <div className="invalid-feedback">{errors.phone.message}</div>
+            {founderrors.phone && (
+              <div className="invalid-feedback">{founderrors.phone.message}</div>
             )}
           </div>
         </div>
@@ -247,11 +249,11 @@ const CompanyForm = ({
               id="zipCode"
               type="text"
               placeholder="Enter Zipcode"
-              className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+              className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
               {...register("zipCode")}
             />
-            {errors.zipCode && (
-              <div className="invalid-feedback">{errors.zipCode.message}</div>
+            {founderrors.zipCode && (
+              <div className="invalid-feedback">{founderrors.zipCode.message}</div>
             )}
           </div>
         </div>
@@ -271,11 +273,11 @@ const CompanyForm = ({
             id="zipCode"
             type="text"
             placeholder="state"
-            className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+            className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
             {...register("state")}
           />
-          {errors.zipCode && (
-            <div className="invalid-feedback">{errors.zipCode.message}</div>
+          {founderrors.zipCode && (
+            <div className="invalid-feedback">{founderrors.zipCode.message}</div>
           )}
         </div>
         <div className="col-md-4">
@@ -295,11 +297,11 @@ const CompanyForm = ({
             id="zipCode"
             type="text"
             placeholder="city"
-            className={`form-control ${errors.zipCode ? "is-invalid" : ""}`}
+            className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
             {...register("city")}
           />
-          {errors.zipCode && (
-            <div className="invalid-feedback">{errors.zipCode.message}</div>
+          {founderrors.zipCode && (
+            <div className="invalid-feedback">{founderrors.zipCode.message}</div>
           )}
         </div>
         {/* <div className="col-md-12">
@@ -342,9 +344,9 @@ const CompanyForm = ({
               defaultValue={""}
               {...register("description")}
             />
-            {errors.description && (
+            {founderrors.description && (
               <div className="invalid-feedback">
-                {errors.description.message}
+                {founderrors.description.message}
               </div>
             )}
           </div>

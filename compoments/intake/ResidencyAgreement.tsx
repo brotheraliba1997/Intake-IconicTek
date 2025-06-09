@@ -76,7 +76,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
-  const { data, isLoading, error } = useGetMyFormQuery({});
+  const { data, error } = useGetMyFormQuery({});
 
   const formName =
     "Residency Agreement Template for Foster Care and Supported Living Services (SLS) under the BI, CAC, CADI and DD waivers";
@@ -85,22 +85,21 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   console.log(dataGet, "NEwDAta");
 
   const signatureValue = (url: string, questionId: string) => {
-  const updatedAnswers = getValues("answers").map((answer) => {
-    if (answer.questionId === questionId) {
-      return {
-        ...answer,
-        signatureLink: url,
-      };
-    }
-    return answer;
-  });
+    const updatedAnswers = getValues("answers").map((answer) => {
+      if (answer.questionId === questionId) {
+        return {
+          ...answer,
+          signatureLink: url,
+        };
+      }
+      return answer;
+    });
 
-  setValue("answers", updatedAnswers, {
-    shouldValidate: true,
-    shouldDirty: true,
-  });
-};
-
+    setValue("answers", updatedAnswers, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
   const handleFormChange = useCallback(
     (
@@ -122,12 +121,12 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -202,12 +201,13 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         value: "",
         multipleValue: [],
         type: q?.question.type,
+        title: q?.question.title,
       }));
       setValue("answers", initialFormData);
     }
   }, [dataGet, setValue, question]);
 
-  const [createAnswersMutation] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -329,13 +329,12 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
                   )}
                 />
 
-                 {errors?.answers?.[index]?.signatureLink && (
-                <span className="text-danger">
-                  {errors.answers[index].signatureLink.message}
-                </span>
-              )}
+                {errors?.answers?.[index]?.signatureLink && (
+                  <span className="text-danger">
+                    {errors.answers[index].signatureLink.message}
+                  </span>
+                )}
               </div>
-             
             </div>
           </>
         );
@@ -369,6 +368,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
         </div>
 
         <StepperButtons
+          isLoading={isLoading}
           currentStep={currentStep}
           totalSteps={8}
           onNavigate={(direction) => {

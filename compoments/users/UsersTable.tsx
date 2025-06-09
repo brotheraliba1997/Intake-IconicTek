@@ -20,6 +20,8 @@ function UsersTable() {
     limit: 100,
   });
 
+  console.log(usersList, "usersList")
+
   const columns = [
     {
       displayName: "User Name",

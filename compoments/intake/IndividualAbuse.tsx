@@ -9,7 +9,7 @@ import HtmlRenderer from "./common/HtmlRenderer";
 import TextInput from "./common/TextInput";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import ESignature from "../E-Signature/E-signature";
-// import { useCreateAnswersMutation } from "@/redux/services/answer";
+import { useCreateAnswersMutation } from "@/redux/services/answer";
 import SignatureCompoment from "../E-Signature/signature";
 import HospitalLogo from "./common/HospitalLogo";
 import handleChange from "../utlity/handleFormChange";

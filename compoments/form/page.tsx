@@ -50,20 +50,11 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-          
-              // <AUTHORIZATIONTOACTINANEMERGENCY
-               
-              //   handleNext={handleNext}
-              //   handleBack={handleBack}
-              //   currentStep={currentStep}
-              // />
-              <IndividualAbuse
-               
-                handleNext={handleNext}
-                handleBack={handleBack}
-                currentStep={currentStep}
-              />
-           
+            <AUTHORIZATIONTOACTINANEMERGENCY
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
           )}
 
           {currentStep === 1 && (
@@ -96,7 +87,6 @@ function FormPage() {
           )}
           {currentStep === 5 && (
             <IndividualAbuse
-            
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -116,8 +106,9 @@ function FormPage() {
               currentStep={currentStep}
             />
           )}
+
           {currentStep === 8 && (
-            <ServicesPlan
+            <PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -125,7 +116,22 @@ function FormPage() {
           )}
 
 
-           
+          {currentStep === 9 && (
+            <RIGHTSOFPERSONSSERVED
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+
+
+          {currentStep === 10 && (
+            <ServicesPlan
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
         </div>
       </div>
     </>

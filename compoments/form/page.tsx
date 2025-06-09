@@ -12,6 +12,9 @@ import ResidencyAgreement from "../intake/ResidencyAgreement";
 import ServicesPlan from "../intake/ServicesPlan";
 import { stepLabels } from "@/constants/stepLabels";
 import { Stepper } from "../Stepper/Stepper";
+import AUTHORIZATIONTOACTINANEMERGENCY from "../intake/AUTHORIZATIONTOACTNANEMERGENCY";
+import PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES from "../intake/PERSON-CENTEREDANDPOSITIVESUPPORTSTRATEGIES";
+import RIGHTSOFPERSONSSERVED from "../intake/RIGHTSOFPERSONSSERVED";
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -44,13 +47,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            // <AUTHORIZATIONTOACTINANEMERGENCY
-
-            //   handleNext={handleNext}
-            //   handleBack={handleBack}
-            //   currentStep={currentStep}
-            // />
-            <IndividualAbuse
+            <AUTHORIZATIONTOACTINANEMERGENCY
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -106,7 +103,24 @@ function FormPage() {
               currentStep={currentStep}
             />
           )}
+
           {currentStep === 8 && (
+            <PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+
+          {currentStep === 9 && (
+            <RIGHTSOFPERSONSSERVED
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+
+          {currentStep === 10 && (
             <ServicesPlan
               handleNext={handleNext}
               handleBack={handleBack}

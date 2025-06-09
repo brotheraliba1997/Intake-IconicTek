@@ -27,29 +27,16 @@ const formSchema = z.object({
         signatureLink: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        if (data.type === "checkbox") {
-          if (
-            !(
-              Array.isArray(data.multipleValue) &&
-              data.multipleValue.filter(Boolean).length > 0
-            )
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "At least one checkbox option must be selected",
-              path: ["multipleValue"],
-            });
-          }
+        console.log(data, "radioGot");
+        if (data.type === "radio" && data.value == "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select an option",
+            path: ["value"],
+          });
         } else if (data.type === "html") {
           // No validation needed
         }
-
-        // if (data.type === "radio" && data.value == "")
-        //   ctx.addIssue({
-        //     code: z.ZodIssueCode.custom,
-        //     message: `${data?.id}`,
-        //     path: ["value"],
-        //   });
 
         if (data.type === "Signature" && !data.signatureLink) {
           ctx.addIssue({
@@ -57,16 +44,14 @@ const formSchema = z.object({
             message: "Signature is required",
             path: ["signatureLink"],
           });
-        } else {
-          if (
-            !(typeof data.value === "string" && data.value.trim().length > 0)
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "Value is required",
-              path: ["value"],
-            });
-          }
+        }
+
+        if (data.type === "date" && data.value == "") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "date is required",
+            path: ["date"],
+          });
         }
       })
   ),
@@ -217,28 +202,20 @@ function RIGHTSOFPERSONSSERVED({
     [setValue, getValues]
   );
 
-  const signatureValue = (val: any, items: any) => {
+  console.log(watch("answers"), errors, "errorsval");
+
+  const signatureValue = (val: string, questionId: string) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
-
-        console.log(subIndex, "findIndex");
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
+      if (quest.questionId === questionId) {
+        return {
+          ...quest,
+          signatureLink: val,
+          value: val, // Set a space to satisfy non-empty validation
+        };
       }
       return quest;
     });
-
     setValue("answers", updatedAnswers, {
       shouldValidate: true,
       shouldDirty: true,
@@ -246,15 +223,13 @@ function RIGHTSOFPERSONSSERVED({
     });
   };
 
-  const signatureUrlFind = watch()?.answers?.flatMap(
-    (ques: any) =>
-      ques?.subQuestion
-        ?.filter((sub: any) => sub?.type === "Signature")
-        .map((item: any) => ({
-          id: item?.id,
-          url: item?.signatureLink || null,
-        })) || []
-  );
+  const signatureUrlFind =
+    watch("answers")
+      ?.filter((item: any) => item?.type === "Signature")
+      ?.map((item: any) => ({
+        id: item?.questionId,
+        url: item?.signatureLink || null,
+      })) || [];
 
   const getComponent = ({
     type,
@@ -370,47 +345,6 @@ function RIGHTSOFPERSONSSERVED({
           </>
         );
 
-      case "checkbox":
-        return (
-          <>
-            {type == "checkbox" && (
-              <>
-                <div className="mb-2">
-                  <HtmlRenderer items={items} />
-                </div>
-                <div className="row">
-                  {items?.question?.SubQuestion?.map((sub: any, i: number) => {
-                    if (sub?.type === "checkbox") {
-                      return (
-                        <div key={sub.id}>
-                          <div className="mb-2 font-semibold">{sub.title}</div>
-                          <div className="row">
-                            {sub.options?.map(
-                              (option: any, optionIndex: number) => (
-                                <CheckBox
-                                  key={option.id}
-                                  option={option}
-                                  optionIndex={optionIndex}
-                                  index={index}
-                                  handleChange={handleFormChange}
-                                  items={items}
-                                  control={control}
-                                  errors={errors}
-                                />
-                              )
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              </>
-            )}
-          </>
-        );
-
       case "radio":
         return (
           <>
@@ -420,35 +354,45 @@ function RIGHTSOFPERSONSSERVED({
                   <HtmlRenderer items={items} />
                 </div>
                 <div className="row">
-                  {items?.question?.options.map(
-                    (option: any, index: number) => (
-                      <div className="form-check" key={index}>
-                        <input
-                          className={`form-check-input ${
-                            (errors?.answers?.[index] as any)?.question?.find(
-                              (items: any) =>
-                                items?.value?.message === option?.id
-                            )
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                          type="radio"
-                          name={`subquestion-${option.id}`}
-                          value={option.id}
-                          id={`option-${index}`}
-                          // onChange={(e) => {
-                          //   onChange(e, option.id, option.isMultiple);
-                          // }}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`option-${index}`}
-                        >
-                          {option.title}
-                        </label>
+                  {items.question.options.map((option: any, i: number) => {
+                    // const isOther = option.title
+                    //   .toLowerCase()
+                    //   .includes("other");
+                    return (
+                      <div className="col-lg-6" key={i}>
+                        <div className="form-check mb-2">
+                          <Controller
+                            name={`answers.${index}.value`}
+                            control={control}
+                            rules={{ required: "Please select an option" }}
+                            render={({ field }) => (
+                              <>
+                                <input
+                                  type="radio"
+                                  className={`form-check-input ${
+                                    errors?.answers?.[index]?.value
+                                      ? "is-invalid"
+                                      : ""
+                                  }`}
+                                  name={`option-${items.id}`}
+                                  id={`option-${index}-${i}`}
+                                  checked={field.value === option.id}
+                                  onChange={() => field.onChange(option.id)}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`option-${index}-${i}`}
+                                >
+                                  {option.title}
+                                </label>
+                                {/* Show input if 'Other' is selected */}
+                              </>
+                            )}
+                          />
+                        </div>
                       </div>
-                    )
-                  )}
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -458,25 +402,26 @@ function RIGHTSOFPERSONSSERVED({
       case "Signature":
         return (
           <>
-            <div className="mb-2">
+            <div className="col-lg-6 mb-4">
               <HtmlRenderer items={items} />
+              <div className="my-4">
+                <SignatureCompoment
+                  signatureValue={signatureValue}
+                  items={items.id}
+                  label={items?.title}
+                  formData={watch("answers")}
+                  signatureData={signatureUrlFind?.find(
+                    (signData) => signData?.id === items?.id
+                  )}
+                />
+
+                {errors?.answers?.[index]?.signatureLink && (
+                  <span className="text-danger">
+                    {errors.answers[index].signatureLink.message}
+                  </span>
+                )}
+              </div>
             </div>
-
-            <SignatureCompoment
-              signatureValue={signatureValue}
-              items={items.id}
-              label={items?.title}
-              formData={watch("answers")}
-              signatureData={signatureUrlFind?.find(
-                (signData) => signData?.id === items?.id
-              )}
-            />
-
-            {errors?.answers?.[index]?.signatureLink && (
-              <span className="text-danger">
-                {errors.answers[index].signatureLink.message}
-              </span>
-            )}
           </>
         );
 

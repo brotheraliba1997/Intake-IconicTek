@@ -42,6 +42,7 @@ const formSchema = z.object({
           }
         } else if (data.type === "html") {
           // No validation needed
+          return;
         }
 
         // if (data.type === "radio" && data.value == "")
@@ -217,45 +218,33 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
     [setValue, getValues]
   );
 
-  const signatureValue = (val: any, items: any) => {
-    const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
-
-        console.log(subIndex, "findIndex");
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
+  const signatureValue = (url: string, questionId: string) => {
+    const updatedAnswers = getValues("answers").map((answer) => {
+      if (answer.questionId === questionId) {
+        return {
+          ...answer,
+          signatureLink: url,
+          value: url,
+        };
       }
-      return quest;
+      return answer;
     });
 
     setValue("answers", updatedAnswers, {
       shouldValidate: true,
       shouldDirty: true,
-      shouldTouch: true,
     });
   };
 
-  const signatureUrlFind = watch()?.answers?.flatMap(
-    (ques: any) =>
-      ques?.subQuestion
-        ?.filter((sub: any) => sub?.type === "Signature")
-        .map((item: any) => ({
-          id: item?.id,
-          url: item?.signatureLink || null,
-        })) || []
-  );
+  const signatureUrlFind =
+    watch("answers")
+      ?.filter((item: any) => item?.type === "Signature")
+      ?.map((item: any) => ({
+        id: item?.questionId,
+        url: item?.signatureLink || null,
+      })) || [];
 
+  console.log("errors=>", errors);
   const getComponent = ({
     type,
     items,
@@ -414,58 +403,60 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
       case "radio":
         return (
           <>
-            {type == "radio" && (
-              <>
-                <div className="mb-2">
-                  <HtmlRenderer items={items} />
+            <div className="mb-2">
+              <HtmlRenderer items={items} />
+            </div>
+            {items.question.options.map((option: any, i: number) => {
+              const isOther = option.title.toLowerCase().includes("other");
+              return (
+                <div className="col-lg-6" key={option.id}>
+                  <div className="form-check mb-2">
+                    <Controller
+                      name={`answers.${index}.value`}
+                      control={control}
+                      rules={{ required: "Please select an option" }}
+                      render={({ field }) => (
+                        <>
+                          <input
+                            type="radio"
+                            className={`form-check-input ${
+                              errors?.answers?.[index]?.value
+                                ? "is-invalid"
+                                : ""
+                            }`}
+                            name={`option-${items.id}`}
+                            id={`option-${index}-${i}`}
+                            checked={field.value === option.id}
+                            onChange={() => field.onChange(option.id)}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`option-${index}-${i}`}
+                          >
+                            {option.title}
+                          </label>
+                          {/* Show input if 'Other' is selected */}
+                          {/* {isOther && field.value === option.id && (
+                            <Controller
+                              name={`answers.${index}.otherValue`}
+                              control={control}
+                              render={({ field: otherField }) => (
+                                <input
+                                  type="text"
+                                  className="form-control mt-2"
+                                  placeholder="Please specify..."
+                                  {...otherField}
+                                />
+                              )}
+                            />
+                          )} */}
+                        </>
+                      )}
+                    />
+                  </div>
                 </div>
-                <div className="row">
-                  {items?.question?.SubQuestion?.map((sub: any, i: number) => {
-                    if (sub?.type === "radio") {
-                      return (
-                        <div key={sub.id}>
-                          <div className="mb-2 font-semibold">{sub.title}</div>
-                          <div className="row">
-                            {sub.options?.map(
-                              (option: any, optionIndex: number) => (
-                                <div className="form-check">
-                                  <input
-                                    className={`form-check-input ${
-                                      (
-                                        errors?.answers?.[index] as any
-                                      )?.sub?.find(
-                                        (items: any) =>
-                                          items?.value?.message === sub?.id
-                                      )
-                                        ? "is-invalid"
-                                        : ""
-                                    }`}
-                                    type="radio"
-                                    name={`subquestion-${sub.id}`}
-                                    value={option.id}
-                                    // id={`option-${index}-${j}`}
-                                    // onChange={(e) => {
-                                    //   onChange(e, option.id, option.isMultiple);
-                                    // }}
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    // htmlFor={`option-${index}-${j}`}
-                                  >
-                                    {option.title}
-                                  </label>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-                </div>
-              </>
-            )}
+              );
+            })}
           </>
         );
 

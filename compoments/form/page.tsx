@@ -1,9 +1,7 @@
 "use client";
-import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import SELFMANAGEMENT from "../intake/SelfManagement";
 import AuthorizationForMedication from "../intake/AuthorizationForMedication";
-import StandardRelease from "../intake/StandardRelease";
 import FUNDSANDPROPERTY from "../intake/FundsAndProperty";
 import ADMISSIONFORM from "../intake/AdmissionForm";
 import IndividualAbuse from "../intake/IndividualAbuse";
@@ -15,6 +13,8 @@ import { Stepper } from "../Stepper/Stepper";
 import AUTHORIZATIONTOACTINANEMERGENCY from "../intake/AUTHORIZATIONTOACTNANEMERGENCY";
 import PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES from "../intake/PERSON-CENTEREDANDPOSITIVESUPPORTSTRATEGIES";
 import RIGHTSOFPERSONSSERVED from "../intake/RIGHTSOFPERSONSSERVED";
+import AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS from "../intake/AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS";
+
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -47,7 +47,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            <AUTHORIZATIONTOACTINANEMERGENCY
+            <AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -112,7 +112,6 @@ function FormPage() {
             />
           )}
 
-
           {currentStep === 9 && (
             <RIGHTSOFPERSONSSERVED
               handleNext={handleNext}
@@ -120,7 +119,6 @@ function FormPage() {
               currentStep={currentStep}
             />
           )}
-
 
           {currentStep === 10 && (
             <ServicesPlan

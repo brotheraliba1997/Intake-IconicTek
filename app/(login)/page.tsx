@@ -31,13 +31,13 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors },
-    watch
+    watch,
   } = useForm<FormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  console.log(watch(), "watch")
+  console.log(watch(), "watch");
 
   const onSubmit = async (data: FormData) => {
     console.log("Submitted Data:", data);
@@ -64,7 +64,7 @@ function Login() {
       });
   };
 
-  console.log(isLoading , "isLoadingMissing")
+  console.log(isLoading, "isLoadingMissing");
 
   return (
     <div className="newloginbg">
@@ -85,7 +85,12 @@ function Login() {
                     objectFit="contain"
                   />
                 </div>
-                <form action="" autoComplete="off" className="row p-4 pt-0" onSubmit={handleSubmit(onSubmit)}>
+                <form
+                  action=""
+                  autoComplete="off"
+                  className="row p-4 pt-0"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
                   <div className="col-md-12">
                     <label htmlFor="#" className="form-label">
                       Username/Email

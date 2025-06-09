@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useUploadProfilePictureMutation } from "@/redux/services/users";
 import Select from "../common/Select";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 const UserForm = ({
   initialValues = null,
@@ -485,7 +486,13 @@ const UserForm = ({
 
       <div className="col-md-12">
         <button type="submit" className="btn btn-secondary">
-          <i data-feather="send" className="me-2" /> Submit
+          {isSubmitLoading ? (
+            <Spinner animation="border" />
+          ) : (
+            <>
+              <i data-feather="send" className="me-2" /> Submit
+            </>
+          )}
         </button>
       </div>
     </form>

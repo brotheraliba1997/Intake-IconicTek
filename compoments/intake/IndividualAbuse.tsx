@@ -218,9 +218,9 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = (answers[
-            questionIndex
-          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          const subQuestionIndex = (
+            answers[questionIndex] as any
+          ).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
               `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
@@ -265,7 +265,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val:any, items:any) => {
+  const signatureValue = (val: any, items: any) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {

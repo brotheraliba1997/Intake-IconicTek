@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // import defaultimg from "@/public/img/profile.jpg";
 import { useGetMyProfileQuery } from "@/redux/services/users";
 import defaultimg from "@/public/img/camera.jpg"; // or use a public path like "/camera.png"
+import Spinner from "react-bootstrap/esm/Spinner";
 
 const CompanyForm = ({
   initialValues = null,
@@ -376,7 +377,13 @@ const CompanyForm = ({
         <div className="col-md-12">
           <div className="text-end border-top pt-3">
             <button type="submit" className="btn btn-secondary">
-              <i data-feather="send" className="me-2" /> Submit
+              {isSubmitLoading ? (
+                <Spinner animation="border" />
+              ) : (
+                <>
+                  <i data-feather="send" className="me-2" /> Submit
+                </>
+              )}{" "}
             </button>
           </div>
         </div>

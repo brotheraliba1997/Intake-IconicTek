@@ -5,17 +5,16 @@ import GoogleProvider from "next-auth/providers/google";
 import { pagesOptions } from "./pages-options";
 
 export const authOptions: NextAuthOptions = {
+  pages: {
+    ...pagesOptions,
+  },
 
-    pages: {
-        ...pagesOptions,
-      },
-      
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60,
   },
   callbacks: {
-    async session({ session, token, trigger, newSession }) {
+    async session({ session, token }) {
       return {
         ...session,
         user: {
@@ -57,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Credentials",
       credentials: {},
-      async authorize(credentials: any) {
+      async authorize(credentials) {
         try {
           const response = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
@@ -82,23 +81,24 @@ export const authOptions: NextAuthOptions = {
               accessToken: jsonRes.data.tokens.access.token,
             };
             console.log("user==>", user);
-            return user as any;
+            return user;
           } else {
             throw new Error(jsonRes?.message || "Login failed");
           }
-        } catch (err: any) {
-          console.error("Error in authorize:", err.message);
-          // Throw error to be handled by NextAuth
-          throw new Error(
-            err.message || "An unknown error occurred during login"
-          );
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            console.error(err.message);
+            throw new Error(err.message);
+          } else {
+            throw new Error("Unknown error occurred");
+          }
         }
       },
     }),
     GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID || "",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        allowDangerousEmailAccountLinking: true,
-      }),
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      allowDangerousEmailAccountLinking: true,
+    }),
   ],
 };

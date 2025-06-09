@@ -13,7 +13,7 @@ import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CheckBox from "./common/CheckBox";
-import Textarea from "./common/Textarea";
+import SignatureCompoment from "../E-Signature/signature";
 
 const formSchema = z.object({
   answers: z.array(
@@ -24,22 +24,10 @@ const formSchema = z.object({
         multipleValue: z.array(z.string()).optional(),
         type: z.string(),
         title: z.string().optional(),
+        signatureLink: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        if (data.type === "checkbox") {
-          if (
-            !(
-              Array.isArray(data.multipleValue) &&
-              data.multipleValue.filter(Boolean).length > 0
-            )
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "At least one checkbox option must be selected",
-              path: ["multipleValue"],
-            });
-          }
-        } else if (data.type === "html") {
+        if (data.type === "html") {
           // No validation needed
         } else {
           if (
@@ -62,7 +50,7 @@ interface AuthorizationForMedicationProps {
   currentStep: number;
 }
 
-function AuthorizationForMedication({
+function PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES({
   handleBack,
   handleNext,
   currentStep,
@@ -85,7 +73,7 @@ function AuthorizationForMedication({
   });
   const { data, error } = useGetMyFormQuery({});
 
-  const formName = "AUTHORIZATION FOR MEDICATION AND TREATMENT ADMINISTRATION";
+  const formName = "PERSON-CENTERED AND POSITIVE SUPPORT STRATEGIES";
 
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   const question = dataGet?.formQuestions
@@ -143,15 +131,15 @@ function AuthorizationForMedication({
       const value = e?.target?.value;
 
       if (subQuestionId) {
-        const answers:any = getValues("answers");
+        const answers = getValues("answers");
 
         const questionIndex = answers.findIndex(
-          (q:any) => q.questionId === questionId
+          (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
-            questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          const subQuestionIndex = (
+            answers[questionIndex] as any
+          )?.subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
               `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
@@ -201,15 +189,56 @@ function AuthorizationForMedication({
     [setValue, getValues]
   );
 
+  const signatureValue = (val: any, items: any) => {
+    const answers = watch("answers");
+    const updatedAnswers = answers.map((quest: any) => {
+      if (Array.isArray(quest.subQuestion)) {
+        const subIndex = quest.subQuestion.findIndex(
+          (sq: any) => sq.id === items
+        );
+
+        console.log(subIndex, "findIndex");
+        if (subIndex !== -1) {
+          const updatedSubQuestions = [...quest.subQuestion];
+          updatedSubQuestions[subIndex] = {
+            ...updatedSubQuestions[subIndex],
+            signatureLink: val,
+            value: " ", // Set a space to satisfy non-empty validation
+          };
+          return { ...quest, subQuestion: updatedSubQuestions };
+        }
+      }
+      return quest;
+    });
+
+    setValue("answers", updatedAnswers, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
+
+  const signatureUrlFind = watch()?.answers?.flatMap(
+    (ques: any) =>
+      ques?.subQuestion
+        ?.filter((sub: any) => sub?.type === "Signature")
+        .map((item: any) => ({
+          id: item?.id,
+          url: item?.signatureLink || null,
+        })) || []
+  );
+
   const getComponent = ({
     type,
     items,
     index,
+    signatureValue,
   }: {
     type: string;
     items: any;
 
     index: number;
+    signatureValue: any;
   }) => {
     switch (type) {
       case "html":
@@ -258,9 +287,6 @@ function AuthorizationForMedication({
                           className={`form-control ${
                             errors?.answers?.[index]?.value ? "is-invalid" : ""
                           }`}
-                          placeholder={`Enter ${
-                            items?.question?.title || "text"
-                          }...`}
                           {...field}
                           onChange={(e) => {
                             field.onChange(e);
@@ -314,59 +340,12 @@ function AuthorizationForMedication({
           </>
         );
 
-      case "checkbox":
-        return (
-          <>
-            {type == "checkbox" && (
-              <>
-                <div className="mb-2">
-                  <HtmlRenderer items={items} />
-                </div>
-                <div className="row">
-                  {items?.question?.options.map((option: any, i: number) => (
-                    <CheckBox
-                      key={i}
-                      option={option}
-                      optionIndex={i}
-                      index={index}
-                      handleChange={handleFormChange}
-                      items={items}
-                      control={control}
-                      errors={errors}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        );
-
-      case "textarea":
-        return (
-          <>
-            {type == "textarea" && (
-              <Textarea
-                items={items}
-                control={control}
-                errors={errors}
-                index={index}
-                onChange={(e:any) => {
-                  handleFormChange(e, {
-                    questionId: items?.id,
-                    type: "textarea",
-                  });
-                }}
-              />
-            )}
-          </>
-        );
-
       default:
         return null;
     }
   };
 
-  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
 
@@ -411,6 +390,7 @@ function AuthorizationForMedication({
                       type: items?.question?.type,
                       items,
                       index,
+                      signatureValue,
                     })}
                   </React.Fragment>
                 ))}
@@ -418,7 +398,7 @@ function AuthorizationForMedication({
           </div>
 
           <StepperButtons
-          isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {
@@ -433,4 +413,4 @@ function AuthorizationForMedication({
   );
 }
 
-export default AuthorizationForMedication;
+export default PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES;

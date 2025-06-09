@@ -19,7 +19,7 @@ function SignatureCompoment({
 }: any) {
   const [toggle, setToggly] = useState(false);
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<any>(null);
 
   console.log(items, "itemsitemsitems");
   const signatureValueRepeat = formData?.find(

@@ -1,8 +1,6 @@
 "use client";
 import ClientTable from "@/compoments/client/ClientTable";
-import Table from "@/compoments/table";
-import DynamicTable from "@/compoments/table-new";
-import TableRowAction from "@/compoments/table/tableRowAction";
+
 import Link from "next/link";
 import React from "react";
 

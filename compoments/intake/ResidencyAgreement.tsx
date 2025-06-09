@@ -121,12 +121,12 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,

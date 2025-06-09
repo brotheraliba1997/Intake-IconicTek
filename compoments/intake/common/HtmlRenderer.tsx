@@ -1,7 +1,12 @@
 import React from "react";
 import handleChange from "../../utlity/handleFormChange";
 
-const HtmlRenderer: React.FC = ({ items }: any) => {
+
+type MyComponentProps = {
+  items: any; // ya specific type
+};
+
+const HtmlRenderer = ({ items }: MyComponentProps) => {
   return (
     <>
       <div dangerouslySetInnerHTML={{ __html: items?.question?.title }} />

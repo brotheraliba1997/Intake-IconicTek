@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+
 import FormPage from "@/compoments/form/page";
 
 function page() {
-  const tabsList = ["15 days", "1 Months", "6 Months", "1 year"];
+  // const tabsList = ["15 days", "1 Months", "6 Months", "1 year"];
 
-  const [tabs, setTabs] = useState<any>("15 days");
+  // const [tabs, setTabs] = useState<any>("15 days");
+
   return (
     <>
       {/* <ul className="nav nav-pills mb-3 " id="pills-tab" role="tablist">
@@ -36,7 +37,7 @@ function page() {
         ) : null}
       </div> */}
 
-<FormPage />
+      <FormPage />
     </>
   );
 }

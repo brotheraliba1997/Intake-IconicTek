@@ -38,47 +38,45 @@ export default function TypeSignature({
 
   const canvasRef = useRef<any>(null);
 
-  // const generateImage = async () => {
-  //   // setLoading(true);
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
-  //   await document.fonts.load;
-  //   const scale = 10;
-  //   const fontSize = 10;
-  //   const paddingY = 5;
-  //   const paddingX = 0;
-  //   ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
-  //   const textMetrics = ctx.measureText(text);
-  //   const textWidth = textMetrics.width;
-  //   const textHeight =
-  //     textMetrics.actualBoundingBoxAscent +
-  //     textMetrics.actualBoundingBoxDescent;
-  //   canvas.width = (textWidth + paddingX * 2) * scale;
-  //   canvas.height = (textHeight + paddingY * 2) * scale;
-  //   ctx.scale(scale, scale);
-  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //   ctx.fillStyle = color;
-  //   ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
+  const generateImage = async () => {
+    // setLoading(true);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    await document.fonts.load;
+    const scale = 10;
+    const fontSize = 10;
+    const paddingY = 5;
+    const paddingX = 0;
+    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
+    const textMetrics = ctx.measureText(text);
+    const textWidth = textMetrics.width;
+    const textHeight =
+      textMetrics.actualBoundingBoxAscent +
+      textMetrics.actualBoundingBoxDescent;
+    canvas.width = (textWidth + paddingX * 2) * scale;
+    canvas.height = (textHeight + paddingY * 2) * scale;
+    ctx.scale(scale, scale);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = color;
+    ctx.font = `${fontSize}px ${selectedFont ? selectedFont : "Arail"}`;
 
-  //   ctx.fillText(
-  //     text,
-  //     paddingX,
-  //     paddingY + textMetrics.actualBoundingBoxAscent
-  //   );
+    ctx.fillText(
+      text,
+      paddingX,
+      paddingY + textMetrics.actualBoundingBoxAscent
+    );
 
-  //   const dataUrl = canvas.toDataURL();
+    const dataUrl = canvas.toDataURL();
 
-  //   console.log(dataUrl, "SignatureCompoment");
-  //   setBase64Image(dataUrl);
-  //   signatureValue(dataUrl, items);
-  //   // setLoading(false);
-  // };
+    console.log(dataUrl, "SignatureCompoment");
+    setBase64Image(dataUrl);
+    signatureValue(dataUrl, items);
+    // setLoading(false);
+  };
 
   console.log(base64Image, "base64Image");
 
-  const runWithDelay = (fn: any, delayMs: any) => {
-    setTimeout(fn, delayMs);
-  };
+  
 
   return (
     <>
@@ -195,17 +193,14 @@ export default function TypeSignature({
               setShow(false);
               return;
             }
-            setLoading2(true);
-            await runWithDelay(() => {
-              setLoading2(false);
-
+            
+            generateImage()
               setShow(false);
-              toast.success("Signature save successfully");
-            }, 5000);
+
           }}
           style={{ backgroundColor: "#17635C" }}
         >
-          {loading2 ? "Loadinmgsgashdadjajsad" : "Next"} <FaAngleRight />
+           Next <FaAngleRight />
         </Button>
       </div>
 

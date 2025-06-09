@@ -43,7 +43,7 @@ function SubquestionChecbox({
               <div className="form-check" key={j}>
                 <input
                   className={`form-check-input ${
-                    errors?.answers?.[index]?.subQuestion?.find((items) => items?.value?.message === subquestion?.id)
+                    errors?.answers?.[index]?.subQuestion?.find((items :any) => items?.value?.message === subquestion?.id)
                       ? "is-invalid"
                       : ""
                   }`}

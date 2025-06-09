@@ -51,7 +51,8 @@ const formSchema = z.object({
                 } else if (data.type === "radio" && !data.value) {
                   ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "Please select an option",
+                    message: `${data?.id}`,
+
                     path: ["value"],
                   });
                 }
@@ -90,9 +91,7 @@ const formSchema = z.object({
             message: "Date is required",
             path: ["value"],
           });
-        }
-       
-        else if (data.type === "html" && !data.value) {
+        } else if (data.type === "html" && !data.value) {
           if (
             data.title === "Persons Name:" ||
             data.title === "Program:" ||
@@ -185,7 +184,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
 
   const question = dataGet?.formQuestions;
   // console.log(question, "questionquestion");
- const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -219,12 +218,12 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -266,7 +265,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val, items) => {
+  const signatureValue = (val:any, items:any) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {
@@ -533,6 +532,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                         subquestion={subquestion}
                         index={index}
                         errors={errors}
+                        subIndex={subIndex}
                         onChange={(e, optionId, isMultiple) => {
                           handleFormChange(e, {
                             questionId: items?.id,
@@ -584,7 +584,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
-          isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

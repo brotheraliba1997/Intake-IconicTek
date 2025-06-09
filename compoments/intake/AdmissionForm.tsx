@@ -13,38 +13,40 @@ import { useCreateAnswersMutation } from "@/redux/services/answer";
 
 const formSchema = z.object({
   answers: z.array(
-    z
-      .object({
-        questionId: z.any(),
-        value: z.string().optional(),
-        type: z.string(),
-        title: z.string().optional(),
-        subQuestion: z
-          .array(
-            z.object({
-              value: z.string(),
-              id: z.string(),
-              type: z.string(),
-            })
-          )
-          .superRefine((subQuestion, ctx) => {
-            subQuestion.forEach((items, index) => {
-              if (!(items.value && items.value.trim().length > 0)) {
-                ctx.addIssue({
-                  code: z.ZodIssueCode.custom,
-                  message: "value is Required",
-                  path: [index, "value"],
-                });
-              }
-            });
-          }),
-      })
-      .superRefine((data, ctx) => {
-        if (data.type === "html") {
-          return true;
-        }
-      })
-  ),
+  z
+    .object({
+      questionId: z.any(),
+      value: z.string().optional(),
+      type: z.string(),
+      title: z.string().optional(),
+      subQuestion: z
+        .array(
+          z.object({
+            value: z.string(),
+            id: z.string(),
+            type: z.string(),
+          })
+        )
+        .superRefine((subQuestions, ctx) => {
+          subQuestions.forEach((item, index) => {
+            const isEmpty = !item.value || item.value.trim() === "";
+
+            if (isEmpty) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message:
+                  item.type === "email"
+                    ? "Email is required"
+                    : "Value is required",
+                // 👇 Proper path to show correct nested index
+                path: [index, "value"],
+              });
+            }
+          });
+        }),
+    })
+)
+
 });
 
 function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
@@ -53,6 +55,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     handleSubmit: handleFormSubmit,
     setValue,
     watch,
+
     getValues,
     formState: { errors, isSubmitted, isDirty },
     register,
@@ -65,6 +68,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
     reValidateMode: "onChange",
   });
 
+  console.log(errors, "errorserrors");
   const [formData, setFormData] = useState<AnswerData[]>([]);
 
   const { data, error } = useGetMyFormQuery({});
@@ -150,7 +154,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
       (a: FormQuestions, b: FormQuestions) => a.arrangement - b.arrangement
     );
 
-  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
@@ -229,45 +233,6 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
           </>
         );
 
-      //  case "text":
-      //       case "date":
-
-      //       return(
-      //         <div className="row mt-3">
-      //   {items?.question?.subQuestion?.map((subQ: any, subIndex: number) => (
-      //     <div className="col-md-6 mb-3" key={subQ.id}>
-      //       <label className="form-label">{subQ.title}</label>
-
-      //       <Controller
-      //         name={`answers.${index}.subQuestion.${subIndex}.value`}
-      //         control={control}
-      //         defaultValue=""
-      //         render={({ field }) => (
-      //           <input
-      //             {...field}
-      //             type={subQ.type}
-      //             className={`form-control ${
-      //               errors?.answers?.[index]?.subQuestion?.[subIndex]?.value
-      //                 ? "is-invalid"
-      //                 : ""
-      //             }`}
-      //             placeholder={`Enter ${subQ.title?.split(":")[0]}`}
-      //           />
-      //         )}
-      //       />
-
-      //       {/* Show validation error if exists */}
-      //       {errors?.answers?.[index]?.subQuestion?.[subIndex]?.value && (
-      //         <div className="invalid-feedback">
-      //           {errors.answers[index].subQuestion[subIndex].value.message}
-      //         </div>
-      //       )}
-      //     </div>
-      //   ))}
-      // </div>
-
-      //       )
-
       default:
         return null;
     }
@@ -296,7 +261,7 @@ function ADMISSIONFORM({ handleBack, handleNext, currentStep }: any) {
           </div>
 
           <StepperButtons
-          isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

@@ -2,7 +2,7 @@ export const stepLabels = [
   { id: "selfManagement", label: "Standard Release" },
   { id: "medicationAuth", label: "Medication Authorization" },
   { id: "selfManagement", label: "Self Management" },
-  { id: "selfAssessment", label: "Assessment Form" },
+  // { id: "selfAssessment", label: "Assessment Form" },
   { id: "fundsAuth", label: "Funds & Property" },
   { id: "admissionForm", label: "Admission Form" },
   { id: "individualAbuse", label: "Individual Abuse" },

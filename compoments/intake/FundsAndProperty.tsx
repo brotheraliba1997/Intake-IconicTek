@@ -17,21 +17,41 @@ const formSchema = z.object({
       .object({
         questionId: z.any(),
         value: z.string().optional(),
-        multipleValue: z.array(z.any()),
+        multipleValue: z.array(z.any()).optional(),
         type: z.string(),
+        options: z.array(z.any()).optional(),
+        otherValue: z.string().optional(), // 👈 important field for 'Other'
       })
       .superRefine((data, ctx) => {
-        if (data.type === "text" && !data.value) {
+        console.log(data, "datadata");
+        if (data.type === "text" && !data.value?.trim()) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
             path: ["value"],
           });
-        } else if (data.type === "checkbox" && !data.value) {
+        }
+
+        // Validate checkbox selection (if needed)
+        if (data.type === "checkbox" && !data.value?.trim()) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Please select an option",
             path: ["value"],
+          });
+        }
+
+        // Check if "Other (specify):" is selected
+        const hasOther = data.options?.find(
+          (item) =>
+            item?.title === "Other (specify):" &&
+            (data.value === item.id || data.multipleValue?.includes(item.id))
+        );
+        if (hasOther && !data.otherValue?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["otherValue"],
           });
         }
       })
@@ -66,6 +86,8 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
     );
   }, [dataGet?.formQuestions]);
 
+  console.log(errors, "sortedQuestions");
+
   // Initialize form data with sorted questions
   React.useEffect(() => {
     if (dataGet) {
@@ -74,7 +96,10 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
         value: "",
         multipleValue: [],
         type: question?.question ? question?.question.type : "",
+        options: question?.question ? question?.question?.options : [],
       }));
+
+      console.log(initialFormData, "initialFormData");
 
       setValue("answers", initialFormData);
     }
@@ -83,7 +108,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
   const question = sortedQuestions;
   console.log(question, "question");
 
-  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -96,6 +121,8 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
       console.error("Error:", error);
     }
   };
+
+  console.log(watch(), "watch");
 
   const getComponent = ({
     type,
@@ -189,14 +216,28 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                               <Controller
                                 name={`answers.${index}.otherValue`}
                                 control={control}
-                                render={({ field: otherField }) => (
-                                  <input
-                                    type="text"
-                                    className="form-control mt-2"
-                                    placeholder="Please specify..."
-                                    {...otherField}
-                                  />
-                                )}
+                                render={({ field: otherField, fieldState }) => {
+                                  console.log("Other Field:", field);
+
+                                  return (
+                                    <div>
+                                      <input
+                                        type="text"
+                                        className={`form-control mt-2 ${
+                                          fieldState?.error ? "is-invalid" : ""
+                                        }`}
+                                        placeholder="Please specify..."
+                                        {...otherField}
+                                      />
+
+                                       {errors?.answers?.[index]?.otherValue && (
+                        <div className="invalid-feedback d-block">
+                          {errors.answers[index].otherValue.message}
+                        </div>
+                      )}
+                                    </div>
+                                  );
+                                }}
                               />
                             )}
                           </>
@@ -235,7 +276,7 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
             ))}
           </div>
           <StepperButtons
-          isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

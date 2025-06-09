@@ -65,11 +65,14 @@ const MyCompanyForm: React.FC = () => {
     return <></>;
   }
 
+  const UserList = null
+
   return (
     <CompanyForm
       initialValues={initialValues}
       submitHandler={submitHandler}
       isSubmitLoading={isSubmitLoading}
+      UserList={UserList}
     />
   );
 };

@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import logo from "@/public/img/logo.png";
 import { MdOutlineSecurity } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import { signIn, SignInResponse, useSession } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface FormData {
@@ -63,6 +63,8 @@ function Login() {
         toast.error(err.error || "An unknown error occurred");
       });
   };
+
+  console.log(isLoading , "isLoadingMissing")
 
   return (
     <div className="newloginbg">

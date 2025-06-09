@@ -194,12 +194,12 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = answers[
+          const subQuestionIndex = (answers[
             questionIndex
-          ].subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
-              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value`,
+              `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
               value,
               {
                 shouldDirty: true,
@@ -241,7 +241,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val, items) => {
+  const signatureValue = (val:any, items:any) => {
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {

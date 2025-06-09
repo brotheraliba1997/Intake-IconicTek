@@ -95,71 +95,74 @@ function Table({
           </div>
         ) : (
           <div className="table-responsive my-3 position-relative">
-            {isLoading && (
+            {isLoading ? (
               <div className="table-loader-bg">
                 <DotsLoader dark={false} size={60} height="40vh" />
               </div>
+            ) : (
+              <>
+                <div
+                  id="dataTableBuilder_processing"
+                  className="dataTables_processing"
+                  style={{ display: "none" }}
+                >
+                  Processing...
+                </div>
+                <table
+                  className="table table-stripped table-hover"
+                  id="dataTableBuilder"
+                  role="grid"
+                  aria-describedby="dataTableBuilder_info"
+                  // style={{ width: 1171 }}
+                >
+                  <thead className="thead-light">
+                    <tr role="row">
+                      <th
+                        title="No"
+                        // width={60}
+                        // className="sorting"
+                        rowSpan={1}
+                        colSpan={1}
+                        // style={{ width: 60 }}
+                        aria-label="No"
+                      >
+                        #
+                      </th>
+                      {columns && Array.isArray(columns) && columns.length > 0
+                        ? columns.map((x, i) => (
+                            <th
+                              title="No"
+                              // width={60}
+                              // className="sorting"
+                              rowSpan={1}
+                              colSpan={1}
+                              // style={{ width: 60 }}
+                              aria-label="No"
+                              key={i}
+                            >
+                              {x.displayName}
+                            </th>
+                          ))
+                        : null}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataSource &&
+                    Array.isArray(dataSource) &&
+                    dataSource.length > 0
+                      ? dataSource.map((rowData, i) => (
+                          <TableRow
+                            srNo={indexOfFirstItem + i + 1}
+                            key={i}
+                            rowData={rowData}
+                            columns={columns}
+                          />
+                        ))
+                      : null}
+                  </tbody>
+                </table>
+              </>
             )}
-            <div
-              id="dataTableBuilder_processing"
-              className="dataTables_processing"
-              style={{ display: "none" }}
-            >
-              Processing...
-            </div>
-            <table
-              className="table table-stripped table-hover"
-              id="dataTableBuilder"
-              role="grid"
-              aria-describedby="dataTableBuilder_info"
-              // style={{ width: 1171 }}
-            >
-              <thead className="thead-light">
-                <tr role="row">
-                  <th
-                    title="No"
-                    // width={60}
-                    // className="sorting"
-                    rowSpan={1}
-                    colSpan={1}
-                    // style={{ width: 60 }}
-                    aria-label="No"
-                  >
-                    #
-                  </th>
-                  {columns && Array.isArray(columns) && columns.length > 0
-                    ? columns.map((x, i) => (
-                        <th
-                          title="No"
-                          // width={60}
-                          // className="sorting"
-                          rowSpan={1}
-                          colSpan={1}
-                          // style={{ width: 60 }}
-                          aria-label="No"
-                          key={i}
-                        >
-                          {x.displayName}
-                        </th>
-                      ))
-                    : null}
-                </tr>
-              </thead>
-              <tbody>
-                {dataSource &&
-                Array.isArray(dataSource) &&
-                dataSource.length > 0
-                  ? dataSource.map((rowData, i) => (
-                      <TableRow
-                        srNo={indexOfFirstItem + i + 1}
-                        key={i}
-                        rowData={rowData}
-                        columns={columns}
-                      />
-                    ))
-                  : null}
-              </tbody>
-            </table>
 
             {/* <TablePagination                                   
                   page={page}

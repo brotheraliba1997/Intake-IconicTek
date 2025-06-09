@@ -80,7 +80,7 @@ const CompanyForm = ({
   });
 
   console.log("error==>", errors);
-  const founderrors:any = errors
+  const founderrors: any = errors;
 
   console.log(watch(), "watch");
   // const [selectedImage, setSelectedImage] = useState(defaultimg);
@@ -166,7 +166,9 @@ const CompanyForm = ({
             />
 
             {founderrors.email && (
-              <div className="invalid-feedback">{founderrors?.email?.message}</div>
+              <div className="invalid-feedback">
+                {founderrors?.email?.message}
+              </div>
             )}
           </div>
         </div>
@@ -214,29 +216,37 @@ const CompanyForm = ({
               id="address"
               type="text"
               placeholder="Enter Address"
-              className={`form-control ${founderrors.address ? "is-invalid" : ""}`}
+              className={`form-control ${
+                founderrors.address ? "is-invalid" : ""
+              }`}
               {...register("address")}
             />
             {founderrors.address && (
-              <div className="invalid-feedback">{founderrors.address.message}</div>
+              <div className="invalid-feedback">
+                {founderrors.address.message}
+              </div>
             )}
           </div>
         </div>
 
         <div className="col-md-4">
           <div className="mb-3">
-            <label htmlFor="address" className="form-label">
+            <label htmlFor="phone" className="form-label">
               Phone <span className="text-danger">*</span>
             </label>
             <input
-              id="address"
+              id="phone"
               type="text"
               placeholder="Phone"
-              className={`form-control ${founderrors.address ? "is-invalid" : ""}`}
+              className={`form-control ${
+                founderrors.address ? "is-invalid" : ""
+              }`}
               {...register("phone")}
             />
             {founderrors.phone && (
-              <div className="invalid-feedback">{founderrors.phone.message}</div>
+              <div className="invalid-feedback">
+                {founderrors.phone.message}
+              </div>
             )}
           </div>
         </div>
@@ -249,11 +259,15 @@ const CompanyForm = ({
               id="zipCode"
               type="text"
               placeholder="Enter Zipcode"
-              className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
+              className={`form-control ${
+                founderrors.zipCode ? "is-invalid" : ""
+              }`}
               {...register("zipCode")}
             />
             {founderrors.zipCode && (
-              <div className="invalid-feedback">{founderrors.zipCode.message}</div>
+              <div className="invalid-feedback">
+                {founderrors.zipCode.message}
+              </div>
             )}
           </div>
         </div>
@@ -273,11 +287,15 @@ const CompanyForm = ({
             id="zipCode"
             type="text"
             placeholder="state"
-            className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.zipCode ? "is-invalid" : ""
+            }`}
             {...register("state")}
           />
           {founderrors.zipCode && (
-            <div className="invalid-feedback">{founderrors.zipCode.message}</div>
+            <div className="invalid-feedback">
+              {founderrors.zipCode.message}
+            </div>
           )}
         </div>
         <div className="col-md-4">
@@ -297,11 +315,15 @@ const CompanyForm = ({
             id="zipCode"
             type="text"
             placeholder="city"
-            className={`form-control ${founderrors.zipCode ? "is-invalid" : ""}`}
+            className={`form-control ${
+              founderrors.zipCode ? "is-invalid" : ""
+            }`}
             {...register("city")}
           />
           {founderrors.zipCode && (
-            <div className="invalid-feedback">{founderrors.zipCode.message}</div>
+            <div className="invalid-feedback">
+              {founderrors.zipCode.message}
+            </div>
           )}
         </div>
         {/* <div className="col-md-12">

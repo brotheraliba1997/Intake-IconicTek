@@ -65,7 +65,7 @@ const MyCompanyForm: React.FC = () => {
     return <></>;
   }
 
-  const UserList = null
+  const UserList = null;
 
   return (
     <CompanyForm

@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect } from "react";
 
-
 import { UserData } from "@/types/user";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useGetUserByIdQuery, useUpdateUserMutation } from "@/redux/services/users";
+import {
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+} from "@/redux/services/users";
 import UserForm from "./UserForm";
 
 const EditUserForm: React.FC = () => {
@@ -37,6 +39,7 @@ const EditUserForm: React.FC = () => {
     state: user?.data?.state,
     zipCode: user?.data?.zipCode,
     address: user?.data?.address,
+    companyId: user?.data?.companyId,
     providerId: user?.data?.providerId,
     // programs: user?.data?.programs?.map((x: any) => x?.program?.id),
   };
@@ -53,7 +56,10 @@ const EditUserForm: React.FC = () => {
     }
   };
 
-  if (isLoading || isFetching) {
+  if (
+    isLoading
+    //  || isFetching
+  ) {
     // Show Loading component
     return <></>;
   }

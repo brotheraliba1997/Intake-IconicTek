@@ -105,7 +105,7 @@ const UserForm = ({
     defaultValues: initialValues ?? {
       firstName: "",
       lastName: "",
-      role: "admin",
+      // role: "client",
       password: "",
       confirmPassword: "",
       profileImageUrl: "",
@@ -187,6 +187,7 @@ const UserForm = ({
     }
   };
 
+  console.log("user", watch(), user);
   return (
     <form className="row" onSubmit={handleSubmit(submitHandler)}>
       <div className="col-md-12">
@@ -198,7 +199,17 @@ const UserForm = ({
         /> */}
       </div>
       <div className="col-md-6">
-        <input type="hidden" {...register("role")} value="admin" />
+        {user.role == "super_admin" ? (
+          <input type="hidden" {...register("role")} value="admin" />
+        ) : (
+          <input type="hidden" {...register("role")} value="client" />
+        )}
+
+        <input
+          type="hidden"
+          {...register("companyId")}
+          value={user.companyId}
+        />
         <div className="my-3">
           <label htmlFor="user-name" className="form-label">
             First Name <span className="text-danger">*</span>
@@ -283,12 +294,12 @@ const UserForm = ({
 
       <div className="col-md-6">
         <div className="mb-3">
-          <label htmlFor="address" className="form-label">
+          <label htmlFor="phone" className="form-label">
             Phone <span className="text-danger">*</span>
           </label>
           <input
-            id="address"
-            type="number"
+            id="phone"
+            type="text"
             placeholder="Phone"
             className={`form-control ${
               founderrors.address ? "is-invalid" : ""

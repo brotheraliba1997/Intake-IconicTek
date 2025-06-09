@@ -242,6 +242,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     [setValue, getValues]
   );
   const signatureValue = (val:any, items:any) => {
+    console.log(val, items, "Name")
     const answers = watch("answers");
     const updatedAnswers = answers.map((quest: any) => {
       if (Array.isArray(quest.subQuestion)) {

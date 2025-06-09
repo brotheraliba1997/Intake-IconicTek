@@ -13,8 +13,6 @@ import { Stepper } from "../Stepper/Stepper";
 import AUTHORIZATIONTOACTINANEMERGENCY from "../intake/AUTHORIZATIONTOACTNANEMERGENCY";
 import PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES from "../intake/PERSON-CENTEREDANDPOSITIVESUPPORTSTRATEGIES";
 import RIGHTSOFPERSONSSERVED from "../intake/RIGHTSOFPERSONSSERVED";
-import AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS from "../intake/AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS";
-
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -47,7 +45,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            <AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS
+            <AUTHORIZATIONTOACTINANEMERGENCY
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}

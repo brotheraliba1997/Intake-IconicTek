@@ -7,7 +7,7 @@ import Button from "react-bootstrap/esm/Button";
 import { FaAngleRight } from "react-icons/fa";
 import signatureImage from "@/public/img/signature/test.jpeg";
 
-function ESignature({ signatureValue, items, setShow }: any) {
+function ESignature({ signatureValue, items, setShow, questionId }: any) {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
   const [penColor, setPenColor] = useState("#000000");
 
@@ -16,7 +16,7 @@ function ESignature({ signatureValue, items, setShow }: any) {
     if (canvas && !canvas.isEmpty()) {
       const dataUrl = canvas.toDataURL("image/png");
       toast.success("Signature saved successfully");
-      signatureValue(dataUrl, items);
+      signatureValue(dataUrl, items , questionId);
       setShow(false);
     } else {
       toast.error("Signature is empty");

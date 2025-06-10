@@ -16,6 +16,7 @@ function SignatureCompoment({
   label,
   formData,
   signatureData,
+  questionId
 }: any) {
   const [toggle, setToggly] = useState(false);
 
@@ -214,6 +215,7 @@ function SignatureCompoment({
                   signatureValue={signatureValue}
                   items={items}
                   setShow={setShow}
+                  questionId={questionId}
                 />
               ) : (
                 <TypeSignature

@@ -194,9 +194,9 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
           (q) => q.questionId === questionId
         );
         if (questionIndex !== -1) {
-          const subQuestionIndex = (answers[
-            questionIndex
-          ] as any).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
+          const subQuestionIndex = (
+            answers[questionIndex] as any
+          ).subQuestion?.findIndex((sq: any) => sq.id === subQuestionId);
           if (subQuestionIndex !== -1) {
             setValue(
               `answers.${questionIndex}.subQuestion.${subQuestionIndex}.value` as any,
@@ -241,34 +241,46 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val:any, items:any) => {
-    console.log(val, items, "Name")
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Name");
     const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
 
-        console.log(subIndex, "findIndex");
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === questionIdFound
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    }
+
+    const subQuestionFound =
+      answers[updateQuestionAnswerIndexFound]?.subQuestion;
+
+    if (!subQuestionFound) {
+      console.error("Subquestions not found");
+      return;
+    }
+
+    const subIndex = subQuestionFound.findIndex((sq: any) => sq.id === items);
+
+    if (subIndex === -1) {
+      console.error("Subquestion not found");
+      return;
+    }
+
+    setValue(
+      `answers.${updateQuestionAnswerIndexFound}.subQuestion.${subIndex}.signatureLink` as const,
+      val,
+      {
+        shouldValidate: true,
+        shouldDirty: true,
       }
-      return quest;
-    });
-
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      // shouldDirty: true,
-      // shouldTouch: true,
-    });
+    );
   };
 
   const signatureUrlFind = watch()?.answers?.flatMap(
@@ -292,6 +304,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
     signatureValue: any;
     index: number;
   }) => {
+    let questionIdForSignature = items?.id;
     switch (type) {
       case "html":
         return (
@@ -310,6 +323,7 @@ function SELFMANAGEMENT({ handleBack, handleNext, currentStep }: any) {
                           signatureValue={signatureValue}
                           items={sub.id}
                           label={sub?.title}
+                          questionId={questionIdForSignature}
                           formData={watch("answers")}
                           signatureData={signatureUrlFind?.find(
                             (signData) => signData?.id === sub?.id

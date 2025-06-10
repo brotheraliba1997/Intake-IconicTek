@@ -7,8 +7,9 @@ export const stepLabels = [
   { id: "individualAbuse", label: "Individual Abuse" },
   { id: "policyReceipt", label: "Policy Receipt" },
   { id: "residencyAgreement", label: "Residency Agreement" },
-  { id: "PersonCenteredandPositive", label: "Person Centeredand Positive" },
+  { id: "PersonCenteredandPositive", label: "Person Centeredand" },
   { id: "RIGHTS OF PERSONS SERVED", label: "Rights of persons served" },
-  { id: "AUTHORIZATION TO ACT IN AN EMERGENCY", label: "Authorization to act in an Emergency" },
+  { id: "AUTHORIZATION TO ACT IN AN EMERGENCY", label: "Authorization  Emergency" },
+  { id: "AUTHORIZATION AND AGREEMENT FOR INJECTABLE MEDICATIONS", label: "Authorization  Agreement" },
   { id: "servicesPlan", label: "Services Plan" },
 ];

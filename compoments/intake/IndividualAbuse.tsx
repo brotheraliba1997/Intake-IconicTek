@@ -265,37 +265,48 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
-  const signatureValue = (val: any, items: any) => {
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Name");
     const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          for (let i = 0; i < updatedSubQuestions.length; i++) {
-            if (!updatedSubQuestions[i].value?.trim()) {
-              updatedSubQuestions[i].value = " ";
-            }
-          }
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
-      }
-      return quest;
-    });
 
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === questionIdFound
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    }
+
+    const subQuestionFound =
+      answers[updateQuestionAnswerIndexFound]?.subQuestion;
+
+    if (!subQuestionFound) {
+      console.error("Subquestions not found");
+      return;
+    }
+
+    const subIndex = subQuestionFound.findIndex((sq: any) => sq.id === items);
+
+    if (subIndex === -1) {
+      console.error("Subquestion not found");
+      return;
+    }
+
+    setValue(
+      `answers.${updateQuestionAnswerIndexFound}.subQuestion.${subIndex}.signatureLink` as const,
+      val,
+      {
+        shouldValidate: true,
+        shouldDirty: true,
+      }
+    );
   };
+
   console.log(watch("answers"), "answers");
   const signatureUrlFind = watch()?.answers?.flatMap(
     (ques: any) =>
@@ -318,6 +329,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     signatureValue: any;
     index: number;
   }) => {
+    let questionIdForSignature = items?.id;
     switch (type) {
       case "html":
         return (
@@ -336,6 +348,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                           signatureValue={signatureValue}
                           items={sub.id}
                           label={sub?.title}
+                          questionId={questionIdForSignature}
                           formData={watch("answers")}
                           signatureData={signatureUrlFind?.find(
                             (signData) => signData?.id === sub?.id

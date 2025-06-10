@@ -227,6 +227,7 @@ function SignatureCompoment({
                   setText={setText}
                   loading={loading}
                   setLoading={setLoading}
+                  questionId={questionId}
                 />
               )}
             </Card>

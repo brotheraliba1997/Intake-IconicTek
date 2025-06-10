@@ -17,6 +17,7 @@ export default function TypeSignature({
   setText,
   loading,
   setLoading,
+  questionId
 }: any) {
   const [color, setColor] = useState("#000000");
   const [base64Image, setBase64Image] = useState("");
@@ -70,7 +71,7 @@ export default function TypeSignature({
 
     console.log(dataUrl, "SignatureCompoment");
     setBase64Image(dataUrl);
-    signatureValue(dataUrl, items);
+    signatureValue(dataUrl, items, questionId);
     // setLoading(false);
   };
 
@@ -186,7 +187,7 @@ export default function TypeSignature({
       </div>
 
       <div className="border-top d-flex justify-content-end py-2 px-2">
-        <div
+        <Button
         // type="button"
           onClick={async () => {
             if (text === "") {
@@ -199,10 +200,10 @@ export default function TypeSignature({
               setShow(false);
 
           }}
-          style={{ backgroundColor: "#17635C" }}
+          style={{ backgroundColor: "#17635C" ,  }}
         >
            Next <FaAngleRight />
-        </div>
+        </Button>
       </div>
 
       <canvas

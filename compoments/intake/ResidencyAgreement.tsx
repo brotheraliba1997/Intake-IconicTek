@@ -84,21 +84,47 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
   console.log(dataGet, "NEwDAta");
 
-  const signatureValue = (url: string, questionId: string) => {
-    const updatedAnswers = getValues("answers").map((answer) => {
-      if (answer.questionId === questionId) {
-        return {
-          ...answer,
-          signatureLink: url,
-        };
-      }
-      return answer;
-    });
+  // const signatureValue = (url: string, questionId: string) => {
+  //   const updatedAnswers = getValues("answers").map((answer) => {
+  //     if (answer.questionId === questionId) {
+  //       return {
+  //         ...answer,
+  //         signatureLink: url,
+  //       };
+  //     }
+  //     return answer;
+  //   });
 
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
+  //   setValue("answers", updatedAnswers, {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //   });
+  // };
+
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Name");
+    const answers = watch("answers");
+
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === items
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    } else
+      setValue(
+        `answers.${updateQuestionAnswerIndexFound}.signatureLink` as any,
+        val,
+        {
+          shouldValidate: true,
+          shouldDirty: true,
+        }
+      );
   };
 
   const handleFormChange = useCallback(

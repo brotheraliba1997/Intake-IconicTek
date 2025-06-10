@@ -106,7 +106,7 @@ function ResidencyAgreement({ handleBack, handleNext, currentStep }: any) {
     items: string,
     questionIdFound: string
   ) => {
-    console.log(val, items, questionIdFound, "Name");
+    console.log(val, items, questionIdFound, "Names");
     const answers = watch("answers");
 
     const updateQuestionAnswerIndexFound = answers?.findIndex(

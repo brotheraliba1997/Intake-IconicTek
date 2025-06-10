@@ -133,7 +133,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
       const payload = { formId: dataGet?.id, answers: data.answers };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
-        // handleNext();
+        handleNext();
       }
     } catch (error) {
       console.error("Error:", error);

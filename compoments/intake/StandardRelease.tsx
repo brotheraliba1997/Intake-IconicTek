@@ -205,17 +205,7 @@ function StandardRelease({ handleBack, handleNext, currentStep }: any) {
   const onSubmit = async (data: any) => {
     console.log(data, "valueanswers");
 
-    // const multipleValueFilter = watch()?.answers?.map((multi) => {
-    //   if (multi?.multipleValue) {
-    //     return {
-    //       ...multi,
-    //       multipleValue: multi?.multipleValue?.filter(
-    //         (fil: any) => fil !== false
-    //       ),
-    //     };
-    //   }
-    //   return multi;
-    // });
+    
 
     try {
       const payload = { formId: dataGet?.id, answers: data?.answers };

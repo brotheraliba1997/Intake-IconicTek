@@ -27,48 +27,35 @@ const formSchema = z.object({
         signatureLink: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        if (data.type === "checkbox") {
-          if (
-            !(
-              Array.isArray(data.multipleValue) &&
-              data.multipleValue.filter(Boolean).length > 0
-            )
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "At least one checkbox option must be selected",
-              path: ["multipleValue"],
-            });
-          }
-        } else if (data.type === "html") {
+        if (data.type === "html") {
           // No validation needed
           return;
         }
 
-        // if (data.type === "radio" && data.value == "")
-        //   ctx.addIssue({
-        //     code: z.ZodIssueCode.custom,
-        //     message: `${data?.id}`,
-        //     path: ["value"],
-        //   });
-
+      
         if (data.type === "Signature" && !data.signatureLink) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Signature is required",
             path: ["signatureLink"],
           });
-        } else {
-          if (
-            !(typeof data.value === "string" && data.value.trim().length > 0)
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "Value is required",
-              path: ["value"],
-            });
-          }
         }
+
+          if (data.type === "text" && !data.value?.trim()) {
+                         ctx.addIssue({
+                           code: z.ZodIssueCode.custom,
+                           message: "This field is required",
+                           path: ["value"],
+                         });
+                       }
+
+          if (data.type === "date" && !data.value?.trim()) {
+                         ctx.addIssue({
+                           code: z.ZodIssueCode.custom,
+                           message: "This field is required",
+                           path: ["value"],
+                         });
+                       }
       })
   ),
 });

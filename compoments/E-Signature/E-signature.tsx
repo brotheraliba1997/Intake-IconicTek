@@ -14,7 +14,7 @@ function ESignature({ signatureValue, items, setShow }: any) {
   const handleSave = () => {
     const canvas = sigCanvasRef.current;
     if (canvas && !canvas.isEmpty()) {
-      const dataUrl = canvas.getTrimmedCanvas().toDataURL("image/png");
+      const dataUrl = canvas.toDataURL("image/png");
       toast.success("Signature saved successfully");
       signatureValue(dataUrl, items);
       setShow(false);

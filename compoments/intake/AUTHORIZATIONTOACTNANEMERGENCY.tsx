@@ -25,6 +25,8 @@ const formSchema = z.object({
         type: z.string(),
         title: z.string().optional(),
         signatureLink: z.string().optional(),
+        options: z.array(z.any()).optional(),
+        otherValue: z.string().optional(),
       })
       .superRefine((data, ctx) => {
         if (data.type === "checkbox") {
@@ -51,6 +53,17 @@ const formSchema = z.object({
         //     message: `${data?.id}`,
         //     path: ["value"],
         //   });
+
+        const hasOther = data.options?.find(
+          (item) => item?.title === "Other:" && data.value === item.id
+        );
+        if (hasOther && !data.otherValue?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["otherValue"],
+          });
+        }
 
         if (data.type === "Signature" && !data.signatureLink) {
           ctx.addIssue({
@@ -130,6 +143,7 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
           multipleValue: [],
           type: items?.question.type,
           title: items?.question?.title,
+          options: items?.question ? items?.question?.options : [],
           subQuestion: sortedSubQuestions.map((sub: any) => ({
             value: "",
             multipleValue: [],
@@ -218,22 +232,30 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
     [setValue, getValues]
   );
 
-  const signatureValue = (url: string, questionId: string) => {
-    const updatedAnswers = getValues("answers").map((answer) => {
-      if (answer.questionId === questionId) {
-        return {
-          ...answer,
-          signatureLink: url,
-          value: url,
-        };
-      }
-      return answer;
-    });
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Names");
+    const answers = watch("answers");
 
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === items
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    } else
+      setValue(
+        `answers.${updateQuestionAnswerIndexFound}.signatureLink` as any,
+        val,
+        {
+          shouldValidate: true,
+          shouldDirty: true,
+        }
+      );
   };
 
   const signatureUrlFind =
@@ -409,7 +431,7 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
             {items.question.options.map((option: any, i: number) => {
               const isOther = option.title.toLowerCase().includes("other");
               return (
-                <div className="col-lg-6" key={option.id}>
+                <div className="col-lg-6" key={i}>
                   <div className="form-check mb-2">
                     <Controller
                       name={`answers.${index}.value`}
@@ -436,20 +458,37 @@ function AUTHORIZATIONTOACTINANEMERGENCY({
                             {option.title}
                           </label>
                           {/* Show input if 'Other' is selected */}
-                          {/* {isOther && field.value === option.id && (
+                          {isOther && field.value === option.id && (
                             <Controller
                               name={`answers.${index}.otherValue`}
                               control={control}
-                              render={({ field: otherField }) => (
-                                <input
-                                  type="text"
-                                  className="form-control mt-2"
-                                  placeholder="Please specify..."
-                                  {...otherField}
-                                />
-                              )}
+                              render={({ field: otherField, fieldState }) => {
+                                console.log("Other Field:", field);
+
+                                return (
+                                  <div>
+                                    <input
+                                      type="text"
+                                      className={`form-control mt-2 ${
+                                        fieldState?.error ? "is-invalid" : ""
+                                      }`}
+                                      placeholder="Please specify..."
+                                      {...otherField}
+                                    />
+
+                                    {errors?.answers?.[index]?.otherValue && (
+                                      <div className="invalid-feedback d-block">
+                                        {
+                                          errors.answers[index].otherValue
+                                            .message
+                                        }
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              }}
                             />
-                          )} */}
+                          )}
                         </>
                       )}
                     />

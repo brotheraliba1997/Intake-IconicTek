@@ -219,22 +219,30 @@ function AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS({
     [setValue, getValues]
   );
 
-  const signatureValue = (url: string, questionId: string) => {
-    const updatedAnswers = getValues("answers").map((answer) => {
-      if (answer.questionId === questionId) {
-        return {
-          ...answer,
-          signatureLink: url,
-          value: url,
-        };
-      }
-      return answer;
-    });
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Names");
+    const answers = watch("answers");
 
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === items
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    } else
+      setValue(
+        `answers.${updateQuestionAnswerIndexFound}.signatureLink` as any,
+        val,
+        {
+          shouldValidate: true,
+          shouldDirty: true,
+        }
+      );
   };
 
   const signatureUrlFind =

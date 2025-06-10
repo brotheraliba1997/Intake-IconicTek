@@ -14,6 +14,7 @@ import AUTHORIZATIONTOACTINANEMERGENCY from "../intake/AUTHORIZATIONTOACTNANEMER
 import PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES from "../intake/PERSON-CENTEREDANDPOSITIVESUPPORTSTRATEGIES";
 import RIGHTSOFPERSONSSERVED from "../intake/RIGHTSOFPERSONSSERVED";
 import StandardRelease from "../intake/StandardRelease";
+import AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS from "../intake/AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS";
 
 function FormPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,7 +23,7 @@ function FormPage() {
   React.useEffect(() => {
     const savedStep = localStorage.getItem("currentStep");
     if (savedStep !== null) {
-      setCurrentStep(parseInt(savedStep, 11));
+      setCurrentStep(parseInt(savedStep, 12));
     }
   }, []);
 
@@ -32,7 +33,7 @@ function FormPage() {
   }, [currentStep]);
 
   const handleNext = () => {
-    if (currentStep <= 11) setCurrentStep(currentStep + 1);
+    if (currentStep <= 12) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
@@ -46,7 +47,7 @@ function FormPage() {
 
         <div className="mt-4">
           {currentStep === 0 && (
-            <ResidencyAgreement
+            <IndividualAbuse
               handleNext={handleNext}
               handleBack={handleBack}
               currentStep={currentStep}
@@ -127,7 +128,16 @@ function FormPage() {
             />
           )}
 
-          {currentStep === 11 && (
+
+            {currentStep === 11 && (
+            <AUTHORIZATIONANDAGREEMENTFORINJECTABLEMEDICATIONS
+              handleNext={handleNext}
+              handleBack={handleBack}
+              currentStep={currentStep}
+            />
+          )}
+
+          {currentStep === 12 && (
             <ServicesPlan
               handleNext={handleNext}
               handleBack={handleBack}

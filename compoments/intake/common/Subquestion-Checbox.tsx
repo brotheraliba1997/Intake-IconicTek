@@ -5,6 +5,9 @@ interface SubquestionCheckboxProps {
   index: number;
   subIndex: number;
   errors: any;
+  
+
+
   onChange: (
     e: React.ChangeEvent<HTMLInputElement>,
     optionId: string,
@@ -17,9 +20,17 @@ function SubquestionChecbox({
   index,
   subIndex,
   errors,
+
   onChange,
 }: SubquestionCheckboxProps) {
-  console.log(errors,subIndex, errors?.answers?.[index]?.subQuestion?.[subIndex], "errorsmil raha hai");
+  console.log(
+    errors,
+    subIndex,
+    errors?.answers?.[index]?.subQuestion?.[subIndex],
+    "errorsmil raha hai"
+  );
+
+ 
   return (
     <div className="col-12 mb-3" key={index}>
       {" "}
@@ -43,7 +54,9 @@ function SubquestionChecbox({
               <div className="form-check" key={j}>
                 <input
                   className={`form-check-input ${
-                    errors?.answers?.[index]?.subQuestion?.find((items :any) => items?.value?.message === subquestion?.id)
+                    errors?.answers?.[index]?.subQuestion?.find(
+                      (items: any) => items?.value?.message === subquestion?.id
+                    )
                       ? "is-invalid"
                       : ""
                   }`}
@@ -51,6 +64,7 @@ function SubquestionChecbox({
                   name={`subquestion-${subquestion.id}`}
                   value={option.id}
                   id={`option-${index}-${j}`}
+                  // checked={isOther.id === option.id}
                   onChange={(e) => {
                     onChange(e, option.id, option.isMultiple);
                   }}
@@ -61,6 +75,8 @@ function SubquestionChecbox({
                 >
                   {option.title}
                 </label>
+                  
+
               </div>
             ))}
         </div>

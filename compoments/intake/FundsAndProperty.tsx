@@ -43,9 +43,7 @@ const formSchema = z.object({
 
         // Check if "Other (specify):" is selected
         const hasOther = data.options?.find(
-          (item) =>
-            item?.title === "Other (specify):" &&
-            (data.value === item.id || data.multipleValue?.includes(item.id))
+          (item) => item?.title === "Other (specify):" && data.value === item.id
         );
         if (hasOther && !data.otherValue?.trim()) {
           ctx.addIssue({
@@ -230,11 +228,14 @@ function FUNDSANDPROPERTY({ handleBack, handleNext, currentStep }: any) {
                                         {...otherField}
                                       />
 
-                                       {errors?.answers?.[index]?.otherValue && (
-                        <div className="invalid-feedback d-block">
-                          {errors.answers[index].otherValue.message}
-                        </div>
-                      )}
+                                      {errors?.answers?.[index]?.otherValue && (
+                                        <div className="invalid-feedback d-block">
+                                          {
+                                            errors.answers[index].otherValue
+                                              .message
+                                          }
+                                        </div>
+                                      )}
                                     </div>
                                   );
                                 }}

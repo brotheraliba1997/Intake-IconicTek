@@ -1,19 +1,13 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import Formlist from "@/form";
 import { useGetMyFormQuery } from "@/redux/services/form";
 import { useCreateAnswersMutation } from "@/redux/services/answer";
 import HtmlRenderer from "./common/HtmlRenderer";
-import Image from "next/image";
 import HospitalLogo from "./common/HospitalLogo";
 import StepperButtons from "../common/StepperButtons";
-import SubquestionChecbox from "./common/Subquestion-Checbox";
-import handleChange from "../utlity/handleFormChange";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CheckBox from "./common/CheckBox";
-import SignatureCompoment from "../E-Signature/signature";
 
 const formSchema = z.object({
   answers: z.array(
@@ -189,56 +183,15 @@ function PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES({
     [setValue, getValues]
   );
 
-  const signatureValue = (val: any, items: any) => {
-    const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (Array.isArray(quest.subQuestion)) {
-        const subIndex = quest.subQuestion.findIndex(
-          (sq: any) => sq.id === items
-        );
-
-        console.log(subIndex, "findIndex");
-        if (subIndex !== -1) {
-          const updatedSubQuestions = [...quest.subQuestion];
-          updatedSubQuestions[subIndex] = {
-            ...updatedSubQuestions[subIndex],
-            signatureLink: val,
-            value: " ", // Set a space to satisfy non-empty validation
-          };
-          return { ...quest, subQuestion: updatedSubQuestions };
-        }
-      }
-      return quest;
-    });
-
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
-  };
-
-  const signatureUrlFind = watch()?.answers?.flatMap(
-    (ques: any) =>
-      ques?.subQuestion
-        ?.filter((sub: any) => sub?.type === "Signature")
-        .map((item: any) => ({
-          id: item?.id,
-          url: item?.signatureLink || null,
-        })) || []
-  );
-
   const getComponent = ({
     type,
     items,
     index,
-    signatureValue,
   }: {
     type: string;
     items: any;
 
     index: number;
-    signatureValue: any;
   }) => {
     switch (type) {
       case "html":
@@ -390,7 +343,6 @@ function PERSONCENTEREDANDPOSITIVESUPPORTSTRATEGIES({
                       type: items?.question?.type,
                       items,
                       index,
-                      signatureValue,
                     })}
                   </React.Fragment>
                 ))}

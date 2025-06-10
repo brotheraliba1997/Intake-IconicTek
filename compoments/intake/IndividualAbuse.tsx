@@ -22,87 +22,60 @@ const formSchema = z.object({
       .object({
         questionId: z.any(),
         value: z.string().optional(),
-        multipleValue: z.array(z.any()),
-        type: z.string().optional(),
+        multipleValue: z.array(z.any()).optional(),
+        type: z.string(),
         title: z.string().optional(),
-        subQuestion: z
-          .array(
-            z
-              .object({
-                value: z.string().default(""),
-                multipleValue: z.array(z.any()).optional().default([]),
-                type: z.string().default(""),
-                id: z.any().default(""),
-                signatureLink: z.string().optional(),
-              })
-              .superRefine((data, ctx) => {
-                if (data.type === "Signature" && !data.signatureLink) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Signature is required",
-                    path: ["signatureLink"],
-                  });
-                } else if (data.type === "date" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Date is required",
-                    path: ["value"],
-                  });
-                } else if (data.type === "radio" && !data.value) {
-                  ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: `${data?.id}`,
-
-                    path: ["value"],
-                  });
-                }
-                //  else if (
-                //   data.type === "text" &&
-                //   (!data.value || data.value.trim() === "")
-                // ) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "Field is required",
-                //     path: ["value"],
-                //   });
-                // }
-                // else if (data.type !== "Signature" && !data.value) {
-                //   ctx.addIssue({
-                //     code: z.ZodIssueCode.custom,
-                //     message: "This field is required",
-                //     path: ["value"],
-                //   });
-                // }
-              })
-          )
-          .optional(),
+        signatureLink: z.string().optional(),
+        options: z.array(z.any()).optional(),
+        otherValue: z.string().optional(),
       })
       .superRefine((data, ctx) => {
-        console.log(data, "data2");
         if (data.type === "text" && (!data.value || data.value.trim() === "")) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "This field is required",
             path: ["value"],
           });
-        } else if (data.type === "date" && !data.value) {
+        } else if (data.type === "radio" && !data.value?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Please select an option",
+            path: ["value"],
+          });
+        }
+
+        // DATE validation
+        else if (
+          data.type === "date" &&
+          (!data.value || data.value.trim() === "")
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Date is required",
             path: ["value"],
           });
-        } else if (data.type === "html" && !data.value) {
-          if (
-            data.title === "Persons Name:" ||
-            data.title === "Program:" ||
-            data.title === "question"
-          ) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "This field is required",
-              path: ["value"],
-            });
-          } else return;
+        } else if (data.type === "Signature" && !data.signatureLink) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Signature is required",
+            path: ["signatureLink"],
+          });
+        }
+
+        const hasOther = data.options?.find(
+          (item) => item?.title === "Other:" && data.value === item.id
+        );
+        if (hasOther && !data.otherValue?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "This field is required",
+            path: ["otherValue"],
+          });
+        }
+
+        // HTML (no validation required)
+        if (data.type === "html") {
+          return;
         }
       })
   ),
@@ -129,60 +102,29 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
   const { data, error } = useGetMyFormQuery({});
   const formName = "Individual Abuse";
   const dataGet = data?.data?.find((items: any) => items?.title === formName);
-  useEffect(() => {
-    if (dataGet) {
-      // First sort the main questions
-      const sortedQuestions = [...(dataGet?.formQuestions || [])].sort(
-        (a: any, b: any) => a.arrangement - b.arrangement
-      );
 
-      const initialFormData = sortedQuestions.map((items: any, idx: number) => {
-        const sortedSubQuestions = items?.question?.SubQuestion
-          ? [...items.question.SubQuestion].sort(
-              (a: any, b: any) => a.arrangement - b.arrangement
-            )
-          : [];
-        return {
-          questionId: items?.id,
-          value: "",
-          multipleValue: [],
-          type: "html", //
-          title: items?.question?.title
-            ? items?.question?.title
-            : sortedSubQuestions?.length > 0
-            ? "question"
-            : " ",
-          // subQuestion: [],
-          subQuestion:
-            sortedSubQuestions?.length > 0
-              ? sortedSubQuestions.map((sub: any) => ({
-                  value: "",
-                  multipleValue: [],
-                  type: sub?.type,
-                  id: sub?.id,
-                }))
-              : [],
-        };
-        // {
-        //   questionId: items?.id,
-        //   value: "",
-        //   multipleValue: [],
-        //   // type: items?.question.type,
-        //   title: items?.question?.title,
-        //   subQuestion: sortedSubQuestions.map((sub: any) => ({
-        //     value: "",
-        //     multipleValue: [],
-        //     type: sub?.type,
-        //     id: sub?.id,
-        //   })),
-        // };
-      });
+  const question = React.useMemo(
+    () =>
+      dataGet?.formQuestions
+        ?.slice()
+        ?.sort((a: any, b: any) => a.arrangement - b.arrangement),
+    [dataGet]
+  );
 
+  React.useEffect(() => {
+    if (dataGet && question) {
+      const initialFormData = question.map((q: any) => ({
+        questionId: q?.id,
+        value: "",
+        multipleValue: [],
+        type: q?.question.type,
+        title: q?.question.title,
+        options: q?.question ? q?.question?.options : [],
+      }));
       setValue("answers", initialFormData);
     }
-  }, [dataGet, setValue]);
+  }, [dataGet, setValue, question]);
 
-  const question = dataGet?.formQuestions;
   // console.log(question, "questionquestion");
   const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
@@ -191,7 +133,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
       const payload = { formId: dataGet?.id, answers: data.answers };
       const response = await createAnswersMutation(payload).unwrap();
       if (response) {
-        handleNext();
+        // handleNext();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -270,53 +212,35 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     items: string,
     questionIdFound: string
   ) => {
-    console.log(val, items, questionIdFound, "Name");
+    console.log(val, items, questionIdFound, "Names");
     const answers = watch("answers");
 
     const updateQuestionAnswerIndexFound = answers?.findIndex(
-      (SignQues: any) => SignQues.questionId === questionIdFound
+      (SignQues: any) => SignQues.questionId === items
     );
 
     if (updateQuestionAnswerIndexFound === -1) {
       console.error("Question not found");
       return;
-    }
-
-    const subQuestionFound =
-      answers[updateQuestionAnswerIndexFound]?.subQuestion;
-
-    if (!subQuestionFound) {
-      console.error("Subquestions not found");
-      return;
-    }
-
-    const subIndex = subQuestionFound.findIndex((sq: any) => sq.id === items);
-
-    if (subIndex === -1) {
-      console.error("Subquestion not found");
-      return;
-    }
-
-    setValue(
-      `answers.${updateQuestionAnswerIndexFound}.subQuestion.${subIndex}.signatureLink` as const,
-      val,
-      {
-        shouldValidate: true,
-        shouldDirty: true,
-      }
-    );
+    } else
+      setValue(
+        `answers.${updateQuestionAnswerIndexFound}.signatureLink` as any,
+        val,
+        {
+          shouldValidate: true,
+          shouldDirty: true,
+        }
+      );
   };
 
   console.log(watch("answers"), "answers");
-  const signatureUrlFind = watch()?.answers?.flatMap(
-    (ques: any) =>
-      ques?.subQuestion
-        ?.filter((sub: any) => sub?.type === "Signature")
-        .map((item: any) => ({
-          id: item?.id,
-          url: item?.signatureLink || null,
-        })) || []
-  );
+  const signatureUrlFind =
+    watch("answers")
+      ?.filter((item: any) => item?.type === "Signature")
+      ?.map((item: any) => ({
+        id: item?.questionId,
+        url: item?.signatureLink || null,
+      })) || [];
 
   const getComponent = ({
     type,
@@ -332,127 +256,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     let questionIdForSignature = items?.id;
     switch (type) {
       case "html":
-        return (
-          <>
-            {type === "html" && <HtmlRenderer items={items} />}
-
-            <div className="row mt-5">
-              {items?.question?.SubQuestion?.slice()
-                ?.sort((a: any, b: any) => a.arrangement - b.arrangement)
-                ?.map((sub: any, subIndex: any) => (
-                  <div key={sub.id} className="col-lg-6 mb-4">
-                    {sub?.type === "Signature" && (
-                      <>
-                        <h5>{sub?.title}</h5>{" "}
-                        <SignatureCompoment
-                          signatureValue={signatureValue}
-                          items={sub.id}
-                          label={sub?.title}
-                          questionId={questionIdForSignature}
-                          formData={watch("answers")}
-                          signatureData={signatureUrlFind?.find(
-                            (signData) => signData?.id === sub?.id
-                          )}
-                        />
-                        {errors?.answers?.[index]?.subQuestion?.[subIndex]
-                          ?.signatureLink && (
-                          <span className="text-danger">
-                            {
-                              errors.answers[index].subQuestion[subIndex]
-                                .signatureLink.message
-                            }
-                          </span>
-                        )}
-                      </>
-                    )}
-
-                    {sub?.type === "date" && (
-                      <>
-                        <h5>{sub?.title}</h5>
-                        <Controller
-                          name={`answers.${index}.subQuestion.${subIndex}.value`}
-                          control={control}
-                          rules={{ required: "This field is required" }}
-                          render={({ field }) => (
-                            <div>
-                              <input
-                                type="date"
-                                className={`form-control ${
-                                  errors?.answers?.[index]?.subQuestion?.[
-                                    subIndex
-                                  ]?.value
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  handleFormChange(e, {
-                                    questionId: items?.id,
-                                    subQuestionId: sub?.id,
-                                    type: "date",
-                                  });
-                                }}
-                              />
-                              {errors?.answers?.[index]?.subQuestion?.[subIndex]
-                                ?.value && (
-                                <div className="invalid-feedback d-block">
-                                  {
-                                    errors.answers[index].subQuestion[subIndex]
-                                      .value.message
-                                  }
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        />
-                      </>
-                    )}
-
-                    {sub?.type === "text" && (
-                      <>
-                        <h5>{sub?.title}</h5>
-
-                        <Controller
-                          name={`answers.${index}.subQuestion.${subIndex}.value`}
-                          control={control}
-                          rules={{ required: "This field is required" }}
-                          render={({ field }) => (
-                            <div>
-                              <input
-                                type="text"
-                                className={`form-control ${
-                                  errors?.answers?.[index]?.value
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
-                                placeholder={`Enter ${
-                                  items?.question?.title || "text"
-                                }...`}
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  handleFormChange(e, {
-                                    questionId: items?.id,
-                                    type: "text",
-                                  });
-                                }}
-                              />
-                              {errors?.answers?.[index]?.value && (
-                                <div className="invalid-feedback d-block">
-                                  {errors.answers[index].value.message}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
-            </div>
-          </>
-        );
+        return <>{type === "html" && <HtmlRenderer items={items} />}</>;
 
       case "text":
       case "date":
@@ -538,36 +342,107 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
                   <p className="text-left">{items?.question?.title}</p>
                 )}
 
-                {items?.question?.SubQuestion?.map(
-                  (subquestion: any, subIndex: number) => (
-                    <div key={subquestion.id} className="mb-3">
-                      <SubquestionChecbox
-                        subquestion={subquestion}
-                        index={index}
-                        errors={errors}
-                        subIndex={subIndex}
-                        onChange={(e, optionId, isMultiple) => {
-                          handleFormChange(e, {
-                            questionId: items?.id,
-                            optionId: optionId,
-                            isMultiple: isMultiple,
-                            type: "radio",
-                            subQuestionId: subquestion?.id,
-                          });
+                {items.question.options.map((option: any, i: number) => {
+                  const isOther = option.title.toLowerCase().includes("other");
+                  return (
+                    <div className="col-lg-6" key={i}>
+                      <div className="form-check mb-2">
+                        <Controller
+                          name={`answers.${index}.value`}
+                          control={control}
+                          rules={{ required: "Please select an option" }}
+                          render={({ field }) => (
+                            <>
+                              <input
+                                type="radio"
+                                className={`form-check-input ${
+                                  errors?.answers?.[index]?.value
+                                    ? "is-invalid"
+                                    : ""
+                                }`}
+                                name={`option-${items.id}`}
+                                id={`option-${index}-${i}`}
+                                checked={field.value === option.id}
+                                onChange={() => field.onChange(option.id)}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={`option-${index}-${i}`}
+                              >
+                                {option.title}
+                              </label>
+                              {/* Show input if 'Other' is selected */}
+                              {isOther && field.value === option.id && (
+                                <Controller
+                                  name={`answers.${index}.otherValue`}
+                                  control={control}
+                                  render={({
+                                    field: otherField,
+                                    fieldState,
+                                  }) => {
+                                    console.log("Other Field:", field);
 
-                          setValue(`answers.${index}.value`, optionId, {
-                            shouldValidate: true,
-                          });
-                        }}
-                      />
+                                    return (
+                                      <div>
+                                        <input
+                                          type="text"
+                                          className={`form-control mt-2 ${
+                                            fieldState?.error
+                                              ? "is-invalid"
+                                              : ""
+                                          }`}
+                                          placeholder="Please specify..."
+                                          {...otherField}
+                                        />
+
+                                        {errors?.answers?.[index]
+                                          ?.otherValue && (
+                                          <div className="invalid-feedback d-block">
+                                            {
+                                              errors.answers[index].otherValue
+                                                .message
+                                            }
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  }}
+                                />
+                              )}
+                            </>
+                          )}
+                        />
+                      </div>
                     </div>
-                  )
-                )}
+                  );
+                })}
               </div>
             )}
           </>
         );
 
+      case "Signature":
+        return (
+          <>
+            <div className="my-4">
+              <SignatureCompoment
+                signatureValue={signatureValue}
+                items={items.id}
+                label={items?.title}
+                formData={watch("answers")}
+                signatureData={signatureUrlFind?.find(
+                  (signData) => signData?.id === items?.id
+                )}
+              />
+
+              {errors?.answers?.[index]?.signatureLink && (
+                <span className="text-danger">
+                  {errors.answers[index].signatureLink.message}
+                </span>
+              )}
+            </div>
+          </>
+        );
       default:
         return null;
     }

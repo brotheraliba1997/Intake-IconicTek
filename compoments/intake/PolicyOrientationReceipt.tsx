@@ -96,7 +96,7 @@ function POLICYORIENTATIONRECEIPT({
       setValue("answers", initialFormData);
     }
   }, [dataGet, setValue, question]);
-  const [createAnswersMutation, {isLoading}] = useCreateAnswersMutation();
+  const [createAnswersMutation, { isLoading }] = useCreateAnswersMutation();
 
   const onSubmit = async (data: any) => {
     try {
@@ -110,23 +110,30 @@ function POLICYORIENTATIONRECEIPT({
     }
   };
   // Signature logic (like in SELFMANAGEMENT)
-  const signatureValue = (val: string, questionId: string) => {
+  const signatureValue = (
+    val: string,
+    items: string,
+    questionIdFound: string
+  ) => {
+    console.log(val, items, questionIdFound, "Names");
     const answers = watch("answers");
-    const updatedAnswers = answers.map((quest: any) => {
-      if (quest.questionId === questionId) {
-        return {
-          ...quest,
-          signatureLink: val,
-          value: " ", // Set a space to satisfy non-empty validation
-        };
-      }
-      return quest;
-    });
-    setValue("answers", updatedAnswers, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
+
+    const updateQuestionAnswerIndexFound = answers?.findIndex(
+      (SignQues: any) => SignQues.questionId === items
+    );
+
+    if (updateQuestionAnswerIndexFound === -1) {
+      console.error("Question not found");
+      return;
+    } else
+      setValue(
+        `answers.${updateQuestionAnswerIndexFound}.signatureLink` as any,
+        val,
+        {
+          shouldValidate: true,
+          shouldDirty: true,
+        }
+      );
   };
 
   const getComponent = (items: any, index: number) => {
@@ -140,7 +147,7 @@ function POLICYORIENTATIONRECEIPT({
           <HtmlRenderer items={items} />
           <div className="my-4">
             <SignatureCompoment
-              signatureValue={(val: string) => signatureValue(val, items?.id)}
+              signatureValue={signatureValue}
               items={items?.id}
               label={items?.question?.title}
               formData={watch("answers")}
@@ -264,7 +271,7 @@ function POLICYORIENTATIONRECEIPT({
             ))}
           </div>
           <StepperButtons
-           isLoading={isLoading}
+            isLoading={isLoading}
             currentStep={currentStep}
             totalSteps={8}
             onNavigate={(direction) => {

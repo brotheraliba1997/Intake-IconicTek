@@ -207,6 +207,9 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     },
     [setValue, getValues]
   );
+
+
+
   const signatureValue = (
     val: string,
     items: string,
@@ -233,6 +236,9 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
       );
   };
 
+
+
+
   console.log(watch("answers"), "answers");
   const signatureUrlFind =
     watch("answers")
@@ -253,7 +259,7 @@ function IndividualAbuse({ handleBack, handleNext, currentStep }: any) {
     signatureValue: any;
     index: number;
   }) => {
-    let questionIdForSignature = items?.id;
+    
     switch (type) {
       case "html":
         return <>{type === "html" && <HtmlRenderer items={items} />}</>;
